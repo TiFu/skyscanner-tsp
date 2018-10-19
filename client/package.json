@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "google-map-react": "^1.0.9",
+    "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.5",

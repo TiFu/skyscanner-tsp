@@ -1,57 +1,49 @@
-import React, { } from 'react'
+import React, { PureComponent } from 'react'
+import t from 'prop-types'
 
-
-class Polyline extends PureComponent {
-
+export class Polyline extends PureComponent {
+  static propTypes = {
+    path: t.arrayOf(t.shape({
+      lat: t.number,
+      lng: t.number,
+    })).isRequired,
+    maps: t.object.isRequired,
+    map: t.object.isRequired,
+  }
 
   componentWillUpdate() {
     this.line.setMap(null)
+    this.markers.forEach(marker => marker.setMap(null))
+    this.markers = []
   }
 
   componentWillUnmount() {
     this.line.setMap(null)
-  }
-
-  getPaths() {
-    const { origin, destination } = this.props
-
-    console.log('get paths')
-
-    return [
-      { lat: Number(origin.lat), lng: Number(origin.lng) },
-      { lat: Number(destination.lat), lng: Number(destination.lng) }
-    ];
+    this.markers.forEach(marker => marker.setMap(null))
+    this.markers = []
   }
 
   render() {
-    const Polyline = this.props.maps.Polyline
-    const renderedPolyline = this.renderPolyline()
-    const paths = { path: this.getPaths() }
+    const { maps, path, map } = this.props
 
-    this.line = new Polyline(Object.assign({}, renderedPolyline, paths))
-
-
-    this.line.setMap(this.props.map)
-
-    return null
-  }
-
-  renderPolyline() {
-    throw new Error('Implement renderPolyline method')
-  }
-
-}
-
-
-
-class Normal extends Polyline {
-
-  renderPolyline() {
-    return {
+    this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: this.props.color || '#AAAAAA',
+      strokeColor: '#AAAAAA',
       strokeOpacity: 1,
-      strokeWeight: 4
-    }
+      strokeWeight: 4,
+      path,
+    })
+
+    this.markers = path.map((coords) => new maps.Marker({
+      position: coords,
+      map: map,
+      title: 'title',
+    }))
+
+    this.line.setMap(map)
+
+    return path.map(({ lat, lng }) => <div lat={lat} lng={lng}>Test</div>)
   }
 }
+
+export default Polyline
