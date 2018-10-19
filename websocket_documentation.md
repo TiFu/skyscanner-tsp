@@ -9,6 +9,7 @@ CLIENT request
 ```
 {
 	"action": "new_session"
+	"user": string
 }
 ```
 
@@ -25,6 +26,7 @@ CLIENT Request
 ```
 {
 	"action": "restore_session",
+	"user": string,
 	"id": string
 }
 ```
@@ -33,34 +35,42 @@ Server Response:
 ```
 {
 	"id": string,
+	"users": [
+		{
+			"name": string, // unique
+		}
+	]
 	"routes": [ // Route: which cities do we visit in which order
 		{
-			"route_name": string, // has to be unique
+			"owner": string, // user name
+			"routeName": string, // has to be unique
 			"cities": Array<string>,
-			"ignore_flight": [ // implies: B and A have to be neighbors 
+			"ignoreFlight": [ // implies: B and A have to be neighbors 
 				[ "cityA", "cityB" ]	
 			],
 			"durationOfStay": Map<string, number> // Maps from city name to duration of stay in days,
 			"earliestDeparture": "yyyy-mm-dd",
 			"trip": { // which flights do we take
-				"total_price": number,
+				"totalPrice": number,
 				"flights": [
 					{
-						"starting_city": string, // city name
-						"final_destination": string, // final city
+						"startingCity": string, // city name
+						"finalDestination": string, // final city
 						"price": number,
 						"numberOfStops": number // === legs.length - 1
-						"departure_time: "yyyy-mm-dd hh:mm",
-						"arrival_time: "yyyy-mm-dd hh:mm",
+						"departureTime: "yyyy-mm-dd hh:mm",
+						"arrivalTime: "yyyy-mm-dd hh:mm",
 						"legs": [// legs is sorted by arrival time & departure time
 							{
 								"carrier": string,
-								"flight_number": string,
+								"flightNumber": string,
 								"departure": {
+									"coordinates": "",
 									"time": "yyyy-mm-dd hh:mm",
 									"airport": string,
 								},
 								"arrival": {
+									"coordinates": "",
 									"time": "yyyy-mm-dd hh:mm",
 									"airport": string
 								}
@@ -78,12 +88,13 @@ Server Response:
 CLIENT Request: 
 ```
 {
-	"request_id": string, // use some unique request id e.g. random 6 char string
+	"requestId": string, // use some unique request id e.g. random 6 char string
 	"action": "reorder_cities",
 	"id": string, // session id
-	"route_name": string, // unique
+	"startingCity": string,
+	"routeName": string, // unique
 	"order": string<cities>,
-	"ignore_flight": [ // implies: B and A have to be neighbors 
+	"ignoreFlight": [ // implies: B and A have to be neighbors 
 		[ "cityA", "cityB" ]	
 	]
 }
@@ -98,11 +109,12 @@ SERVER Response
 CLIENT Request:
 ```
 {
-	"request_id": string, // use some unique request id e.g. random 6 char string
+	"requestId": string, // use some unique request id e.g. random 6 char string
 	"action": "city_list",
-	"route_name": string, // has to be unique
+	"routeName": string, // has to be unique
+	"startingCity": string,
 	"cities": Array<string>,
-	"ignore_flight": [ // implies: B and A have to be neighbors 
+	"ignoreFlight": [ // implies: B and A have to be neighbors 
 		[ "cityA", "cityB" ]	
 	],
 	"durationOfStay": Map<string, number> // Maps from city name to duration of stay in days,
@@ -113,21 +125,21 @@ CLIENT Request:
 SERVER Response:
 ```
 {
-	"request_id": string,
-	"route_name": string,
-	"total_price": number,
+	"requestId": string,
+	"routeName": string,
+	"totalPrice": number,
 	"flights": [
 		{
-			"starting_city": string, // city name
-			"final_destination": string, // final city
+			"startingCity": string, // city name
+			"finalDestination": string, // final city
 			"price": number,
 			"numberOfStops": number // === legs.length - 1
-			"departure_time: "yyyy-mm-dd hh:mm",
-			"arrival_time: "yyyy-mm-dd hh:mm",
+			"departureTime: "yyyy-mm-dd hh:mm",
+			"arrivalTime: "yyyy-mm-dd hh:mm",
 			"legs": [// legs is sorted by arrival time & departure time
 				{
 					"carrier": string,
-					"flight_number": string,
+					"flightNumber": string,
 					"departure": {
 						"time": "yyyy-mm-dd hh:mm",
 						"airport": string,
