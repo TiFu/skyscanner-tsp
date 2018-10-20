@@ -4,4 +4,4 @@
 .settings
 bin
 build
-
+/src/main/resources/static/
