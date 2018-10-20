@@ -8,6 +8,7 @@ import FlightLand from '@material-ui/icons/FlightLand'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import ChevronRight from '@material-ui/icons/ChevronRight'
+import {formatTime} from '../utils'
 
 
 class FlightView extends Component {
@@ -86,7 +87,7 @@ class FlightView extends Component {
 
           <div className={styles.meta}>
             <div className={styles.date}>
-              {`${departureTime} (${duration})`}
+              {`${formatTime(departureTime)} (Flight Duration: ${Math.floor(duration/60)}:${duration - 60 * Math.floor(duration/60)}h)`}
             </div>
             <div className={styles.price}>
               {`${price.toFixed(2)} EUR`}
@@ -104,8 +105,9 @@ class FlightView extends Component {
                 {leg.departure.airport}
               </div>
               <div className={styles.time}>
-                {`${leg.departure.time} ${leg.departure.code}`}
-              </div>
+                { index >= 1 ? "A: " + formatTime(legs[index - 1].arrival.time) + " / D: " + formatTime(leg.departure.time) + " " + leg.departure.code :   formatTime(leg.departure.time) + " " + leg.departure.code
+                }
+                </div>
             </div>
           ))}
            <div className={styles.leg} key={legs.length}>
@@ -114,7 +116,7 @@ class FlightView extends Component {
                 {legs[legs.length - 1].arrival.airport}
               </div>
               <div className={styles.time}>
-                {`${legs[legs.length - 1].arrival.time} ${legs[legs.length - 1].arrival.code}`}
+                {`${formatTime(legs[legs.length - 1].arrival.time)} ${legs[legs.length - 1].arrival.code}`}
               </div>
             </div>
         </div>
