@@ -65,6 +65,12 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 		public void run() {
 			Route r = this.tspService.TSProute(this.r);
 			r.setOwner("TSP");
+			try {
+				this.server.getFlightsService().updateTrip(r);
+			} catch (FlightServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.session.addRoute(r);
 			this.server.broadcastToSession(this.r.getId(), "state", this.session);
 		}
