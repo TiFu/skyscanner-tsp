@@ -1,7 +1,10 @@
 .fab {
-  position: fixed;
-  top: 2rem;
-  left: 2rem;
+  /*position: fixed;
+  top: 1rem;
+  left: 1rem;*/
+  margin-left: 1rem;
+  margin-top: 1rem;
+  z-index: 1000;
 }
 
 .cityList {
@@ -17,13 +20,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .overlay {
-  position: fixed;
-  z-index: 9999;
+  /*position: fixed;
   top: calc(56px + 3.5rem);
-  left: 2rem;
+  left: 2rem;*/
+  margin-top: 1rem;
+  margin-left: 1rem;
   width: 50vw;
-  max-width: 450px;
+  z-index: 9999;
+  max-width: 500px;
 }
 
 .calendarInput {
@@ -45,7 +51,7 @@
 
 .fabProgress {
   position: absolute;
-  top: -6px;
-  left: -6px;
+  left: 9.5px;
+  top: 9.5px;
   z-index: 1;
 }

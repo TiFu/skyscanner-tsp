@@ -103,7 +103,14 @@ class RouteForm extends Component {
     const { startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.state
     return (
       <div className={styles.container}>
-        { open && 
+        <div className={styles.fab}>
+          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.toggle}>
+            { open ? <Close /> : <LocalAirport /> }
+          </Button>
+          {loading && <CircularProgress size={68} className={styles.fabProgress} />}
+        </div>
+
+        { open &&
           <Card className={styles.overlay}>
             <List>
               <ListItem>
@@ -122,8 +129,8 @@ class RouteForm extends Component {
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
-              
-              
+
+
               <Divider />
               <ListItem>
                 <AlgoliaPlaces disabled={loading} language="en" type="city" placeholder="Next place"  onChange={this.handleNewChange} destroyOnValid />
@@ -133,7 +140,7 @@ class RouteForm extends Component {
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
-              
+
               <Divider />
               <div className={styles.cityList}>
                 {cities.map((city, index) => (
@@ -159,13 +166,6 @@ class RouteForm extends Component {
             </CardActions>
           </Card>
         }
-
-        <div className={styles.fab}>
-          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.toggle}>
-            { open ? <Close /> : <LocalAirport /> }
-          </Button>
-          {loading && <CircularProgress size={68} className={styles.fabProgress} />}
-        </div>
       </div>
 
     )

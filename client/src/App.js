@@ -94,6 +94,13 @@ class App extends Component {
     }))
   }
 
+  onDuplicate = (data) => {
+    this.socket.emit('copy_route', Object.assign({}, data, {
+      id: roomHash,
+      action: 'copy_route',
+    }));
+  }
+
   onMapLoaded = ({ map, maps }) => {
     this.setState({ map, maps, mapLoaded: true })
 
@@ -129,7 +136,19 @@ class App extends Component {
 
     return (
       <div className="App">
-        { selectedRoute && <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
+        <span className="overlayWrapper">
+          <RouteForm loading={requestLoading} onSubmit={this.onNewSubmit}/>
+          { selectedRoute &&
+            <RouteView
+              loading={requestLoading}
+              route={selectedRoute}
+              onReorder={this.onReorder}
+              onAlternative={this.onAlternative}
+              onClose={this.onClose}
+              onDuplicate={this.onDuplicate}
+            />
+          }
+        </span>
         { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
         <div className="map">
           <GoogleMap
@@ -168,11 +187,18 @@ class App extends Component {
                 return memo
             }, []) }
 
+                  <div
+                    lat={59.955413}
+                    lng={30.337844}
+                    text={'Kreyser Avrora'}>
+                    <svg width="10" height="10">
+                      <circle cx="5" cy="5" r="4" fill="red" stroke-width="0"/>
+                    </svg>
+                  </div>
 
           </GoogleMap>
 
         </div>
-        <RouteForm loading={requestLoading} onSubmit={this.onNewSubmit}/>
         <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />
       </div>
     )

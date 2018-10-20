@@ -8,6 +8,10 @@ body {
   box-sizing: border-box;
 }
 
+.overlayWrapper {
+	position: absolute;
+	z-index: 400;
+}
 
 .map {
   width: 100vw;
