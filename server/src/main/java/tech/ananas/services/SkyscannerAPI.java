@@ -236,7 +236,7 @@ public class SkyscannerAPI {
 		
 	}
 	
-	public BrowseQuotes getQuotes(String originPlace, String destinationPlace, String outboundPartialDate) throws IOException {
+	public BrowseQuotes getQuotes(String originPlace, String destinationPlace, String outboundPartialDate) throws Exception {
 		URL url = new URL ("http://partners.api.skyscanner.net/apiservices/browsequotes/v1.0"
 				+ "/" + URLEncoder.encode(country, "UTF-8")
 				+ "/" + URLEncoder.encode(currency, "UTF-8")
@@ -251,7 +251,9 @@ public class SkyscannerAPI {
 	    conn.setRequestProperty("Accept", "application/json");
 	    
 	    BufferedInputStream buffStream = new BufferedInputStream(conn.getInputStream());
-	    
+	    if (conn.getResponseCode() < 200 || conn.getResponseCode() >= 300) {
+	    	throw new Exception("Response Code in getQuotes: " + conn.getResponseCode());
+	    }
 	    BufferedReader r = new BufferedReader(
 	            new InputStreamReader(buffStream, StandardCharsets.UTF_8));
 

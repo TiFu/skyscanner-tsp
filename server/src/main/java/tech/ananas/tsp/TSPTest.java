@@ -22,8 +22,9 @@ public class TSPTest {
 		//TODO: heuristics
 		//TODO: quotes into details (output Route :3)
 
-		TSPService test = new TSPService();
-		test.TSPpaths("ha973240724713587943361464989493", createSampleRoute());
+		SkyscannerAPI skyAPI = new SkyscannerAPI("ha973240724713587943361464989493");
+		TSPService test = new TSPService(skyAPI);	
+		test.TSPpath(createSampleRoute());
 	}
 	
 	public static SubmitCityListRequest createSampleRoute() {

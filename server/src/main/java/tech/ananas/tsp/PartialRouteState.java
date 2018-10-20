@@ -90,6 +90,9 @@ public class PartialRouteState {
 			//System.out.println("priceCalc");
 			visited.addLast(visited.getFirst());
 			source.getResults().put(totalCurrentPrice, visited);
+			for (int i = 1; i < source.getResults().size(); i++) {
+				source.getResults().pollLastEntry();
+			}
 		} else {
 			for (String temp : yetToVisit) {
 				System.out.println(visited);
