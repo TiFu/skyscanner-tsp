@@ -7,5 +7,5 @@ public class Leg {
     public List<Long> CarrierIds;
     public long OriginId;
     public long DestinationId;
-    public Date DepartureDate;
+    public String DepartureDate;
 }
