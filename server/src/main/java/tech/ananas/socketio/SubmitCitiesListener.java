@@ -22,7 +22,9 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 		Session session = this.server.getSessionService().getSession(data.getId());
 		Route r = session.addRoute(new User(client.get("name")), data);
 		// TODO: recalculate costs
-		this.server.getFlightsService().updateTrip(r);
+		if (!this.server.getFlightsService().updateTrip(r)) {
+			this.server.broadcastToSession(data.getId(), "error", "Failed to fetch flights!");
+		}
 			
 		// TODO: change THIS (reorder_cities) to something different! important
 //		this.server.broadcastToSession(data.getId(), "city_list", response);

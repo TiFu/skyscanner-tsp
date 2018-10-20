@@ -22,8 +22,9 @@ public class ReorderCitiesListener implements DataListener<ReorderCitiesRequest>
 		boolean updated = session.updateRoute(data);
 		// TODO: recalculate costs
 		Route r = session.getRoute(data.getRouteName());
-		this.server.getFlightsService().updateTrip(r);
-		
+		if (!this.server.getFlightsService().updateTrip(r)) {
+			this.server.broadcastToSession(data.getId(), "error", "Failed to fetch flights!");
+		}
 		this.server.broadcastToSession(data.getId(), "state", session);
 	}
 

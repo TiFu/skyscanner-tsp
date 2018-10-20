@@ -110,7 +110,7 @@ public class SkyscannerAPI {
 			
 			JsonArray segments = leg.get("SegmentIds").getAsJsonArray();
 			for (int j = 0; j < segments.size(); j++) {
-				String segmentId = segments.get(0).getAsString();
+				String segmentId = segments.get(j).getAsString();
 				JsonObject segment = findById(segmentId, foundFlights.get("Segments").getAsJsonArray());
 				
 				String flightNumber = segment.get("FlightNumber").getAsString();
