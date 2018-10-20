@@ -56,4 +56,9 @@ public class Session {
 		this.routes.add(r);
 		return r;
 	}
+
+	public void updateSelectedAlternative(UpdateAlternativeRequest data) {
+		Route r = this.findRoute(data.getRouteName());
+		r.getTrip().getFlights().get(data.getFlightId()).setSelectedAlternative(data.getSelectedAlternative());
+	}
 }

@@ -11,6 +11,7 @@ import tech.ananas.models.ReorderCitiesRequest;
 import tech.ananas.models.RestoreSessionRequest;
 import tech.ananas.models.Session;
 import tech.ananas.models.SubmitCityListRequest;
+import tech.ananas.models.UpdateAlternativeRequest;
 import tech.ananas.services.FlightsService;
 import tech.ananas.services.SessionService;
 
@@ -40,6 +41,7 @@ public class SocketIO {
 		this.server.addEventListener("restore_session", RestoreSessionRequest.class, new RestoreSessionListener(this));
 		this.server.addEventListener("city_list", SubmitCityListRequest.class, new SubmitCitiesListener(this));
 		this.server.addEventListener("reorder_cities", ReorderCitiesRequest.class, new ReorderCitiesListener(this));
+		this.server.addEventListener("update_selected_alternative", UpdateAlternativeRequest.class, new UpdateAlternativeListener(this));
 		System.out.println("Started server");
 		this.server.start();
 	}

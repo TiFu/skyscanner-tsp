@@ -15,6 +15,8 @@ public class Route {
 	private Trip trip;
 	
 	public Route(String routeName, String owner, List<String> cities, Map<String, Integer> durationOfStay) {
+		this.routeName = routeName;
+		this.owner = owner;
 		this.cities = cities;
 		this.ignoreFlight = new LinkedList<>();
 		this.durationOfStay = durationOfStay;

@@ -16,6 +16,17 @@ public class FlightAlternatives {
 		this.selectedAlternative = 0;
 	}
 	
+	
+	public int getSelectedAlternative() {
+		return selectedAlternative;
+	}
+
+
+	public void setSelectedAlternative(int selectedAlternative) {
+		this.selectedAlternative = selectedAlternative;
+	}
+
+
 	public String getStartingCity() {
 		return startingCity;
 	}

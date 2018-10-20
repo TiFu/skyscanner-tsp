@@ -162,9 +162,7 @@ public class SkyscannerAPI {
 		for (JsonElement continent: this.places.get("Continents").getAsJsonArray()) {
 			for (JsonElement country: continent.getAsJsonObject().get("Countries").getAsJsonArray()) {
 				for (JsonElement city: country.getAsJsonObject().get("Cities").getAsJsonArray()) {
-					System.out.println(city);
 					for (JsonElement airport: city.getAsJsonObject().get("Airports").getAsJsonArray()) {
-						System.out.println(airport);
 						if (airport.getAsJsonObject().get("Id").getAsString().equals(iata)) { 
 							return airport.getAsJsonObject();
 						}
