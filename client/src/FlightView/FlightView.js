@@ -8,6 +8,7 @@ import FlightLand from '@material-ui/icons/FlightLand'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import ChevronRight from '@material-ui/icons/ChevronRight'
+import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import {formatTime, printLeadingZero} from '../utils'
 
 
@@ -20,6 +21,7 @@ class FlightView extends Component {
       finalDestination: t.string,
       selectedAlternative: t.number,
       alternatives: t.arrayOf(t.shape({
+        deepLink: t.string,
         price: t.number,
         numberOfStops: t.number,
         departureTime: t.string,
@@ -28,6 +30,7 @@ class FlightView extends Component {
         legs: t.arrayOf(t.shape({
           duration: t.number,
           carrier: t.string,
+          carrierImg: t.string,
           flightNumber: t.string,
           departure: t.shape({
             coordinates: t.string,
@@ -126,7 +129,7 @@ class FlightView extends Component {
   render() {
     const { backgroundImage } = this.state;
     const { flight: { finalDestination, selectedAlternative, alternatives } } = this.props
-    const { price, departureTime, legs, duration, onDirectionChange } = alternatives[selectedAlternative];
+    const { price, departureTime, legs, duration, onDirectionChange, deepLink } = alternatives[selectedAlternative];
 
     return (
       <div className={styles.flight}>
@@ -138,6 +141,9 @@ class FlightView extends Component {
 
           <div className={styles.heading}>
             <h1>{finalDestination}</h1>
+            {deepLink && <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
+              <ShoppingCart />
+            </IconButton> }
             <div onClick={() => {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
@@ -180,11 +186,12 @@ class FlightView extends Component {
               </div>
               <div className={styles.destination}>
                 {leg.departure.airport}
+                <img className={styles.logo} src={leg.carrierImg} alt={leg.carrier} />
               </div>
               <div className={styles.time}>
                 { index >= 1 ? formatTime(legs[index - 1].arrival.time) + " " : ""}
-                { index >= 1 ? legs[index - 1].arrival.code : "" }<br />
-                {  formatTime(leg.departure.time) +" "}
+                { index >= 1 ? <>{legs[index - 1].arrival.code}<br /></> : "" }
+                { formatTime(leg.departure.time) +" "}
                 { leg.departure.code }
               </div>
             </div>

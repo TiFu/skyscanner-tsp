@@ -6,6 +6,7 @@ import RouteForm from './RouteForm'
 import Polyline from './Polyline'
 import RouteView from './RouteView'
 import { colorFromIndex } from './utils'
+import { Snackbar } from '@material-ui/core'
 
 import './App.css'
 
@@ -21,6 +22,7 @@ class App extends Component {
     data: null,
     selectedRouteId: null,
     requestLoading: false,
+    errorMsg: null,
   }
 
   initialLoad = true
@@ -36,6 +38,13 @@ class App extends Component {
 
     this.socket.on('new_session', (data) => {
       window.location = `/room/${data.id}`
+    })
+
+    this.socket.on('error', (msg) => {
+      this.setState({ errorMsg: msg, requestLoading: false })
+      // if (msg === 'Unknown session! Session was not restored!') {
+      //   window.location = '/'
+      // }
     })
 
     const handleStateReceive = (data) => {
@@ -87,22 +96,26 @@ class App extends Component {
 
   fitMarkers = (data, map, maps) => {
     const bounds = new maps.LatLngBounds()
-
+    let hasBounds = false
     data.routes.forEach(route => route.trip && route.trip.flights.forEach(flight => {
       flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
         const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
         const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
 
+        hasBounds = true
         bounds.extend(new maps.LatLng(coordDeparture[1], coordDeparture[0]))
         bounds.extend(new maps.LatLng(coordArrival[1], coordArrival[0]))
       })
     }))
 
-    map.fitBounds(bounds)
+    if (hasBounds) {
+      map.fitBounds(bounds)
+    }
+
   }
 
   render() {
-    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading } = this.state
+    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
     return (
@@ -148,6 +161,7 @@ class App extends Component {
 
         </div>
         <RouteForm loading={requestLoading} onSubmit={this.onNewSubmit}/>
+        <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />
       </div>
     )
   }
