@@ -19,6 +19,7 @@ public class Application {
     	SessionService sessionService = new SessionService();
     	System.out.println("Starting");
     	SocketIO socket = new SocketIO("localhost", 8989, sessionService, new FlightsService());
+    	FlightsService.testSkyScannerApi();
         SpringApplication.run(Application.class, args);
     }
 }
