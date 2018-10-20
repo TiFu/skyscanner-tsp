@@ -21,7 +21,7 @@ class App extends Component {
   initialLoad = false
 
   componentDidMount() {
-    this.socket = io(':80')
+    this.socket = io(':8989')
     window.socket = this.socket;
     if (!roomHash) {
       this.socket.emit('new_session', { user: username })
@@ -83,7 +83,7 @@ class App extends Component {
         bounds.extend(new maps.LatLng([coordArrival[1], coordArrival[0]]))
       })
     }))
-    
+
     map.fitBounds(bounds)
   }
 
@@ -95,7 +95,7 @@ class App extends Component {
     console.log(payload)
     this.socket.emit('update_selected_alternative', payload)
   }
-  
+
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)

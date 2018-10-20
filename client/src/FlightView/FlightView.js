@@ -89,7 +89,7 @@ class FlightView extends Component {
               {`${departureTime} (${duration})`}
             </div>
             <div className={styles.price}>
-              {`${price.toFixed(2)} EUR`}
+              {`${price.toFixed(2)} €`}
             </div>
           </div>
         </div>

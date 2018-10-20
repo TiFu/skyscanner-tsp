@@ -122,7 +122,7 @@ class RouteView extends Component {
 
           <div className={styles.footer}>
             <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>
-            <div className={styles.total}>{`${totalPrice.toFixed(2)} EUR`}</div>
+            <div className={styles.total}>{`${totalPrice.toFixed(2)} €`}</div>
           </div>
           <div className={styles.owner} style={{ backgroundColor: colorFromStr(owner) }}>{owner}</div>
         </CardMedia>
