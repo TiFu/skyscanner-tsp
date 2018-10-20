@@ -9,15 +9,18 @@ import Close from '@material-ui/icons/Close'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { printLeadingZero } from '../utils'
 import styles from './RouteView.module.css'
+import { CircularProgress } from '@material-ui/core';
 
 
 const SortableFlightItem = SortableElement(FlightView)
-const SortableFlights = SortableContainer(({ onDirectionChange, onAlternativeChange, flights }) => (
-  <div className={styles.flights}>
+const SortableFlights = SortableContainer(({ onDirectionChange, onAlternativeChange, flights, scrollDisabled }) => (
+  <div className={[styles.flights, ...(scrollDisabled ? [styles.loading] : [])].join(' ')}>
+    {scrollDisabled && <div className={styles.progress}><CircularProgress size={60} /></div>}
     {flights.map((flight, index) => (
       <SortableFlightItem
         onAlternativeChange={(selectedAlternative) => onAlternativeChange({ selectedAlternative, flightId: index })}
         onDirectionChange={onDirectionChange}
+        disabled={scrollDisabled}
         index={index}
         flight={flight}
         key={`key-${index}`}
@@ -66,6 +69,7 @@ class RouteView extends Component {
         })),
       },
     }),
+    loading: t.bool,
     onClose: t.func,
     onReorder: t.func,
     onAlternative: t.func,
@@ -94,7 +98,7 @@ class RouteView extends Component {
   }
 
   render() {
-    const { route: { owner, trip }, onClose } = this.props
+    const { loading, route: { owner, trip }, onClose } = this.props
     let { totalPrice, flights } = trip
 
     totalPrice = trip.flights.reduce((prev, flight) => {
@@ -116,6 +120,7 @@ class RouteView extends Component {
           </IconButton>
 
           <SortableFlights
+            scrollDisabled={loading}
             flights={flights}
             distance="12"
             lockToContainerEdges
