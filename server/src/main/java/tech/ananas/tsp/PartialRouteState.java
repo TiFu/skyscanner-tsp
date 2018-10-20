@@ -29,7 +29,7 @@ public class PartialRouteState {
 		} else { //initialize for first element
 			visited = new LinkedList<String>();
 			yetToVisit = new LinkedList<String>();
-			yetToVisit = (LinkedList<String>) source.getCityListRequest().getCities();
+			yetToVisit = new LinkedList<>(source.getCityListRequest().getCities());
 			currentDate = source.getCityListRequest().getEarliestDeparture();
 		}
 		
@@ -48,7 +48,7 @@ public class PartialRouteState {
 		String neighbor = "";
 		// using classical for loop
 		for(int x = 0; x < source.getCityListRequest().getIgnoreFlight().size(); x++) {
-		   LinkedList<String> xlist = (LinkedList<String>) source.getCityListRequest().getIgnoreFlight().get(x);
+		   LinkedList<String> xlist = new LinkedList<>(source.getCityListRequest().getIgnoreFlight().get(x));
 		   // using for each
 		   
 			   if (xlist.contains(city)) {

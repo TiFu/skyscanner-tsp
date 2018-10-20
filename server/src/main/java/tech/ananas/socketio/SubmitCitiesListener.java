@@ -27,17 +27,15 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 			return;
 		}
 
+		boolean existedBefore = session.findRoute(data.getRouteName()) != null;
+		
+
 		if (!client.has("name")) {
 			client.set("name", "Unknown");
 		}
 		User user = new User(client.get("name"));
-
+		System.out.println("Adding new route!");
 		Route r = session.addRoute(user, data);
-		if (session.findRoute(data.getRouteName()) == null) {
-			Thread t = new Thread(new TspThread(this.server.getTspService(), data, session, server));
-			t.start();
-		}
-		
 		try {
 			this.server.getFlightsService().updateTrip(r);
 		} catch (FlightServiceException e) {
@@ -46,6 +44,14 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 			
 		System.out.println("Publishing to clients!");
 		this.server.broadcastToSession(data.getId(), "state", session);
+
+		if (!existedBefore) {
+			System.out.println("Starting TSP thread!");
+			new TspThread(this.server.getTspService(), data, session, server).run();;
+//			t.start();
+		} else {
+			System.out.println("No TSP for you!");
+		}
 	}
 
 	private class TspThread implements Runnable {
@@ -63,7 +69,10 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 		
 		@Override
 		public void run() {
+			System.out.println("Calculating TSP Route!");
 			Route r = this.tspService.TSProute(this.r);
+			System.out.println("Calculated TSP routes!");
+			r.setEarliestDeparture(this.r.getEarliestDeparture());
 			r.setOwner("TSP");
 			try {
 				this.server.getFlightsService().updateTrip(r);
