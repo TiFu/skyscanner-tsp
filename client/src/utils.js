@@ -9,6 +9,8 @@ export const hashCode = (str) => {
 }
 export const colorFromIndex = (index) => colors[index];
 
+export const getInitials = (name) => name.split(' ').map(item => item.toLocaleUpperCase().trim()[0]).slice(0, 2).join('')
+
 const colors = [
   "#ae04dd",
 ];

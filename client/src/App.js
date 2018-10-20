@@ -5,6 +5,7 @@ import GoogleMap from 'google-map-react'
 import RouteForm from './RouteForm'
 import Polyline from './Polyline'
 import RouteView from './RouteView'
+import GeneralView from './GeneralView'
 import { colorFromIndex } from './utils'
 import { Snackbar } from '@material-ui/core'
 
@@ -119,7 +120,10 @@ class App extends Component {
 
     return (
       <div className="App">
-        { selectedRoute && <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
+        { selectedRoute
+          ? <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} />
+          : (data && <GeneralView routes={data.routes} />)
+        }
         <div className="map">
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
