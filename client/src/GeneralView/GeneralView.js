@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import t from 'prop-types'
-import { Card, List, Avatar, ListItem, ListItemText, CardActionArea, Divider } from '@material-ui/core';
+import { Card, Avatar, ListItemText, CardActionArea, Divider } from '@material-ui/core';
 import { colorFromStr, getInitials, formatTime, printLeadingZero } from '../utils'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
@@ -85,7 +85,6 @@ class GeneralView extends Component {
                 const duration = this.getDuration(selectedFlights)
                 return (
                   <Card key={route.routeName + index} className={styles.card} onClick={() => onSelectRoute(route.routeName)}>
-
                     <CardActionArea className={styles.content}>
                     <ListItemText>
                       <div className={styles.name}>

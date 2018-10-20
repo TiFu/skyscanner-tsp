@@ -1,12 +1,13 @@
 .list {
-  max-width: 500px;
+  max-width: 510px;
   position: absolute;
   top: 50px;
-  right: 10px;
-  z-index: 9999;
+  right: 0;
+  padding-right: 10px;
+  z-index: 999999;
   width: 50vw;
 
-  transform: translateX(calc(100% - 40px - 1.2rem + 3px));
+  transform: translateX(calc(100% - 1.2rem + 13px));
   transition: 0.3s all;
 }
 
