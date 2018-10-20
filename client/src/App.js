@@ -71,7 +71,8 @@ class App extends Component {
           >
             { mapLoaded && data && data.routes && data.routes.reduce((memo, route, index) => {
                 if (route && route.trip && route.trip.flights && route.trip.flights) {
-                  memo.push.call(memo, route.trip.flights.map(flight => (<Polyline
+                  memo.push.call(memo, route.trip.flights.map(flight => (
+                  <Polyline
                     id={route.routeName}
                     onSelect={(id) => this.setState({ selectedRouteId: id })}
                     color={colorFromIndex(index)}
