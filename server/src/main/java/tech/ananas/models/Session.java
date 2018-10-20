@@ -13,4 +13,16 @@ public class Session {
 		this.users = new LinkedList<>();
 		this.users.add(user);
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public Route[] getRoutes() {
+		return routes;
+	}
 }

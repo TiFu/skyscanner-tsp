@@ -3,21 +3,25 @@ package tech.ananas.models;
 import java.util.List;
 import java.util.Map;
 
-public class Route {
-	private String owner;
+public class SubmitCityListRequest {
+	private String requestID;
 	private String routeName;
+	private String startingCity;
 	private List<String> cities;
 	private List<List<String>> ignoreFlight;
 	private Map<String,Integer> durationOfStay;
 	private String earliestDeparture;
-	private Trip trip;
 	
-	public String getOwner() {
-		return owner;
+	public String getRequestID() {
+		return requestID;
 	}
 	
 	public String getRouteName() {
 		return routeName;
+	}
+	
+	public String getStartingCity() {
+		return startingCity;
 	}
 	
 	public List<String> getCities() {
@@ -34,9 +38,5 @@ public class Route {
 	
 	public String getEarliestDeparture() {
 		return earliestDeparture;
-	}
-	
-	public Trip getTrip() {
-		return trip;
 	}
 }

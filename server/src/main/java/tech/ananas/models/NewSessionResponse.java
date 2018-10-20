@@ -6,5 +6,8 @@ public class NewSessionResponse {
 	public NewSessionResponse(String sessionId) {
 		this.id = sessionId;
 	}
-
+	
+	public String getId() {
+		return id;
+	}
 }
