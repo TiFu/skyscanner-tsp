@@ -26,6 +26,5 @@ export const printLeadingZero = (num) => {
   if (num < 10) {
     str = "0" + str;
   }
-  console.log("My str", str);
   return str;
 }

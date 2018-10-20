@@ -103,11 +103,10 @@ class RouteForm extends Component {
     return (
       <div className={styles.container}>
         { open && 
-        
           <Card className={styles.overlay}>
             <List>
               <ListItem>
-                <AlgoliaPlaces disabled={loading} locale="en" type="city" placeholder="Start city" onChange={this.handleStartChange} />
+                <AlgoliaPlaces disabled={loading} language="en" type="city" placeholder="Start city" onChange={this.handleStartChange} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <FlightTakeoff />
@@ -126,7 +125,7 @@ class RouteForm extends Component {
               
               <Divider />
               <ListItem>
-                <AlgoliaPlaces disabled={loading} locale="en" type="city" placeholder="Next place"  onChange={this.handleNewChange} destroyOnValid />
+                <AlgoliaPlaces disabled={loading} language="en" type="city" placeholder="Next place"  onChange={this.handleNewChange} destroyOnValid />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <Add />

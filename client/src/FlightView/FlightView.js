@@ -123,11 +123,12 @@ class FlightView extends Component {
               </div>
               <div className={styles.destination}>
                 {leg.departure.airport}
+                <img className={styles.logo} src={leg.carrierImg} alt={leg.carrier} />
               </div>
               <div className={styles.time}>
                 { index >= 1 ? formatTime(legs[index - 1].arrival.time) + " " : ""}
-                { index >= 1 ? legs[index - 1].arrival.code : "" }<br />
-                {  formatTime(leg.departure.time) +" "}
+                { index >= 1 ? <>{legs[index - 1].arrival.code}<br /></> : "" }
+                { formatTime(leg.departure.time) +" "}
                 { leg.departure.code }
               </div>
             </div>

@@ -78,8 +78,21 @@
 
 .flight .leg .destination {
   flex-grow: 1;
+  display: flex;
 }
 
 .flight .leg .time {
   flex-shrink: 0;
+  display: flex;
+}
+
+
+.logo {
+  margin-left: 0.5rem;
+  height: 1.5em;
+  filter: grayscale(100%);
+}
+
+.logo:hover {
+  filter: none;
 }
