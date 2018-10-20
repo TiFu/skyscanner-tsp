@@ -35,10 +35,11 @@ class RouteForm extends Component {
 
   render() {
     const { loading, startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.props
+    console.log(this.props)
     return (
       <div className={styles.container}>
         <div className={styles.fab}>
-          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.toggle}>
+          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.props.toggle}>
             { open ? <Close /> : <LocalAirport /> }
           </Button>
           {loading && <CircularProgress size={68} className={styles.fabProgress} />}
