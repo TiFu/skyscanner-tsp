@@ -72,7 +72,12 @@ public class FlightsService {
 	private boolean fetchFlights(String previousCity, LocalDate startingDate, List<FlightAlternatives> alternatives,
 			String currentCity) throws IOException, FlightServiceException {
 		String formattedDate = startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String url = this.api.createSession(previousCity, currentCity, formattedDate);
+		String url;
+		try {
+			url = this.api.createSession(previousCity, currentCity, formattedDate);
+		} catch (SkyscannerAPIException e) {
+			throw new FlightServiceException(e.getMessage());
+		}
 		if (url == null) {
 			throw new FlightServiceException("Unable to retrieve flights from Skyscanner! Please try again later.");
 		}
