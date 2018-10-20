@@ -8,6 +8,7 @@ import tech.ananas.models.ReorderCitiesRequest;
 import tech.ananas.models.Route;
 import tech.ananas.models.Session;
 import tech.ananas.models.SubmitCityListResponse;
+import tech.ananas.services.FlightServiceException;
 
 public class ReorderCitiesListener implements DataListener<ReorderCitiesRequest> {
 	private SocketIO server;
@@ -22,10 +23,18 @@ public class ReorderCitiesListener implements DataListener<ReorderCitiesRequest>
 		boolean updated = session.updateRoute(data);
 		// TODO: recalculate costs
 		Route r = session.getRoute(data.getRouteName());
-		if (!this.server.getFlightsService().updateTrip(r)) {
-			this.server.broadcastToSession(data.getId(), "error", "Failed to fetch flights!");
+		if (r == null) {
+			this.server.sendToClient(client.getSessionId(), "error", "Unknown route selected!");
+			return;
+		}
+		try {
+			this.server.getFlightsService().updateTrip(r);
+		} catch (FlightServiceException e) {
+			this.server.sendToClient(client.getSessionId(), "error", e.getMessage());
+			return;
 		}
 		this.server.broadcastToSession(data.getId(), "state", session);
+		
 	}
 
 }
