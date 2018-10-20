@@ -105,7 +105,7 @@ class RouteView extends Component {
       <Card>
         <CardMedia>
 
-          <IconButton className={styles.close} onClick={onClose} component="span">
+          <IconButton className={styles.close} onClick={onClose} component="span" color="secondary">
             <Close />
           </IconButton>
 
