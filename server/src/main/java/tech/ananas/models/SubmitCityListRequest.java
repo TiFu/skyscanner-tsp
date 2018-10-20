@@ -13,6 +13,9 @@ public class SubmitCityListRequest {
 	private Map<String,Integer> durationOfStay;
 	private String earliestDeparture;
 	
+	public SubmitCityListRequest() {
+		
+	}
 	public SubmitCityListRequest(String startingCity, String earliestDeparture, List<String> cities, List<List<String>> ignoreFlight, Map<String,Integer> durationOfStay) {
 		this.startingCity = startingCity;
 		this.earliestDeparture = earliestDeparture;

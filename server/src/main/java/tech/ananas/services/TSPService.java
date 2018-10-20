@@ -34,6 +34,8 @@ public class TSPService {
 	
 	public Route TSProute (SubmitCityListRequest cityListRequest) { //input Submit, convert to Route
 		List<String> orderedCities = TSPpath(cityListRequest).firstEntry().getValue();
+		// flight back!
+		orderedCities.remove(orderedCities.size() - 1);
 		Route outputRoute = new Route("tsp", null, orderedCities, cityListRequest.getDurationOfStay());
 		return outputRoute;
 		

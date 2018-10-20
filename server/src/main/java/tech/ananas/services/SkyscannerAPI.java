@@ -184,13 +184,20 @@ public class SkyscannerAPI {
 		return result;
 	}
 	
-	public JsonObject getPlace(String place) {
+	public JsonObject getPlaceOrAirport(String place) {
+		System.out.println("Looking for: " + place);
 		for (JsonElement continent: this.places.get("Continents").getAsJsonArray()) {
 			for (JsonElement country: continent.getAsJsonObject().get("Countries").getAsJsonArray()) {
 				for (JsonElement city: country.getAsJsonObject().get("Cities").getAsJsonArray()) {
 					if (city.getAsJsonObject().get("Name").getAsString().equals(place)) { 
 						return city.getAsJsonObject();
 					}					
+					for (JsonElement airport: city.getAsJsonObject().get("Airports").getAsJsonArray()) {
+						if (airport.getAsJsonObject().get("Id").getAsString().equals(place)) {
+							airport.getAsJsonObject().add("IataCode", airport.getAsJsonObject().get("Id"));
+							return airport.getAsJsonObject();
+						}
+					}
 				}
 			}
 		}
@@ -198,10 +205,17 @@ public class SkyscannerAPI {
 	}
 	
 	public String createSession(String originPlace, String destinationPlace, String outboundDate) throws IOException, SkyscannerAPIException {
-		JsonObject origin = this.getPlace(originPlace);
+		JsonObject origin = this.getPlaceOrAirport(originPlace);
 		System.out.println(origin);
-		JsonObject destination = this.getPlace(destinationPlace);
+		JsonObject destination = this.getPlaceOrAirport(destinationPlace);
 		System.out.println(destination);
+		
+		if (origin == null) {
+			throw new SkyscannerAPIException("Unknown origin " + originPlace);
+		}
+		if (destination == null) {
+			throw new SkyscannerAPIException("Unknown destination " + destinationPlace);
+		}
 		
 		if (origin.get("IataCode") == null || destination.get("IataCode") == null) {
 			throw new SkyscannerAPIException("Could not find " + originPlace + " or " + destinationPlace);
