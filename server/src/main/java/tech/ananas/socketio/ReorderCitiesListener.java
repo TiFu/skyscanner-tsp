@@ -33,6 +33,7 @@ public class ReorderCitiesListener implements DataListener<ReorderCitiesRequest>
 		
 		// TODO: change THIS (reorder_cities) to something different! important
 		this.server.broadcastToSession(data.getId(), "reorder_cities", response);
+		this.server.broadcastToSession(data.getId(), "state", session);
 	}
 
 }

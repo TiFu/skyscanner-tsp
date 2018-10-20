@@ -7,7 +7,7 @@ public class BrowseQuotes {
 	public String toString() {
 		return "BrowseQuotes [quotes=" + Quotes + ", places=" + Places + ", carriers=" + Carriers + "]";
 	}
-	private List<Quote> Quotes;
-	private List<Place> Places;
-	private List<Carrier> Carriers;
+	public List<Quote> Quotes;
+	public List<Place> Places;
+	public List<Carrier> Carriers;
 }

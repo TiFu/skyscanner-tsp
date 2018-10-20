@@ -42,3 +42,7 @@
   text-align: right;
   
 }
+
+.helper {
+  z-index: 99999;
+}

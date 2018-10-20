@@ -26,6 +26,7 @@ public class NewSessionListener implements DataListener<NewSessionRequest> {
 		System.out.println("Created new session: " + sessionId);
 		NewSessionResponse response = new NewSessionResponse(sessionId);
 		this.server.sendToClient(client.getSessionId(), "new_session", response);
+		this.server.broadcastToSession(sessionId, "state", this.server.getSessionService().getSession(sessionId));
 	}
 
 }
