@@ -171,6 +171,18 @@ public class SkyscannerAPI {
 		}
 		return null;
 	}
+
+	public JsonArray getAllAirports() {
+		JsonArray result = new JsonArray();
+		for (JsonElement continent: this.places.get("Continents").getAsJsonArray()) {
+			for (JsonElement country: continent.getAsJsonObject().get("Countries").getAsJsonArray()) {
+				for (JsonElement city: country.getAsJsonObject().get("Cities").getAsJsonArray()) {
+					result.addAll(city.getAsJsonObject().get("Airports").getAsJsonArray());
+				}
+			}
+		}
+		return result;
+	}
 	
 	public JsonObject getPlace(String place) {
 		for (JsonElement continent: this.places.get("Continents").getAsJsonArray()) {

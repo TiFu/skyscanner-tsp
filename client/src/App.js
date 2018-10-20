@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import io from 'socket.io-client'
-import { GOOGLE_MAP_KEY } from './config'
+import { GOOGLE_MAP_KEY, SKYSCANNER_API_KEY } from './config'
 import GoogleMap from 'google-map-react'
 import RouteForm from './RouteForm'
 import Polyline from './Polyline'
@@ -24,11 +24,13 @@ class App extends Component {
     selectedRouteId: null,
     requestLoading: false,
     errorMsg: null,
+    airports: [],
   }
 
   initialLoad = true
 
   componentDidMount() {
+
     this.socket = io(':8989')
     window.socket = this.socket;
     if (!roomHash) {
@@ -59,6 +61,12 @@ class App extends Component {
     this.socket.on('state', handleStateReceive)
     this.socket.on('restore_session', handleStateReceive)
   }
+
+  // fetchPoints = async () => {
+  //   await fetch(`http://partners.api.skyscanner.net/apiservices/geo/v1.0?apiKey=${SKYSCANNER_API_KEY}&languageid=en-US`).then(a => a.json())
+
+  //   this.setState({ airports: })
+  // }
 
   onClose = () => this.setState({ selectedRouteId: null })
 
@@ -159,6 +167,8 @@ class App extends Component {
                 }
                 return memo
             }, []) }
+
+
           </GoogleMap>
 
         </div>
