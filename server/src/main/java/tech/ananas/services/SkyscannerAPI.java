@@ -258,9 +258,9 @@ public class SkyscannerAPI {
 	    String line = r.readLine();
 	    Gson gson = new Gson();
 	    JsonElement elem = gson.fromJson(line, JsonElement.class);
-	    System.out.println(elem);
+	    //System.out.println(elem);
 	    BrowseQuotes quotes = gson.fromJson(line, BrowseQuotes.class);
-	    System.out.print(quotes);
+	    //System.out.println(quotes);
 		return quotes;
 	}
 }
