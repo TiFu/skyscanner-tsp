@@ -88,7 +88,7 @@ class RouteView extends Component {
             <Close />
           </IconButton>
 
-          <SortableFlights flights={flights} lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
+          <SortableFlights flights={flights} distance="12" lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
 
           <div className={styles.footer}>
             <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>

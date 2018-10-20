@@ -37,34 +37,34 @@ public class FlightsService {
 	}
 
 	public boolean updateTrip(Route route) throws ParseException, IOException {
-    	if (route.getCities().size() == 0) {
-    		return true;
-    	}
-    	
-    	Iterator<String> city = route.getCities().iterator();
-    	String previousCity = city.next();
-    	LocalDate startingDate = LocalDate.parse(route.getEarliestDeparture());
-    			
-    	List<FlightAlternatives> alternatives = new LinkedList<>();
-    	
-		while (city.hasNext()) {	
-    		String currentCity = city.next();
-    		
-    		if (!ignoreFlight(previousCity, currentCity, route.getIgnoreFlight())) {
-	    		if (!fetchFlights(previousCity, startingDate, alternatives, currentCity)) {
-	    			return false;
-	    		}
-    		}
-    		startingDate = startingDate.plusDays(route.getDurationOfStay().get(currentCity));
-    		previousCity = currentCity;
-    	}
+		if (route.getCities().size() == 0) {
+			return true;
+		}
+
+		Iterator<String> city = route.getCities().iterator();
+		String previousCity = city.next();
+		LocalDate startingDate = LocalDate.parse(route.getEarliestDeparture());
+
+		List<FlightAlternatives> alternatives = new LinkedList<>();
+
+		while (city.hasNext()) {
+			String currentCity = city.next();
+
+			if (!ignoreFlight(previousCity, currentCity, route.getIgnoreFlight())) {
+				if (!fetchFlights(previousCity, startingDate, alternatives, currentCity)) {
+					return false;
+				}
+			}
+			startingDate = startingDate.plusDays(route.getDurationOfStay().get(currentCity));
+			previousCity = currentCity;
+		}
 		// fly back to start!
 		fetchFlights(previousCity, startingDate, alternatives, route.getCities().get(0));
-			
+
 		Trip t = new Trip(alternatives);
 		route.setTrip(t);
 		return true;
-    }
+	}
 
 	private boolean fetchFlights(String previousCity, LocalDate startingDate, List<FlightAlternatives> alternatives,
 			String currentCity) throws IOException {
@@ -86,6 +86,10 @@ public class FlightsService {
 	}
 
 	private boolean ignoreFlight(String previousCity, String currentCity, List<List<String>> ignoreFlight) {
+		if (ignoreFlight == null) {
+			return false;
+		}
+
 		for (List<String> ignore: ignoreFlight) {
 			if (ignore.contains(previousCity) && ignore.contains(currentCity)) {
 				return true;
@@ -93,7 +97,7 @@ public class FlightsService {
 		}
 		return false;
 	}
-	
+
 	private Place findPlaceById(Long id, BrowseQuotes quotes) {
 		for (Place p : quotes.Places) {
 			if (p.PlaceId == id) {
