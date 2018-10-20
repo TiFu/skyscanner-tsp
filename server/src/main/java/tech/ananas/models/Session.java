@@ -50,13 +50,9 @@ public class Session {
 	}
 
 	public Route addRoute(User owner, SubmitCityListRequest data) {
-		Route r = new Route();
-		r.setRouteName(data.getRouteName());
+		Route r = new Route(data.getRouteName(), owner.getName(), data.getCities(), data.getDurationOfStay());
 		r.setEarliestDeparture(data.getEarliestDeparture());
-		r.setCities(data.getCities());
 		r.setIgnoreFlight(data.getIgnoreFlight());
-		r.setDurationOfStay(data.getDurationOfStay());
-		r.setOwner(owner.getName());
 		this.routes.add(r);
 		return r;
 	}

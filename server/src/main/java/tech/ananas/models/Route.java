@@ -1,5 +1,7 @@
 package tech.ananas.models;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,14 @@ public class Route {
 	private Map<String,Integer> durationOfStay;
 	private String earliestDeparture;
 	private Trip trip;
+	
+	public Route(String routeName, String owner, List<String> cities, Map<String, Integer> durationOfStay) {
+		this.cities = cities;
+		this.ignoreFlight = new LinkedList<>();
+		this.durationOfStay = durationOfStay;
+		this.earliestDeparture = "";
+		this.trip = null;
+	}
 	
 	public String getOwner() {
 		return owner;
