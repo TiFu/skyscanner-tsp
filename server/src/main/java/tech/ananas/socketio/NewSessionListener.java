@@ -6,6 +6,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 
 import tech.ananas.models.NewSessionRequest;
+import tech.ananas.models.NewSessionResponse;
 import tech.ananas.models.User;
 
 public class NewSessionListener implements DataListener<NewSessionRequest> {
