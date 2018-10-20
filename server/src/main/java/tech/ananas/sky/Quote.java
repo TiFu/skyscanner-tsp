@@ -8,5 +8,10 @@ public class Quote {
     public boolean Direct;
     public Leg OutboundLeg;
     public Leg InboundLeg;
-    public Date QuoteDateTime;
+    public String QuoteDateTime;
+	@Override
+	public String toString() {
+		return "Quote [QuoteId=" + QuoteId + ", MinPrice=" + MinPrice + ", Direct=" + Direct + ", OutboundLeg="
+				+ OutboundLeg + ", InboundLeg=" + InboundLeg + ", QuoteDateTime=" + QuoteDateTime + "]";
+	}
 }
