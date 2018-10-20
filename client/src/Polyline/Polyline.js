@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import t from 'prop-types'
+import { colorFromStr } from '../utils'
 
 export class Polyline extends PureComponent {
   static propTypes = {
@@ -16,24 +17,14 @@ export class Polyline extends PureComponent {
 
   componentWillUpdate() {
     this.line.setMap(null)
-    this.markers.forEach(marker => marker.setMap(null))
-    this.markers = []
+    this.startMarker.setMap(null)
+    this.endMarker.setMap(null)
   }
 
   componentWillUnmount() {
     this.line.setMap(null)
-    this.markers.forEach(marker => marker.setMap(null))
-    this.markers = []
-  }
-
-  hashCode = (str) => {
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      var character = str.charCodeAt(i);
-      hash = ((hash<<5)-hash)+character;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    return hash;
+    this.startMarker.setMap(null)
+    this.endMarker.setMap(null)
   }
 
   handleClick = () => {
@@ -45,35 +36,30 @@ export class Polyline extends PureComponent {
   render() {
     const { maps, path, map, user } = this.props
 
-    const colors = [
-      "#83be54",
-      "#f0d551",
-      "#e5943c",
-      "#a96ddb",
-    ];
-
     this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: colors[this.hashCode(user) % colors.length],
+      strokeColor: colorFromStr(user),
       strokeOpacity: 1,
       strokeWeight: 4,
       path,
+      map,
+    })
+
+    this.startMarker = new maps.Marker({
+      position: path[0],
+      title: path[0].title,
+      map,
+    })
+
+    this.endMarker = new maps.Marker({
+      position: path[path.length - 1],
+      title: path[path.length - 1].title,
+      map,
     })
 
     this.line.addListener('click', this.handleClick)
-
-    this.markers = path.map((coords) => {
-      const marker = new maps.Marker({
-        position: coords,
-        map: map,
-        title: coords.title,
-      })
-
-      marker.addListener('click', this.handleClick)
-      return marker
-    })
-
-    this.line.setMap(map)
+    this.startMarker.addListener('click', this.handleClick)
+    this.endMarker.addListener('click', this.handleClick)
     return null
   }
 }

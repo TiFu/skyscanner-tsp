@@ -1,0 +1,44 @@
+.route {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 50vw;
+  max-width: 500px;
+  z-index: 999;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.owner {
+  width: 100%;
+  height: 2rem;
+  background: red;
+  display: flex;
+  align-items: center;
+  padding-left: .5rem;
+  flex-shrink: 0;
+}
+
+.close {
+  position: absolute !important;
+  top: .3rem;
+  right: .3rem;
+  z-index: 9999;
+}
+
+
+.flights {
+  flex-grow: 1;
+}
+
+.footer {
+  display: flex;
+  padding: 1rem;
+}
+
+.footer .total {
+  flex-grow: 1;
+  text-align: right;
+  
+}

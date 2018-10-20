@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.2.2",
+    "@material-ui/icons": "^3.0.1",
     "google-map-react": "^1.0.9",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",

@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
                 "numberOfStops": 1, 
                 "departureTime": "2018-12-30 12:30",
                 "arrivalTime": "2018-12-30 12:30",
+                "duration": 20,
                 "legs": [
                   {
                     "carrier": "string",
@@ -47,11 +48,13 @@ io.on('connection', (socket) => {
                       "coordinates": "41.389195, 2.113388",
                       "time": "2018-12-30 12:30",
                       "airport": "string",
+                      "code": "ARP",
                     },
                     "arrival": {
                       "coordinates": "41.390195, 2.123388",
                       "time": "2018-12-30 12:30",
-                      "airport": "string"
+                      "airport": "string",
+                      "code": "ARP",
                     }
                   },
                   {
@@ -61,18 +64,63 @@ io.on('connection', (socket) => {
                       "coordinates": "41.390195, 2.123388",
                       "time": "2018-12-30 12:30",
                       "airport": "string",
+                      "code": "ARP",
                     },
                     "arrival": {
                       "coordinates": "41.400195, 2.133388",
                       "time": "2018-12-30 12:30",
-                      "airport": "string"
+                      "airport": "string",
+                      "code": "ARP",
+                    }
+                  }
+                ]
+              },
+              {
+                "startingCity": "Prague", // city name
+                "finalDestination": "Czech Republic", // final city
+                "price": 3010.12,
+                "numberOfStops": 1, 
+                "departureTime": "2018-12-30 12:30",
+                "arrivalTime": "2018-12-30 12:30",
+                "duration": 20,
+                "legs": [
+                  {
+                    "carrier": "string",
+                    "flightNumber": "string",
+                    "departure": {
+                      "coordinates": "41.389195, 2.113388",
+                      "time": "2018-12-30 12:30",
+                      "airport": "string",
+                      "code": "ARP",
+                    },
+                    "arrival": {
+                      "coordinates": "41.390195, 2.123388",
+                      "time": "2018-12-30 12:30",
+                      "airport": "string",
+                      "code": "ARP",
+                    }
+                  },
+                  {
+                    "carrier": "string",
+                    "flightNumber": "string",
+                    "departure": {
+                      "coordinates": "41.390195, 2.123388",
+                      "time": "2018-12-30 12:30",
+                      "airport": "string",
+                      "code": "ARP",
+                    },
+                    "arrival": {
+                      "coordinates": "41.400195, 2.133388",
+                      "time": "2018-12-30 12:30",
+                      "airport": "string",
+                      "code": "ARP",
                     }
                   }
                 ]
               }
             ]	
           }
-        }		
+        }
       ]
     })
   })

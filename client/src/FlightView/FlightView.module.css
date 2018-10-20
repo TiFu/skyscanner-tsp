@@ -1,0 +1,68 @@
+.flight {
+  border-bottom: 1px solid #ECEFF1;
+}
+
+.flight .header {
+  position: relative;
+  padding: 2rem 1rem 1rem;
+  border-bottom: 1px solid #ECEFF1;
+}
+
+.flight .header .buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: cursor;
+}
+
+.flight .header h1 {
+  margin: 0; padding: 0;
+  font-weight: 500;
+  font-size: 2.2rem;
+}
+
+.flight .meta {
+  display: flex;
+}
+
+.flight .meta .date {
+  flex-grow: 1;
+}
+.flight .meta .price {
+  flex-shrink: 0;
+}
+
+.flight .legs {
+  display: flex;
+  flex-direction: column;
+  padding: .6rem 0 .5rem;
+  background: #ECEFF1;
+}
+
+.flight .leg {
+  display: flex;
+  flex-direction: row;
+  padding: .5rem 1rem;
+  align-items: center;
+}
+
+.flight .leg .icon {
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flight .leg .icon > svg {
+  width: 32px;
+  height: 32px;
+}
+
+.flight .leg .destination {
+  flex-grow: 1;
+}
+
+.flight .leg .time {
+  flex-shrink: 0;
+}

@@ -2,41 +2,15 @@ import React, { Component } from 'react'
 import io from 'socket.io-client'
 import { GOOGLE_MAP_KEY } from './config'
 import GoogleMap from 'google-map-react'
+import RouteForm from './RouteForm'
 import Polyline from './Polyline'
+import RouteView from './RouteView'
 
 import './App.css'
 
 let roomHash = window.location.pathname.includes('/room/') ? window.location.pathname.replace('/room/', '') : null
 const username = window.localStorage.getItem('username') || window.prompt('Username:')
 window.localStorage.setItem('username', username)
-
-class RouteView extends Component {
-  render() {
-    const { route, onClose } = this.props
-    return (<section className="cityview">
-      <div className="close" onClick={onClose}>×</div>
-      <main>
-        <h1>{`Route created by: ${route.owner}`}</h1>
-        <h2>{`Price: ${route.trip.totalPrice} EUR`}</h2>
-      </main>
-      <aside>
-        { route.trip.flights[0].legs.map((leg, index) => (
-          <div className="city" key={leg.departure.airport}>
-            <span className="citynum">{index + 1}</span>
-            <span className="cityname">{leg.departure.airport}</span>
-            <span className="citydetail">
-              <span className="flightdate">{leg.departure.airport}</span>
-              <span className="flightduration">{leg.duration}</span>
-              <span className="flightdate">{leg.arrival.airport}</span>
-            </span>
-          </div>
-        )) }
-  
-
-      </aside>
-    </section>)
-  }
-}
 
 class App extends Component {
   state = {
@@ -98,8 +72,9 @@ class App extends Component {
                 return memo
             }, []) }
           </GoogleMap>
-
+          
         </div>
+        <RouteForm />
       </div>
     )
   }
