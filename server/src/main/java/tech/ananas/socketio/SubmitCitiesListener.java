@@ -28,6 +28,7 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 			
 		// TODO: change THIS (reorder_cities) to something different! important
 //		this.server.broadcastToSession(data.getId(), "city_list", response);
+		System.out.println("Publishing to clients!");
 		this.server.broadcastToSession(data.getId(), "state", session);
 	}
 
