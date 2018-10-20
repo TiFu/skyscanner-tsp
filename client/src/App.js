@@ -92,7 +92,7 @@ class App extends Component {
       flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
         const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
         const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
-        
+
         bounds.extend(new maps.LatLng(coordDeparture[1], coordDeparture[0]))
         bounds.extend(new maps.LatLng(coordArrival[1], coordArrival[0]))
       })
@@ -142,7 +142,6 @@ class App extends Component {
                     maps={maps}
                   />)))
                 }
-                console.log(memo)
                 return memo
             }, []) }
           </GoogleMap>
