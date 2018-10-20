@@ -19,7 +19,7 @@ public class Application {
     public static void main(String[] args) {
     	SessionService sessionService = new SessionService();
     	System.out.println("Starting");
-    	SocketIO socket = new SocketIO("localhost", 8989, sessionService, new FlightsService(new SkyscannerAPI("ha973240724713587943361464989493")));
+    	SocketIO socket = new SocketIO("localhost", 8996, sessionService, new FlightsService(new SkyscannerAPI("ha973240724713587943361464989493")));
         SpringApplication.run(Application.class, args);
     }
 }

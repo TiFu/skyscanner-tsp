@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,12 +13,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import tech.ananas.models.Arrival;
+import tech.ananas.models.Departure;
 import tech.ananas.models.Flight;
+import tech.ananas.models.Leg;
 import tech.ananas.sky.BrowseQuotes;
 
 public class SkyscannerAPI {
@@ -29,24 +37,42 @@ public class SkyscannerAPI {
 	private String locale = "en-GB";
 	private String cabinclass = "economy";
 	private int adults = 1;
+	private JsonObject places;
 	
 	public SkyscannerAPI(String apikey) {
 		this.apikey = apikey;
+		File places = new File(this.getClass().getClassLoader().getResource("places.json").getFile());
+		StringBuffer lines = new StringBuffer();
+		try (Scanner s = new Scanner(places)) {
+			while (s.hasNextLine()) {
+				lines.append(s.nextLine());
+				lines.append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Gson gson = new Gson();
+		this.places = gson.fromJson(lines.toString(), JsonObject.class);
 	}
 	
 	public static void main(String[] args) throws IOException {
 		SkyscannerAPI api = new SkyscannerAPI("ha973240724713587943361464989493");
 		String session = api.createSession("BCN", "FRA", "2018-10-30");
-		Flight[] f = api.getFlight(session);
+		List<Flight> f = api.getFlight(session);
+		System.out.println(f);
 	}
 	
-	public Flight[] getFlight(String sessionUrl) throws IOException {
+	public List<Flight> getFlight(String sessionUrl) throws IOException {
+		return this.getFlight(sessionUrl, 5);
+	}
+	
+	public List<Flight> getFlight(String sessionUrl, int numberOfFlights) throws IOException {
 		boolean searchDone = false;
 		Gson gson = new Gson();
 		JsonObject foundFlights = null;
 		while (!searchDone) {
 			URL url = new URL(sessionUrl + "?apikey=" + this.apikey + 
-					"&sortType=price&sortOrder=asc&pageIndex=0&pageSize=5");
+					"&sortType=price&sortOrder=asc&pageIndex=0&pageSize=" + numberOfFlights);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		    conn.setRequestMethod("GET");
 		    conn.setRequestProperty("Accept", "application/json");
@@ -59,17 +85,116 @@ public class SkyscannerAPI {
 		    JsonElement element = gson.fromJson(line, JsonElement.class);
 		    String object = element.getAsJsonObject().get("Status").getAsString();		    
 		    searchDone = object.equals("UpdatesComplete");
-		    System.out.println(line);
+		    foundFlights = element.getAsJsonObject();
 		}
+	    System.out.println("Update complete!");
 		
-		// 
+		// Fetch all itinaries
+		JsonArray itineraries = foundFlights.get("Itineraries").getAsJsonArray();
+		List<Flight> flights = new LinkedList<>();
+		for (int i = 0; i < itineraries.size(); i++) {
+			JsonObject itinerary = itineraries.get(i).getAsJsonObject();
+			String legID = itinerary.get("OutboundLegId").getAsString();
+			double price = itinerary.get("PricingOptions").getAsJsonArray().get(0).getAsJsonObject().get("Price").getAsDouble();
+			JsonObject leg = findById(legID, foundFlights.get("Legs").getAsJsonArray());
+			int numberOfStops = leg.get("Stops").getAsJsonArray().size();
+			
+			String originStation = findById(leg.get("OriginStation").getAsString(), foundFlights.get("Places").getAsJsonArray()).get("Name").getAsString();
+			String destinationStation = findById(leg.get("DestinationStation").getAsString(), foundFlights.get("Places").getAsJsonArray()).get("Name").getAsString();
+			
+			String departureTime = leg.get("Departure").getAsString();
+			String arrivalTime = leg.get("Arrival").getAsString();
+			int duration = leg.get("Duration").getAsInt();
+			
+			List<Leg> legSegments = new LinkedList<>();
+			
+			JsonArray segments = leg.get("SegmentIds").getAsJsonArray();
+			for (int j = 0; j < segments.size(); j++) {
+				String segmentId = segments.get(0).getAsString();
+				JsonObject segment = findById(segmentId, foundFlights.get("Segments").getAsJsonArray());
+				
+				String flightNumber = segment.get("FlightNumber").getAsString();
+				String legDepartureTime = segment.get("DepartureDateTime").getAsString();
+				String legArrivalTime = segment.get("ArrivalDateTime").getAsString();
+
+				JsonObject carrierObj = findById(segment.get("Carrier").getAsString(), foundFlights.get("Carriers").getAsJsonArray());
+				String carrier = carrierObj.get("Name").getAsString();
+				flightNumber = carrierObj.get("Code").getAsString() + flightNumber;
+				int legDuration = segment.get("Duration").getAsInt();
+				
+				String originStationId = segment.get("OriginStation").getAsString();
+				String destinationStationId = segment.get("DestinationStation").getAsString();
+				JsonObject departureObject = findById(originStationId, foundFlights.get("Places").getAsJsonArray());
+				JsonObject arrivalObject = findById(destinationStationId, foundFlights.get("Places").getAsJsonArray());
+				String departureAirport = departureObject.get("Name").getAsString();
+				String arrivalAirport = arrivalObject.get("Name").getAsString();
+				String departureAirportCode = departureObject.get("Code").getAsString();
+				String arrivalAirportCode = arrivalObject.get("Code").getAsString();
+				
+				JsonObject departureAirportObj = this.findAirport(departureAirportCode);
+				String departureCoordinates = departureAirportObj.get("Location").getAsString();
+				String arrivalCoordinates = this.findAirport(arrivalAirportCode).get("Location").getAsString();
+				Departure departure = new Departure(departureAirportCode, departureCoordinates, legDepartureTime, departureAirport);
+				Arrival arrival = new Arrival(arrivalAirportCode, arrivalCoordinates, legArrivalTime, arrivalAirport);
+				Leg l = new Leg(legDuration, carrier, flightNumber, departure, arrival);
+				legSegments.add(l);
+			}
+			
+			Flight f = new Flight(originStation, destinationStation, price, numberOfStops, departureTime,
+			arrivalTime, duration, legSegments);
+			flights.add(f);
+		}		
+		return flights;
+	}
 		
-		
+	private JsonObject findById(String legId, JsonArray legs) {
+		for (int i  = 0; i < legs.size(); i++) {
+			JsonObject leg = legs.get(i).getAsJsonObject();
+			if (leg.get("Id").getAsString().equals(legId)) {
+				return leg;
+			}
+		}
+		// shouldn't happen
 		return null;
-		
+	}
+	
+	public JsonObject findAirport(String iata) {
+		for (JsonElement continent: this.places.get("Continents").getAsJsonArray()) {
+			for (JsonElement country: continent.getAsJsonObject().get("Countries").getAsJsonArray()) {
+				for (JsonElement city: country.getAsJsonObject().get("Cities").getAsJsonArray()) {
+					System.out.println(city);
+					for (JsonElement airport: city.getAsJsonObject().get("Airports").getAsJsonArray()) {
+						System.out.println(airport);
+						if (airport.getAsJsonObject().get("Id").getAsString().equals(iata)) { 
+							return airport.getAsJsonObject();
+						}
+
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public JsonObject getPlace(String place) {
+		for (JsonElement continent: this.places.get("Continents").getAsJsonArray()) {
+			for (JsonElement country: continent.getAsJsonObject().get("Countries").getAsJsonArray()) {
+				for (JsonElement city: country.getAsJsonObject().get("Cities").getAsJsonArray()) {
+					if (city.getAsJsonObject().get("Name").getAsString().equals(place)) { 
+						return city.getAsJsonObject();
+					}					
+				}
+			}
+		}
+		return null;
 	}
 	
 	public String createSession(String originPlace, String destinationPlace, String outboundDate) throws IOException {
+		JsonObject origin = this.getPlace(originPlace);
+		System.out.println(origin);
+		JsonObject destination = this.getPlace(destinationPlace);
+		System.out.println(destination);
+		
 		URL url = new URL("http://partners.api.skyscanner.net/apiservices/pricing/v1.0?apikey=" + this.apikey);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		
@@ -82,9 +207,9 @@ public class SkyscannerAPI {
 				"&country=" + this.country + 
 				"&currency=" + this.currency + 
 				"&locale=" + this.locale + 
-				"&locationSchema=iata\n" + 
-				"&originplace=" + originPlace + 
-				"&destinationplace=" + destinationPlace + 
+				"&locationSchema=iata" + 
+				"&originplace=" + origin.get("IataCode").getAsString() + 
+				"&destinationplace=" + destination.get("IataCode").getAsString() + 
 				"&outbounddate=" + outboundDate + 
 				"&adults=" + adults);
 		writer.flush();
@@ -92,10 +217,9 @@ public class SkyscannerAPI {
 		
 	    if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 299) {
 	    	String location = conn.getHeaderField("Location");
-	    	System.out.println(location);
 		    return location;
 	    } else {
-	    	System.out.println(conn.getResponseCode());
+	    	System.out.println("Response Code: " + conn.getResponseCode());
 	    }
 	    return null;
 		

@@ -20,19 +20,10 @@ public class ReorderCitiesListener implements DataListener<ReorderCitiesRequest>
 	public void onData(SocketIOClient client, ReorderCitiesRequest data, AckRequest ackSender) throws Exception {
 		Session session = this.server.getSessionService().getSession(data.getId());
 		boolean updated = session.updateRoute(data);
-		server.broadcastToSession(data.getId(), "reorder_cities", data);
 		// TODO: recalculate costs
 		Route r = session.getRoute(data.getRouteName());
 		this.server.getFlightsService().updateTrip(r);
 		
-		SubmitCityListResponse response = new SubmitCityListResponse();
-		response.setRequestId(data.getRequestId());
-		response.setFlights(r.getTrip().getFlights());
-		response.setTotalPrice(r.getTrip().getTotalPrice());
-		response.setRouteName(r.getRouteName());
-		
-		// TODO: change THIS (reorder_cities) to something different! important
-		this.server.broadcastToSession(data.getId(), "reorder_cities", response);
 		this.server.broadcastToSession(data.getId(), "state", session);
 	}
 
