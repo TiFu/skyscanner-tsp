@@ -20,12 +20,15 @@ bootJar {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+	// https://mvnrepository.com/artifact/com.corundumstudio.socketio/netty-socketio
+	compile group: 'com.corundumstudio.socketio', name: 'netty-socketio', version: '1.7.7'
     compile("org.springframework.boot:spring-boot-starter-web")
     // tag::actuator[]
     compile("org.springframework.boot:spring-boot-starter-actuator")
