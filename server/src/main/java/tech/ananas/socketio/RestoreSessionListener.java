@@ -21,6 +21,7 @@ public class RestoreSessionListener implements DataListener<RestoreSessionReques
 		System.out.println("Restore session: " + session.getId());
 		client.joinRoom(data.getId());
 		this.server.sendToClient(client.getSessionId(), "restore_session", session);
+		this.server.broadcastToSession(data.getId(), "state", session);
 	}
 
 }
