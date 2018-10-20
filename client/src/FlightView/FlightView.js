@@ -76,10 +76,10 @@ class FlightView extends Component {
            <div className={styles.leg} key={legs.length}>
               <div className={styles.icon}><FlightLand /></div>
               <div className={styles.destination}>
-                {legs[legs.length - 1].departure.airport}
+                {legs[legs.length - 1].arrival.airport}
               </div>
               <div className={styles.time}>
-                {`${legs[legs.length - 1].departure.time} ${legs[legs.length - 1].departure.code}`}
+                {`${legs[legs.length - 1].arrival.time} ${legs[legs.length - 1].arrival.code}`}
               </div>
             </div>
         </div>

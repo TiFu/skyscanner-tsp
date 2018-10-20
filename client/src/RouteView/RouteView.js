@@ -6,8 +6,17 @@ import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
 import CardMedia from '@material-ui/core/CardMedia'
 import Close from '@material-ui/icons/Close'
+import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 
 import styles from './RouteView.module.css'
+
+
+const SortableFlightItem = SortableElement(FlightView)
+const SortableFlights = SortableContainer(({ onDirectionChange, flights }) => (
+  <div className={styles.flights}>
+    {flights.map((flight, index) => <SortableFlightItem onDirectionChange={onDirectionChange} index={index} flight={flight} key={`key-${index}`} />)}
+  </div>
+))
 
 class RouteView extends Component {
   static propTypes = {
@@ -50,7 +59,18 @@ class RouteView extends Component {
     onReorder: t.func,
   }
 
-  onDirectionChange = () => {
+  onDirectionChange = ({ oldIndex, newIndex }) => {
+    const newCities = this.props.route.cities.map((item, index) => {
+      if (index == oldIndex) return this.props.route.cities[newIndex]
+      if (index == newIndex) return this.props.route.cities[oldIndex]
+      return item
+    })
+    
+    this.props.onReorder({
+      routeName: this.props.route.routeName,
+      ignoreCities: this.props.route.ignoreCities,
+      order: newCities,
+    })
   }
 
   render() {
@@ -65,9 +85,8 @@ class RouteView extends Component {
             <Close />
           </IconButton>
           
-          <div className={styles.flights}>
-            {flights.map(flight => <FlightView onDirectionChange={this.onDirectionChange} flight={flight} key={flight.startingCity + flight.finalDestination} />)}
-          </div>
+          <SortableFlights flights={flights} lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
+          
           <div className={styles.footer}>
             <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>
             <div className={styles.total}>{`${totalPrice} EUR`}</div>

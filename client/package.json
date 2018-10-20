@@ -13,7 +13,8 @@
     "react-sortable-hoc": "^0.8.3",
     "react-sortablejs": "^1.4.0",
     "socket.io-client": "^2.1.1",
-    "sortablejs": "^1.7.0"
+    "sortablejs": "^1.7.0",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

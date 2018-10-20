@@ -18,22 +18,32 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = io(':80')
+    this.socket = io(':80')
     if (!roomHash) {
-      socket.emit('new_session', { user: username })
+      this.socket.emit('new_session', { user: username })
     } else {
-      socket.emit('restore_session', { user: username, id: roomHash })
+      this.socket.emit('restore_session', { user: username, id: roomHash })
     }
 
-    socket.on('new_session', (data) => {
+    this.socket.on('new_session', (data) => {
       window.location = `/room/${data.id}`
     })
 
-    socket.on('restore_session', (data) => {
+    this.socket.on('restore_session', (data) => {
       this.setState({ data })
     })
 
    }
+  
+  onClose = () => this.setState({ selectedRouteId: null })
+  onReorder = (data) => {
+    const payload = Object.assign({}, data, {
+      id: roomHash,
+      action: 'reorder_cities'
+    })
+    console.log(payload)
+    this.socket.emit('reorder_cities', payload)
+  }
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data } = this.state
 
@@ -41,7 +51,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        { selectedRoute && <RouteView route={selectedRoute} onClose={() => this.setState({ selectedRouteId: null })} /> }
+        { selectedRoute && <RouteView route={selectedRoute} onReorder={this.onReorder} onClose={this.onClose} /> }
         <div className="map">
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
