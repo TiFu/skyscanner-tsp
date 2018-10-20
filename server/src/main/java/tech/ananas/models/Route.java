@@ -39,4 +39,13 @@ public class Route {
 	public Trip getTrip() {
 		return trip;
 	}
+	
+	public void update(Route r) {
+		this.owner = r.getOwner();
+		this.routeName = r.getRouteName();
+		this.cities = r.getCities();
+		this.ignoreFlight = r.getIgnoreFlight();
+		this.durationOfStay = r.getDurationOfStay();
+		this.trip = r.getTrip();
+	}
 }

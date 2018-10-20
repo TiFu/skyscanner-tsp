@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.DataListener;
 
 import tech.ananas.models.RestoreSessionRequest;
+import tech.ananas.models.Session;
 
 public class RestoreSessionListener implements DataListener<RestoreSessionRequest> {
 	private SocketIO server;
@@ -15,7 +16,8 @@ public class RestoreSessionListener implements DataListener<RestoreSessionReques
 	
 	@Override
 	public void onData(SocketIOClient client, RestoreSessionRequest data, AckRequest ackSender) throws Exception {
-		
+		Session session = this.server.getSessionService().getSession(data.getId());
+		this.server.sendToClient(client.getSessionId(), "restore_session", session);
 	}
 
 }

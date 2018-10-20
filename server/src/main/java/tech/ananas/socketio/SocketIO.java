@@ -12,12 +12,12 @@ public class SocketIO {
 	private SocketIOServer server;
 	private SessionService sessionService;
 	
-	public SocketIO(String hostname, int port) {
+	public SocketIO(String hostname, int port, SessionService sessionService) {
 		Configuration configuration = new Configuration();
 		configuration.setHostname(hostname);
 		configuration.setPort(port);
 		// TODO: this should be injected... 
-		this.sessionService = new SessionService();
+		this.sessionService = sessionService;
 		this.server = new SocketIOServer(configuration);
 		
 		// add listeners
