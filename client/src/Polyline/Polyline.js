@@ -35,11 +35,11 @@ export class Polyline extends PureComponent {
   }
 
   render() {
-    const { maps, path, map, user, color } = this.props
+    const { maps, path, map, user } = this.props
 
     this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: this.props.color,
+      strokeColor: colorFromStr(user),
       strokeOpacity: 1,
       strokeWeight: 4,
       path,
