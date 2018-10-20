@@ -15,34 +15,39 @@ class FlightView extends Component {
     flight: t.shape({
       startingCity: t.string,
       finalDestination: t.string,
-      price: t.number,
-      numberOfStops: t.number,
-      departureTime: t.string,
-      arrivalTime: t.string,
-      duration: t.number,
-      legs: t.arrayOf(t.shape({
+      selectedAlternative: t.number,
+      alternatives: t.arrayOf(t.shape({
+        price: t.number,
+        numberOfStops: t.number,
+        departureTime: t.string,
+        arrivalTime: t.string,
         duration: t.number,
-        carrier: t.string,
-        flightNumber: t.string,
-        departure: t.shape({
-          coordinates: t.string,
-          time: t.string,
-          airport: t.string,
-          code: t.string,
-        }),
-        arrival: t.shape({
-          coordinates: t.string,
-          time: t.string,
-          airport: t.string,
-          code: t.string,
-        })
-      }))
+        legs: t.arrayOf(t.shape({
+          duration: t.number,
+          carrier: t.string,
+          flightNumber: t.string,
+          departure: t.shape({
+            coordinates: t.string,
+            time: t.string,
+            airport: t.string,
+            code: t.string,
+          }),
+          arrival: t.shape({
+            coordinates: t.string,
+            time: t.string,
+            airport: t.string,
+            code: t.string,
+          })
+        }))
+      })),
     }),
     onDirectionChange: t.func,
   }
 
   render() {
-    const { flight: { finalDestination, price, departureTime, legs, duration, onDirectionChange } } = this.props
+    const { flight: { finalDestination, alternatives } } = this.props
+    const { price, departureTime, legs, duration, onDirectionChange } = alternatives[0];
+    console.log(price);
 
     return (
       <div className={styles.flight}>
@@ -54,10 +59,22 @@ class FlightView extends Component {
 
           <div className={styles.heading}>
             <h1>{finalDestination}</h1>
-            <IconButton className={styles.close} component="span">
+            <IconButton className={styles.close} onClick={() => {
+                const prevValue = this.props.flight.selectedAlternative;
+                this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
+                if (this.props.flight.selectedAlternative !== prevValue) {
+                  // TODO
+                }
+              }} component="span">
               <ChevronLeft />
             </IconButton>
-            <IconButton className={styles.close} component="span">
+            <IconButton className={styles.close} onClick={() => {
+                const prevValue = this.props.flight.selectedAlternative;
+                this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
+                if (this.props.flight.selectedAlternative !== prevValue) {
+                  // TODO
+                }
+              }} component="span">
               <ChevronRight />
             </IconButton>
           </div>

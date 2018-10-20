@@ -34,7 +34,7 @@ class App extends Component {
     })
 
    }
-  
+
   onClose = () => this.setState({ selectedRouteId: null })
   onReorder = (data) => {
     const payload = Object.assign({}, data, {
@@ -66,10 +66,10 @@ class App extends Component {
                     id={route.routeName}
                     onSelect={(id) => this.setState({ selectedRouteId: id })}
                     user={route.owner}
-                    path={flight.legs && flight.legs.reduce((acc, leg) => {
+                    path={flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
                       const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
                       const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
-                      
+
                       return [...acc,
                         { lat: coordDeparture[0], lng: coordDeparture[1], title: leg.airport },
                         { lat: coordArrival[0], lng: coordArrival[1], title: leg.airport },
@@ -82,7 +82,7 @@ class App extends Component {
                 return memo
             }, []) }
           </GoogleMap>
-          
+
         </div>
         <RouteForm />
       </div>
