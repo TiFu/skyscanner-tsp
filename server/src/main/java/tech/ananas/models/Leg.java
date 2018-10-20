@@ -1,6 +1,13 @@
 package tech.ananas.models;
 
 public class Leg {
+	private int duration;
+	private String carrier;
+	private String flightNumber;
+	private Departure departure;
+	private Arrival arrival;
+	
+
 	public Leg(int duration, String carrier, String flightNumber, Departure departure, Arrival arrival) {
 		super();
 		this.duration = duration;
@@ -10,12 +17,6 @@ public class Leg {
 		this.arrival = arrival;
 	}
 
-	private int duration;
-	private String carrier;
-	private String flightNumber;
-	private Departure departure;
-	private Arrival arrival;
-	
 	public int getDuration() {
 		return duration;
 	}
@@ -35,4 +36,10 @@ public class Leg {
 	public Arrival getArrival() {
 		return arrival;
 	}
+	@Override
+	public String toString() {
+		return "Leg [duration=" + duration + ", carrier=" + carrier + ", flightNumber=" + flightNumber + ", departure="
+				+ departure + ", arrival=" + arrival + "]";
+	}
+
 }

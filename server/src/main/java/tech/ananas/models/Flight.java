@@ -5,7 +5,7 @@ import java.util.List;
 public class Flight {
 	private String startingCity;
 	private String finalDestination;
-	private float price;
+	private double price;
 	private int numberOfStops;
 	private String departureTime;
 	private String arrivalTime;
@@ -13,7 +13,7 @@ public class Flight {
 	private List<Leg> legs;
 	
 
-	public Flight(String startingCity, String finalDestination, float price, int numberOfStops, String departureTime,
+	public Flight(String startingCity, String finalDestination, double price, int numberOfStops, String departureTime,
 			String arrivalTime, int duration, List<Leg> legs) {
 		this.startingCity = startingCity;
 		this.finalDestination = finalDestination;
@@ -33,7 +33,7 @@ public class Flight {
 		return finalDestination;
 	}
 	
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
 	
@@ -55,5 +55,12 @@ public class Flight {
 	
 	public List<Leg> getLegs() {
 		return legs;
+	}
+
+	@Override
+	public String toString() {
+		return "Flight [startingCity=" + startingCity + ", finalDestination=" + finalDestination + ", price=" + price
+				+ ", numberOfStops=" + numberOfStops + ", departureTime=" + departureTime + ", arrivalTime="
+				+ arrivalTime + ", duration=" + duration + ", legs=" + legs + "]";
 	}
 }
