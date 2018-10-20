@@ -14,6 +14,13 @@ public class Departure {
 		this.airport = airport;
 	}
 
+	public Departure(Departure departure) {
+		this.code = departure.code;
+		this.coordinates = departure.coordinates;
+		this.time = departure.time;
+		this.airport = departure.airport;
+	}
+
 	public String getCode() {
 		return this.code;
 	}

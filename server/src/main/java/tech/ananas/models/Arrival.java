@@ -13,6 +13,12 @@ public class Arrival {
 		this.time = time;
 		this.airport = airport;
 	}
+	public Arrival(Arrival arrival) {
+		this.code = arrival.code;
+		this.coordinates = arrival.coordinates;
+		this.time = arrival.time;
+		this.airport = arrival.airport;
+	}
 	public String getCode() {
 		return this.code;
 	}

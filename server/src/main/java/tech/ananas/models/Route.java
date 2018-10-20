@@ -24,6 +24,13 @@ public class Route {
 		this.trip = null;
 	}
 	
+	public Route(Route r) {
+		this(r.getRouteName(), r.getOwner(), new LinkedList<>(r.getCities()), new HashMap<>(r.getDurationOfStay()));
+		this.ignoreFlight = new LinkedList<>(r.getIgnoreFlight());
+		this.earliestDeparture = r.getEarliestDeparture();
+		this.trip = new Trip(r.getTrip());
+	}
+
 	public String getOwner() {
 		return owner;
 	}
