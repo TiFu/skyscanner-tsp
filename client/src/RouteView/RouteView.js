@@ -43,6 +43,7 @@ class RouteView extends Component {
           finalDestination: t.string,
           selectedAlternative: t.number,
           alternatives: t.arrayOf(t.shape({
+            deepLink: t.string,
             price: t.number,
             numberOfStops: t.number,
             departureTime: t.string,
@@ -51,6 +52,7 @@ class RouteView extends Component {
             legs: t.arrayOf(t.shape({
               duration: t.number,
               carrier: t.string,
+              carrierImg: t.string,
               flightNumber: t.string,
               departure: t.shape({
                 coordinates: t.string,
