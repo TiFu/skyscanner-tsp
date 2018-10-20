@@ -66,7 +66,7 @@ class App extends Component {
                 return memo
             }, []) }
           </GoogleMap>
-          
+
         </div>
       </div>
     )

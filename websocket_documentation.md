@@ -60,8 +60,10 @@ Server Response:
 						"numberOfStops": number // === legs.length - 1
 						"departureTime: "yyyy-mm-dd hh:mm",
 						"arrivalTime: "yyyy-mm-dd hh:mm",
+						"duration": number,
 						"legs": [// legs is sorted by arrival time & departure time
 							{
+								"duration": number,
 								"carrier": string,
 								"flightNumber": string,
 								"departure": {
@@ -136,8 +138,10 @@ SERVER Response:
 			"numberOfStops": number // === legs.length - 1
 			"departureTime: "yyyy-mm-dd hh:mm",
 			"arrivalTime: "yyyy-mm-dd hh:mm",
+			"duration": number,
 			"legs": [// legs is sorted by arrival time & departure time
 				{
+					"duration": number,
 					"carrier": string,
 					"flightNumber": string,
 					"departure": {
