@@ -21,7 +21,7 @@ class App extends Component {
   initialLoad = false
 
   componentDidMount() {
-    this.socket = io(':80')
+    this.socket = io(':8989')
     window.socket = this.socket;
     if (!roomHash) {
       this.socket.emit('new_session', { user: username })

@@ -8,7 +8,7 @@ import FlightLand from '@material-ui/icons/FlightLand'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import ChevronRight from '@material-ui/icons/ChevronRight'
-import {formatTime} from '../utils'
+import {formatTime, printLeadingZero} from '../utils'
 
 
 class FlightView extends Component {
@@ -87,7 +87,7 @@ class FlightView extends Component {
 
           <div className={styles.meta}>
             <div className={styles.date}>
-              {`${formatTime(departureTime)} (Flight Duration: ${Math.floor(duration/60)}:${duration - 60 * Math.floor(duration/60)}h)`}
+              {`${formatTime(departureTime)} (Flight Duration: ${printLeadingZero(Math.floor(duration/60))}:${printLeadingZero(duration - 60 * Math.floor(duration/60))}h)`}
             </div>
             <div className={styles.price}>
               {`${price.toFixed(2)} EUR`}
