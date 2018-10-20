@@ -36,9 +36,9 @@ public class FlightsService {
 		this.api = api;
 	}
 
-	public void updateTrip(Route route) throws ParseException, IOException {
+	public boolean updateTrip(Route route) throws ParseException, IOException {
     	if (route.getCities().size() == 0) {
-    		return;
+    		return true;
     	}
     	
     	Iterator<String> city = route.getCities().iterator();
@@ -51,7 +51,9 @@ public class FlightsService {
     		String currentCity = city.next();
     		
     		if (!ignoreFlight(previousCity, currentCity, route.getIgnoreFlight())) {
-	    		fetchFlights(previousCity, startingDate, alternatives, currentCity);
+	    		if (!fetchFlights(previousCity, startingDate, alternatives, currentCity)) {
+	    			return false;
+	    		}
     		}
     		startingDate = startingDate.plusDays(route.getDurationOfStay().get(currentCity));
     		previousCity = currentCity;
@@ -61,20 +63,26 @@ public class FlightsService {
 			
 		Trip t = new Trip(alternatives);
 		route.setTrip(t);
+		return true;
     }
 
-	private void fetchFlights(String previousCity, LocalDate startingDate, List<FlightAlternatives> alternatives,
+	private boolean fetchFlights(String previousCity, LocalDate startingDate, List<FlightAlternatives> alternatives,
 			String currentCity) throws IOException {
 		try {
 		String formattedDate = startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String url = this.api.createSession(previousCity, currentCity, formattedDate);
+		if (url == null) {
+			return false;
+		}
 		System.out.println(url);
 		List<Flight> flights = this.api.getFlight(url);
 		FlightAlternatives alternative = new FlightAlternatives(previousCity, currentCity, flights);
 		alternatives.add(alternative);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	private boolean ignoreFlight(String previousCity, String currentCity, List<List<String>> ignoreFlight) {
