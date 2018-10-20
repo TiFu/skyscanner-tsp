@@ -8,6 +8,7 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.5",
+    "react-sortable-hoc": "^0.8.3",
     "socket.io-client": "^2.1.1"
   },
   "scripts": {
@@ -15,7 +16,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postbuild": "mvy build ../server/public"
+    "postbuild": "mvy build ../server/src/main/resources/static/generated"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -10,6 +10,8 @@ export class Polyline extends PureComponent {
     })).isRequired,
     maps: t.object.isRequired,
     map: t.object.isRequired,
+    id: t.string.isRequired,
+    onSelect: t.func,
   }
 
   componentWillUpdate() {
@@ -34,6 +36,12 @@ export class Polyline extends PureComponent {
     return hash;
   }
 
+  handleClick = () => {
+    if (this.props.onSelect) {
+      this.props.onSelect(this.props.id)
+    }
+  }
+
   render() {
     const { maps, path, map, user } = this.props
 
@@ -52,11 +60,18 @@ export class Polyline extends PureComponent {
       path,
     })
 
-    this.markers = path.map((coords) => new maps.Marker({
-      position: coords,
-      map: map,
-      title: coords.title,
-    }))
+    this.line.addListener('click', this.handleClick)
+
+    this.markers = path.map((coords) => {
+      const marker = new maps.Marker({
+        position: coords,
+        map: map,
+        title: coords.title,
+      })
+
+      marker.addListener('click', this.handleClick)
+      return marker
+    })
 
     this.line.setMap(map)
     return null

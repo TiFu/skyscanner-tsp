@@ -76,4 +76,23 @@ io.on('connection', (socket) => {
       ]
     })
   })
+
+  socket.on('city_list', () => {
+    socket.emit('city_list', {
+      "requestId": 'string', // use some unique request id e.g. random 6 char string
+      "action": "city_list",
+      "routeName": 'string', // has to be unique
+      "startingCity": 'string',
+      "cities": ['Brno', 'Prague'],
+      "ignoreFlight": [ // implies: B and A have to be neighbors 
+        [ "cityA", "cityB" ]	
+      ],
+      "durationOfStay": {
+        'Brno': 5,
+        'Prague': 10,
+      },
+      "earliestDeparture": "yyyy-mm-dd"
+    })
+  })
+
 })

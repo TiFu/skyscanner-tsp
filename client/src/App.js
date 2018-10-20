@@ -10,9 +10,37 @@ let roomHash = window.location.pathname.includes('/room/') ? window.location.pat
 const username = window.localStorage.getItem('username') || window.prompt('Username:')
 window.localStorage.setItem('username', username)
 
+class RouteView extends Component {
+  render() {
+    const { route, onClose } = this.props
+    return (<section className="cityview">
+      <div className="close" onClick={onClose}>×</div>
+      <main>
+        <h1>{`Route created by: ${route.owner}`}</h1>
+        <h2>{`Price: ${route.trip.totalPrice} EUR`}</h2>
+      </main>
+      <aside>
+        { route.trip.flights[0].legs.map((leg, index) => (
+          <div className="city" key={leg.departure.airport}>
+            <span className="citynum">{index + 1}</span>
+            <span className="cityname">{leg.departure.airport}</span>
+            <span className="citydetail">
+              <span className="flightdate">{leg.departure.airport}</span>
+              <span className="flightduration">{leg.duration}</span>
+              <span className="flightdate">{leg.arrival.airport}</span>
+            </span>
+          </div>
+        )) }
+  
+
+      </aside>
+    </section>)
+  }
+}
+
 class App extends Component {
   state = {
-    map: undefined, maps: undefined, mapLoaded: false, data: null,
+    map: undefined, maps: undefined, mapLoaded: false, data: null, selectedRouteId: null,
   }
 
   componentDidMount() {
@@ -31,13 +59,15 @@ class App extends Component {
       this.setState({ data })
     })
 
-  }
+   }
   render() {
-    const { map, maps, mapLoaded, data } = this.state
+    const { map, maps, mapLoaded, selectedRouteId, data } = this.state
+
+    const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
     return (
       <div className="App">
-
+        { selectedRoute && <RouteView route={selectedRoute} onClose={() => this.setState({ selectedRouteId: null })} /> }
         <div className="map">
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
@@ -49,6 +79,8 @@ class App extends Component {
             { mapLoaded && data && data.routes && data.routes.reduce((memo, route) => {
                 if (route && route.trip && route.trip.flights && route.trip.flights) {
                   memo.push.call(memo, route.trip.flights.map(flight => (<Polyline
+                    id={route.routeName}
+                    onSelect={(id) => this.setState({ selectedRouteId: id })}
                     user={route.owner}
                     path={flight.legs && flight.legs.reduce((acc, leg) => {
                       const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []

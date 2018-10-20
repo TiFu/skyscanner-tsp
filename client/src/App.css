@@ -1,4 +1,87 @@
+body {
+  color: #37474F;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+
 .map {
   width: 100vw;
   height: 100vh;
+}
+
+.cityview {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30vw;
+  max-width: 300px;
+  z-index: 9999;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0px 2px 15px rgba(69, 90, 100, 0.12);
+  overflow: hidden;
+
+}
+
+.close {
+  color: rgba(69, 90, 100, 0.8);
+  text-transform: lowercase;
+  font-variant: small-caps;
+  font-size: 2em;
+  font-weight: 700;
+  position: absolute;
+  top: 12px;
+  line-height: 1em;
+  right: 17px;
+  cursor: pointer;
+  opacity: 0.3;
+  text-shadow: 0px 1px 0px rgba(255,255,255,0.3);
+}
+
+.close:hover, .close:active {
+  opacity: 1;
+}
+
+.cityview main {
+  background: #4DD0E1;
+  color: white;
+  padding: 1em;
+}
+
+.cityview aside .city {
+  border-bottom: 1px solid #CFD8DC;
+  display: flex;
+  padding: 1em;
+}
+
+.cityview aside .city .citynum {
+  min-width: 10%;
+  max-width: 10%;
+  flex-shrink: 0;
+}
+
+.cityview aside .city:last-child {
+  border-bottom: 0;
+}
+
+
+.cityview main > * {
+  font-size: 1em;
+  line-height: 1em;
+  margin: 0;
+  padding: 0;
+}
+
+.cityview main h1 {
+  font-size: 1.5em;
+  font-weight: 500;
+}
+
+.cityview main h2 {
+  font-size: 1em;
+  margin-top: 1em;
+  font-weight: 500;
 }
