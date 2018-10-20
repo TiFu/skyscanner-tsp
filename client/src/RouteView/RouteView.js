@@ -15,7 +15,6 @@ import { CircularProgress } from '@material-ui/core';
 const SortableFlightItem = SortableElement(FlightView)
 const SortableFlights = SortableContainer(({ onDirectionChange, onAlternativeChange, flights, scrollDisabled }) => (
   <div className={[styles.flights, ...(scrollDisabled ? [styles.loading] : [])].join(' ')}>
-    {scrollDisabled && <div className={styles.progress}><CircularProgress size={60} /></div>}
     {flights.map((flight, index) => (
       <SortableFlightItem
         onAlternativeChange={(selectedAlternative) => onAlternativeChange({ selectedAlternative, flightId: index })}
@@ -77,18 +76,26 @@ class RouteView extends Component {
     onAlternative: t.func,
   }
 
-  onDirectionChange = ({ oldIndex, newIndex }) => {
-    const newCities = this.props.route.cities.map((item, index) => {
-      if (index === oldIndex) return this.props.route.cities[newIndex]
-      if (index === newIndex) return this.props.route.cities[oldIndex]
-      return item
-    })
+  state = {
+    sorting: false,
+  }
 
-    this.props.onReorder({
-      routeName: this.props.route.routeName,
-      ignoreCities: this.props.route.ignoreCities,
-      order: newCities,
-    })
+  onDirectionChange = ({ oldIndex, newIndex }) => {
+    this.setState({ sorting: false })
+
+    if (oldIndex !== newIndex) {
+      const newCities = this.props.route.cities.map((item, index) => {
+        if (index === oldIndex) return this.props.route.cities[newIndex]
+        if (index === newIndex) return this.props.route.cities[oldIndex]
+        return item
+      })
+  
+      this.props.onReorder({
+        routeName: this.props.route.routeName,
+        ignoreCities: this.props.route.ignoreCities,
+        order: newCities,
+      })
+    }
   }
 
   onAlternativeChange = ({ selectedAlternative, flightId }) => {
@@ -101,6 +108,8 @@ class RouteView extends Component {
 
   render() {
     const { loading, route: { owner, trip }, onClose } = this.props
+    const { sorting } = this.state
+
     let { totalPrice, flights } = trip
 
     totalPrice = trip.flights.reduce((prev, flight) => {
@@ -115,11 +124,13 @@ class RouteView extends Component {
 
     return <div className={styles.route}>
       <Card>
-        <CardMedia>
+        <CardMedia className={[...(loading ? [styles.cardLoading] : []), ...(sorting ? [styles.cardSorting] : [])].join(' ')}>
 
           <IconButton className={styles.close} onClick={onClose} component="span" color="secondary">
             <Close />
           </IconButton>
+
+          {loading && <div className={styles.progress}><CircularProgress size={60} /></div>}
 
           <SortableFlights
             scrollDisabled={loading}
@@ -131,6 +142,7 @@ class RouteView extends Component {
             lockAxis="y"
             onDirectionChange={this.onDirectionChange}
             onAlternativeChange={this.onAlternativeChange}
+            onSortStart={() => this.setState({ sorting: true })}
           />
 
           <div className={styles.footer}>
