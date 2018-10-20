@@ -84,7 +84,7 @@ class App extends Component {
       })
     }))
     
-    this.map.fitBounds(bounds)
+    map.fitBounds(bounds)
   }
 
   
