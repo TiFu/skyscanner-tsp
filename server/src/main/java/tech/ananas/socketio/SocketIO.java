@@ -16,19 +16,22 @@ import tech.ananas.models.UpdateAlternativeRequest;
 import tech.ananas.services.FlightsService;
 import tech.ananas.services.SessionService;
 import tech.ananas.services.SkyscannerAPI;
+import tech.ananas.services.TSPService;
 
 public class SocketIO {
 	private SocketIOServer server;
 	private SessionService sessionService;
 	private FlightsService flightsService;
 	private SkyscannerAPI skyscannerAPI;
+	private TSPService tspService;
 	
-	public SocketIO(String hostname, int port, SessionService sessionService, FlightsService flightService, SkyscannerAPI skyScannerAPI) {
+	public SocketIO(String hostname, int port, SessionService sessionService, FlightsService flightService, SkyscannerAPI skyScannerAPI, TSPService tspService) {
 		Configuration configuration = new Configuration();
 		configuration.setHostname(hostname);
 		configuration.setPort(port);
 		this.skyscannerAPI = skyScannerAPI;
 		// TODO: this should be injected... 
+		this.tspService = tspService;
 		this.sessionService = sessionService;
 		this.flightsService = flightService;
 		this.server = new SocketIOServer(configuration);
@@ -54,6 +57,9 @@ public class SocketIO {
 	
 	public SkyscannerAPI getSkyscannerAPI() {
 		return skyscannerAPI;
+	}
+	public TSPService getTspService() {
+		return tspService;
 	}
 
 	public SessionService getSessionService() {

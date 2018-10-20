@@ -37,7 +37,7 @@ public class Session {
 		}
 	}
 
-	private Route findRoute(String name) {
+	public synchronized Route findRoute(String name) {
 		for (Route r: this.routes) {
 			if (r.getRouteName().equals(name)) {
 				return r;
@@ -45,11 +45,11 @@ public class Session {
 		}
 		return null;
 	}
-	public Route getRoute(String routeName) {
+	public synchronized Route getRoute(String routeName) {
 		return this.findRoute(routeName);
 	}
 
-	public Route addRoute(User owner, SubmitCityListRequest data) {
+	public synchronized Route addRoute(User owner, SubmitCityListRequest data) {
 		Route r = new Route(data.getRouteName(), owner.getName(), data.getCities(), data.getDurationOfStay());
 		r.setEarliestDeparture(data.getEarliestDeparture());
 		r.setIgnoreFlight(data.getIgnoreFlight());
@@ -73,5 +73,10 @@ public class Session {
 	public void duplicateRoute(String routeName) {
 		Route r = this.findRoute(routeName);
 		Route copy = new Route(r);
+		this.routes.add(copy);
+	}
+	
+	public synchronized void addRoute(Route r) {
+		this.routes.add(r);
 	}
 }
