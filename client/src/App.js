@@ -17,8 +17,10 @@ class App extends Component {
     map: undefined, maps: undefined, mapLoaded: false, data: null, selectedRouteId: null,
   }
 
+  initialLoad = false
+
   componentDidMount() {
-    this.socket = io(':8989')
+    this.socket = io(':80')
     window.socket = this.socket;
     if (!roomHash) {
       this.socket.emit('new_session', { user: username })
@@ -40,7 +42,14 @@ class App extends Component {
       this.setState({ data })
     })
 
-   }
+  }
+
+  componentWillUpdate({ data }) {
+    if (data && !this.initialLoad && this.state.mapLoaded) {
+      this.initialLoad = true
+      this.fitMarkers(data, this.state.map, this.state.maps)
+    }
+  }
 
   onClose = () => this.setState({ selectedRouteId: null })
   onReorder = (data) => {
@@ -51,10 +60,35 @@ class App extends Component {
     console.log(payload)
     this.socket.emit('reorder_cities', payload)
   }
+
+  onMapLoaded = ({ map, maps }) => {
+    this.setState({ map, maps, mapLoaded: true })
+
+    if (this.state.data && !this.initialLoad) {
+      this.initialLoad = true
+      this.fitMarkers(this.state.data, map, maps)
+    }
+  }
+
+  fitMarkers = (data, map, maps) => {
+    const bounds = new maps.LatLngBounds()
+
+    data.routes.forEach(route => route.trip.flights.forEach(flight => {
+      flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
+        const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
+        const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
+
+        bounds.extend(new maps.LatLng([coordDeparture[1], coordDeparture[0]]))
+        bounds.extend(new maps.LatLng([coordArrival[1], coordArrival[0]]))
+      })
+    }))
+    
+    this.map.fitBounds(bounds)
+  }
+
+  
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data } = this.state
-    console.log("render ftw")
-
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
     return (
@@ -65,7 +99,7 @@ class App extends Component {
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
             defaultCenter={{ lat: 41.389195, lng: 2.113388 }}
             defaultZoom={10}
-            onGoogleApiLoaded={({ map, maps }) => { this.setState({ map, maps, mapLoaded: true }) }}
+            onGoogleApiLoaded={this.onMapLoaded}
             yesIWantToUseGoogleMapApiInternals
           >
             { mapLoaded && data && data.routes && data.routes.reduce((memo, route) => {

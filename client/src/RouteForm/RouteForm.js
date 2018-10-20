@@ -51,7 +51,7 @@ class RouteForm extends Component {
   }
 
   handleRemove = (index) => {
-    const newCities = this.state.cities.filter((_, i) => index != i)
+    const newCities = this.state.cities.filter((_, i) => index !== i)
     const newCityCounts = this.state.cityCounts.filter((_, i) => index !== i)
 
     this.setState({ cities: newCities, cityCounts: newCityCounts })

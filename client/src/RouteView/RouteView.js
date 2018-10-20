@@ -64,8 +64,8 @@ class RouteView extends Component {
 
   onDirectionChange = ({ oldIndex, newIndex }) => {
     const newCities = this.props.route.cities.map((item, index) => {
-      if (index == oldIndex) return this.props.route.cities[newIndex]
-      if (index == newIndex) return this.props.route.cities[oldIndex]
+      if (index === oldIndex) return this.props.route.cities[newIndex]
+      if (index === newIndex) return this.props.route.cities[oldIndex]
       return item
     })
 
