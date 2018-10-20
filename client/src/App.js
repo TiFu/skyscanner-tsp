@@ -28,12 +28,13 @@ class App extends Component {
                   { lat: 41.389195, lng: 2.113388 },
                   { lat: 41.390195, lng: 2.123388 },
                 ]}
+                user="biene"
                 map={this.state.map}
                 maps={this.state.maps}
               />
             ) }
           </GoogleMap>
-          
+
         </div>
       </div>
     )

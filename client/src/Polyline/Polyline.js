@@ -3,6 +3,7 @@ import t from 'prop-types'
 
 export class Polyline extends PureComponent {
   static propTypes = {
+    user: t.string,
     path: t.arrayOf(t.shape({
       lat: t.number,
       lng: t.number,
@@ -23,12 +24,29 @@ export class Polyline extends PureComponent {
     this.markers = []
   }
 
+  hashCode = (str) => {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      var character = str.charCodeAt(i);
+      hash = ((hash<<5)-hash)+character;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+  }
+
   render() {
-    const { maps, path, map } = this.props
+    const { maps, path, map, user } = this.props
+
+    const colors = [
+      "#83be54",
+      "#f0d551",
+      "#e5943c",
+      "#a96ddb",
+    ];
 
     this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: '#AAAAAA',
+      strokeColor: colors[this.hashCode(user) % colors.length],
       strokeOpacity: 1,
       strokeWeight: 4,
       path,
