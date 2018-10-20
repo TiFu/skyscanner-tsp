@@ -58,6 +58,7 @@ Server Response:
 						"finalDestination": string, // final city
 						"alternatives": [
 							{
+								"deepLink": string,
 								"price": number,
 								"numberOfStops": number // === legs.length - 1
 								"departureTime: "yyyy-mm-dd hh:mm",
@@ -67,6 +68,7 @@ Server Response:
 									{
 										"duration": number,
 										"carrier": string,
+										"carrierImg": string,
 										"flightNumber": string,
 										"departure": {
 											"coordinates": "",

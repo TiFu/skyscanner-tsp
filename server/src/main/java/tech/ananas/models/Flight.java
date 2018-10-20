@@ -3,6 +3,7 @@ package tech.ananas.models;
 import java.util.List;
 
 public class Flight {
+	private String deepLink;
 	private String startingCity;
 	private String finalDestination;
 	private double price;
@@ -13,8 +14,9 @@ public class Flight {
 	private List<Leg> legs;
 	
 
-	public Flight(String startingCity, String finalDestination, double price, int numberOfStops, String departureTime,
+	public Flight(String startingCity, String finalDestination, String deepLink, double price, int numberOfStops, String departureTime,
 			String arrivalTime, int duration, List<Leg> legs) {
+		this.deepLink = deepLink;
 		this.startingCity = startingCity;
 		this.finalDestination = finalDestination;
 		this.price = price;
@@ -22,7 +24,15 @@ public class Flight {
 		this.departureTime = departureTime;
 		this.arrivalTime = arrivalTime;
 		this.duration = duration;
-		this.legs = legs;
+		this.legs = legs;	
+	}
+
+	public String getDeepLink() {
+		return deepLink;
+	}
+
+	public void setDeepLink(String deepLink) {
+		this.deepLink = deepLink;
 	}
 
 	public String getStartingCity() {
