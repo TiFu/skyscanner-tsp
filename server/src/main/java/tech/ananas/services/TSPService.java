@@ -16,13 +16,13 @@ public class TSPService {
 	private TreeMap<Double,LinkedList<String>> results;
 	private SubmitCityListRequest cityListRequest;
 	
-	public TSPService() {
-		
+	public TSPService(SkyscannerAPI skyAPI) {
+		this.skyAPI = skyAPI;
 	}
 	
-	public TreeMap<Double,LinkedList<String>> TSPpaths(String apiKey, SubmitCityListRequest cityListRequest) {
-		skyAPI = new SkyscannerAPI(apiKey);
+	public TreeMap<Double,LinkedList<String>> TSPpath(SubmitCityListRequest cityListRequest) {
 		results = new TreeMap<Double,LinkedList<String>>();
+		results.put(9999999999.9, null);
 		this.cityListRequest = cityListRequest;
 		
 		PartialRouteState initial = new PartialRouteState(this, null, cityListRequest.getStartingCity(), 0);
@@ -30,8 +30,8 @@ public class TSPService {
 		return results;
 	}
 	
-	public Route TSProute () { //input path, convert to Route
-		
+	public Route TSProute (SubmitCityListRequest cityListRequest) { //input Submit, convert to Route
+		TSPpath(cityListRequest);
 		return null;
 		
 	}
@@ -40,11 +40,20 @@ public class TSPService {
 		try {
 			BrowseQuotes quotes = skyAPI.getQuotes(originPlace, destinationPlace, outboundPartialDate);
 			Iterator<Quote> iter = quotes.Quotes.iterator();
-			Quote first = iter.next();
-			return first.MinPrice;
+			System.out.println(quotes.Quotes.size());
+			if (quotes.Quotes.size() > 0) {
+				Quote first = iter.next();
+				return first.MinPrice;
+			} else {
+				return Double.POSITIVE_INFINITY;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			return 0.0;
+			return Double.POSITIVE_INFINITY;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Double.POSITIVE_INFINITY;
 		}
 	}
 	
