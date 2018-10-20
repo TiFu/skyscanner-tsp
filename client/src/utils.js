@@ -21,7 +21,7 @@ export const formatTime = (dateString) => {
   const d = new Date(Date.parse(dateString))
   const timeStr = d.toLocaleTimeString("de-DE");
   return d.toLocaleDateString("de-DE") + " " + timeStr.substring(0, timeStr.length - 3);
-} 
+}
 
 export const printLeadingZero = (num) => {
   let str = num + "";

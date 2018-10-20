@@ -13,6 +13,7 @@ import {formatTime, printLeadingZero} from '../utils'
 
 
 class FlightView extends Component {
+  state = {};
   static propTypes = {
     backgroundImage: t.string,
     flight: t.shape({
@@ -50,10 +51,66 @@ class FlightView extends Component {
     onAlternativeChange: t.func,
   }
 
-  componentDidMount() {
-    const { finalDestination } = this.props;
+  updateImageBackgrounds(destination) {
+    fetch("https://api.teleport.org/api/cities/?search=" + encodeURIComponent( destination ), {
+      method: "GET"
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Find the most populous city
+      const cities = [];
+      for (let city of data._embedded["city:search-results"]) {
+        cities.push(city._links["city:item"].href);
+      }
 
-    fetch("https://api.unsplash.com/search/photos?query=" + finalDestination + "+city&orientation=landscape", {
+      const promises = [];
+      for (let city of cities) {
+        promises.push(
+          fetch(city)
+          .then(response => response.json())
+        );
+      }
+
+      Promise.all(promises).then(cityDetails => {
+        if (cityDetails.length > 0) {
+          const detail = cityDetails.sort((a, b) => a.population < b.population)[0];
+          const links = detail._links;
+
+          if (links.hasOwnProperty("city:urban_area")) {
+            fetch(links["city:urban_area"].href + "images/")
+            .then(response => response.json())
+            .then(data => {
+              this.setState({
+                backgroundImage: data.photos[0].image.web,
+                cachedDestination: destination,
+              });
+            });
+          }
+        }
+      });
+    });
+  }
+
+  clearCache() {
+    this.setState({ cachedDestination: null });
+  }
+
+  componentWillUpdate() {
+    const { cachedDestination } = this.state;
+    const { flight: { finalDestination } } = this.props;
+    console.log("UPDATE;", finalDestination, cachedDestination);
+    if (finalDestination !== cachedDestination) {
+      this.updateImageBackgrounds(finalDestination)
+    }
+  }
+
+  componentDidMount() {
+    const { cachedDestination } = this.state;
+    const { flight: { finalDestination } } = this.props;
+    console.log("MOUNT;", finalDestination, cachedDestination);
+    this.updateImageBackgrounds(finalDestination)
+    /*
+    fetch("https://api.unsplash.com/search/photos?query=" + encodeURIComponent( finalDestination ) + "+city&orientation=landscape", {
       method: "GET",
       headers: {
         Authorization: "Client-ID 3f09b566bf59be5f5e0ee22b1941cf5b6d87b117bb9ff9e65a020e01f50ff88d",
@@ -64,13 +121,15 @@ class FlightView extends Component {
       console.log(data);
       console.error(data.results[0].urls.regular);
       this.setState({ backgroundImage: data.results[0].urls.regular })
+      // this.forceUpdate();
     });
+    //*/
   }
 
   render() {
-    const { flight: { finalDestination, selectedAlternative, alternatives }, backgroundImage } = this.props
+    const { backgroundImage } = this.state;
+    const { flight: { finalDestination, selectedAlternative, alternatives } } = this.props
     const { price, departureTime, legs, duration, onDirectionChange, deepLink } = alternatives[selectedAlternative];
-    console.log("HI", price, backgroundImage);
 
     return (
       <div className={styles.flight}>
