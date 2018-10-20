@@ -5,6 +5,7 @@ import GoogleMap from 'google-map-react'
 import RouteForm from './RouteForm'
 import Polyline from './Polyline'
 import RouteView from './RouteView'
+import { colorFromIndex } from './utils'
 
 import './App.css'
 
@@ -68,11 +69,12 @@ class App extends Component {
             onGoogleApiLoaded={({ map, maps }) => { this.setState({ map, maps, mapLoaded: true }) }}
             yesIWantToUseGoogleMapApiInternals
           >
-            { mapLoaded && data && data.routes && data.routes.reduce((memo, route) => {
+            { mapLoaded && data && data.routes && data.routes.reduce((memo, route, index) => {
                 if (route && route.trip && route.trip.flights && route.trip.flights) {
                   memo.push.call(memo, route.trip.flights.map(flight => (<Polyline
                     id={route.routeName}
                     onSelect={(id) => this.setState({ selectedRouteId: id })}
+                    color={colorFromIndex(index)}
                     user={route.owner}
                     path={flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
                       const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
@@ -87,6 +89,7 @@ class App extends Component {
                     maps={maps}
                   />)))
                 }
+                console.log(memo)
                 return memo
             }, []) }
           </GoogleMap>

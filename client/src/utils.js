@@ -7,6 +7,7 @@ export const hashCode = (str) => {
   }
   return hash;
 }
+export const colorFromIndex = (index) => colors[index];
 
 const colors = [
   "#83be54",
