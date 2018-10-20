@@ -1,6 +1,6 @@
 .fab {
   position: fixed;
-  bottom: 2rem;
+  top: 2rem;
   left: 2rem;
 }
 
@@ -20,7 +20,7 @@
 .overlay {
   position: fixed;
   z-index: 9999;
-  bottom: calc(56px + 3.5rem);
+  top: calc(56px + 3.5rem);
   left: 2rem;
   width: 50vw;
   max-width: 450px;

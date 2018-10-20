@@ -5,6 +5,7 @@ import moment from 'moment'
 
 import Card from '@material-ui/core/Card'
 import AddIcon from '@material-ui/icons/Add'
+import LocalAirport from '@material-ui/icons/LocalAirport'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Divider from '@material-ui/core/Divider'
@@ -161,7 +162,7 @@ class RouteForm extends Component {
 
         <div className={styles.fab}>
           <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.toggle}>
-            { open ? <Close /> : <AddIcon /> }
+            { open ? <Close /> : <LocalAirport /> }
           </Button>
           {loading && <CircularProgress size={68} className={styles.fabProgress} />}
         </div>
