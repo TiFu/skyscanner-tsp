@@ -5,72 +5,82 @@ const cities = {
   Barcelona: {
     "startingCity": "Prague", // city name
     "finalDestination": "Barcelona", // final city
-    "price": 3010.12,
-    "numberOfStops": 0, 
-    "departureTime": "2018-12-30 12:30",
-    "arrivalTime": "2018-12-30 12:30",
-    "duration": 20,
-    "legs": [
+    "selectedAlternative": 0,
+    "alternatives": [
       {
-        "carrier": "string",
-        "flightNumber": "string",
-        "departure": {
-          "coordinates": "41.389195, 2.113388",
-          "time": "2018-12-30 12:30",
-          "airport": "Letiště Václava Havla",
-          "code": "ARP",
-        },
-        "arrival": {
-          "coordinates": "41.390195, 2.123388",
-          "time": "2018-12-30 12:30",
-          "airport": "El Prato Barcelona Airport",
-          "code": "ARP",
-        }
-      }
-    ]
+        "price": 3010.12,
+        "numberOfStops": 0,
+        "departureTime": "2018-12-30 12:30",
+        "arrivalTime": "2018-12-30 12:30",
+        "duration": 20,
+        "legs": [
+          {
+            "carrier": "string",
+            "flightNumber": "string",
+            "departure": {
+              "coordinates": "41.389195, 2.113388",
+              "time": "2018-12-30 12:30",
+              "airport": "Letiště Václava Havla",
+              "code": "ARP",
+            },
+            "arrival": {
+              "coordinates": "41.390195, 2.123388",
+              "time": "2018-12-30 12:30",
+              "airport": "El Prato Barcelona Airport",
+              "code": "ARP",
+            },
+          },
+        ],
+      },
+    ],
   },
   Oslo: {
     "startingCity": "Barcelona", // city name
     "finalDestination": "Oslo", // final city
-    "price": 3010.12,
-    "numberOfStops": 1, 
-    "departureTime": "2018-12-30 12:30",
-    "arrivalTime": "2018-12-30 12:30",
-    "duration": 20,
-    "legs": [
+    "selectedAlternative": 0,
+    "alternatives": [
       {
-        "carrier": "string",
-        "flightNumber": "string",
-        "departure": {
-          "coordinates": "41.389195, 2.113388",
-          "time": "2018-12-30 12:30",
-          "airport": "El Prato Barcelona Airport",
-          "code": "ARP",
-        },
-        "arrival": {
-          "coordinates": "41.390195, 2.123388",
-          "time": "2018-12-30 12:30",
-          "airport": "Some Random Airport",
-          "code": "ARP",
-        }
+        "price": 3010.12,
+        "numberOfStops": 1,
+        "departureTime": "2018-12-30 12:30",
+        "arrivalTime": "2018-12-30 12:30",
+        "duration": 20,
+        "legs": [
+          {
+            "carrier": "string",
+            "flightNumber": "string",
+            "departure": {
+              "coordinates": "41.389195, 2.113388",
+              "time": "2018-12-30 12:30",
+              "airport": "El Prato Barcelona Airport",
+              "code": "ARP",
+            },
+            "arrival": {
+              "coordinates": "41.390195, 2.123388",
+              "time": "2018-12-30 12:30",
+              "airport": "Some Random Airport",
+              "code": "ARP",
+            }
+          },
+          {
+            "carrier": "string",
+            "flightNumber": "string",
+            "departure": {
+              "coordinates": "41.390195, 2.123388",
+              "time": "2018-12-30 12:30",
+              "airport": "Some Random Airport",
+              "code": "R&M",
+            },
+            "arrival": {
+              "coordinates": "41.400195, 4.133388",
+              "time": "2018-12-30 12:30",
+              "airport": "Oslo National Airport",
+              "code": "ARP",
+            }
+          }
+        ]
       },
-      {
-        "carrier": "string",
-        "flightNumber": "string",
-        "departure": {
-          "coordinates": "41.390195, 2.123388",
-          "time": "2018-12-30 12:30",
-          "airport": "Some Random Airport",
-          "code": "ARP",
-        },
-        "arrival": {
-          "coordinates": "41.400195, 4.133388",
-          "time": "2018-12-30 12:30",
-          "airport": "Oslo National Airport",
-          "code": "ARP",
-        }
-      }
-    ]
+    ],
   },
 }
 io.on('connection', (socket) => {
@@ -93,7 +103,7 @@ io.on('connection', (socket) => {
           "owner": 'duongtat', // user name
           "routeName": 'route1', // has to be unique
           "cities": ['Prague', 'Barcelona', 'Oslo'],
-          "ignoreFlight": [ // implies: B and A have to be neighbors 
+          "ignoreFlight": [ // implies: B and A have to be neighbors
             [ "cityA", "cityB" ]
           ],
           "durationOfStay": {
@@ -124,7 +134,7 @@ io.on('connection', (socket) => {
           "owner": 'duongtat', // user name
           "routeName": 'route1', // has to be unique
           "cities": data.order,
-          "ignoreFlight": [ // implies: B and A have to be neighbors 
+          "ignoreFlight": [ // implies: B and A have to be neighbors
             [ "cityA", "cityB" ]
           ],
           "durationOfStay": {
@@ -152,8 +162,8 @@ io.on('connection', (socket) => {
       "routeName": 'string', // has to be unique
       "startingCity": 'string',
       "cities": ['Brno', 'Prague'],
-      "ignoreFlight": [ // implies: B and A have to be neighbors 
-        [ "cityA", "cityB" ]	
+      "ignoreFlight": [ // implies: B and A have to be neighbors
+        [ "cityA", "cityB" ]
       ],
       "durationOfStay": {
         'Brno': 5,

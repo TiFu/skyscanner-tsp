@@ -30,28 +30,31 @@ class RouteView extends Component {
         flights: t.arrayOf(t.shape({
           startingCity: t.string,
           finalDestination: t.string,
-          price: t.number,
-          numberOfStops: t.number,
-          departureTime: t.string,
-          arrivalTime: t.string,
-          duration: t.number,
-          legs: t.arrayOf(t.shape({
+          selectedAlternative: t.number,
+          alternatives: t.arrayOf(t.shape({
+            price: t.number,
+            numberOfStops: t.number,
+            departureTime: t.string,
+            arrivalTime: t.string,
             duration: t.number,
-            carrier: t.string,
-            flightNumber: t.string,
-            departure: t.shape({
-              coordinates: t.string,
-              time: t.string,
-              airport: t.string,
-              code: t.string,
-            }),
-            arrival: t.shape({
-              coordinates: t.string,
-              time: t.string,
-              airport: t.string,
-              code: t.string,
-            })
-          }))
+            legs: t.arrayOf(t.shape({
+              duration: t.number,
+              carrier: t.string,
+              flightNumber: t.string,
+              departure: t.shape({
+                coordinates: t.string,
+                time: t.string,
+                airport: t.string,
+                code: t.string,
+              }),
+              arrival: t.shape({
+                coordinates: t.string,
+                time: t.string,
+                airport: t.string,
+                code: t.string,
+              }),
+            })),
+          })),
         })),
       },
     }),
@@ -65,7 +68,7 @@ class RouteView extends Component {
       if (index == newIndex) return this.props.route.cities[oldIndex]
       return item
     })
-    
+
     this.props.onReorder({
       routeName: this.props.route.routeName,
       ignoreCities: this.props.route.ignoreCities,
@@ -84,9 +87,9 @@ class RouteView extends Component {
           <IconButton className={styles.close} onClick={onClose} component="span">
             <Close />
           </IconButton>
-          
+
           <SortableFlights flights={flights} lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
-          
+
           <div className={styles.footer}>
             <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>
             <div className={styles.total}>{`${totalPrice} EUR`}</div>

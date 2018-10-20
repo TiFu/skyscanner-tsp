@@ -161,3 +161,19 @@ SERVER Response:
 	]	
 }
 ```
+
+## Update Selected Alternative
+CLIENT request:
+```json
+{
+	"action": "update_selected_alternative",
+	"id": string,
+	"routeName": string,
+	"flightId": number,
+	"selectedAlternative": number,
+}
+```
+
+SERVER response:
+None, just a new state from `restore_session`/`state`.
+

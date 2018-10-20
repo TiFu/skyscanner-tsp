@@ -3,19 +3,13 @@ package tech.ananas.models;
 import java.util.List;
 
 public class Trip {
-	private float totalPrice;
-	private List<Flight> flights;
+	private List<FlightAlternatives> flights;
 	
-	public Trip(List<Flight> flights, float totalPrice) {
-		this.totalPrice = totalPrice;
+	public Trip(List<FlightAlternatives> flights) {
 		this.flights = flights;
 	}
 	
-	public float getTotalPrice() {
-		return totalPrice;
-	}
-	
-	public List<Flight> getFlights() {
+	public List<FlightAlternatives> getFlights() {
 		return flights;
 	}
 }

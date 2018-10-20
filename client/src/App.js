@@ -18,7 +18,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.socket = io(':80')
+    this.socket = io(':8989')
+    window.socket = this.socket;
     if (!roomHash) {
       this.socket.emit('new_session', { user: username })
     } else {
@@ -29,12 +30,18 @@ class App extends Component {
       window.location = `/room/${data.id}`
     })
 
+    this.socket.on('state', (data) => {
+      console.log(data);
+      this.setState({ data })
+    })
+
     this.socket.on('restore_session', (data) => {
+      console.log(data);
       this.setState({ data })
     })
 
    }
-  
+
   onClose = () => this.setState({ selectedRouteId: null })
   onReorder = (data) => {
     const payload = Object.assign({}, data, {
@@ -46,6 +53,7 @@ class App extends Component {
   }
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data } = this.state
+    console.log("render ftw")
 
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
@@ -66,13 +74,13 @@ class App extends Component {
                     id={route.routeName}
                     onSelect={(id) => this.setState({ selectedRouteId: id })}
                     user={route.owner}
-                    path={flight.legs && flight.legs.reduce((acc, leg) => {
+                    path={flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
                       const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
                       const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
-                      
+
                       return [...acc,
-                        { lat: coordDeparture[0], lng: coordDeparture[1], title: leg.airport },
-                        { lat: coordArrival[0], lng: coordArrival[1], title: leg.airport },
+                        { lat: coordDeparture[1], lng: coordDeparture[0], title: leg.airport },
+                        { lat: coordArrival[1], lng: coordArrival[0], title: leg.airport },
                       ]
                     }, [])}
                     map={map}
@@ -82,7 +90,7 @@ class App extends Component {
                 return memo
             }, []) }
           </GoogleMap>
-          
+
         </div>
         <RouteForm />
       </div>
