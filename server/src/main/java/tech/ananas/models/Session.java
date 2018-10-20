@@ -69,4 +69,9 @@ public class Session {
 		Route r = this.findRoute(routeName);
 		this.routes.remove(r);
 	}
+
+	public void duplicateRoute(String routeName) {
+		Route r = this.findRoute(routeName);
+		Route copy = new Route(r);
+	}
 }

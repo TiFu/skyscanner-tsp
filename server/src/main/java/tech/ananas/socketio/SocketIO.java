@@ -6,6 +6,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 
+import tech.ananas.models.DuplicateRouteRequest;
 import tech.ananas.models.NewSessionRequest;
 import tech.ananas.models.ReorderCitiesRequest;
 import tech.ananas.models.RestoreSessionRequest;
@@ -46,6 +47,7 @@ public class SocketIO {
 		this.server.addEventListener("reorder_cities", ReorderCitiesRequest.class, new ReorderCitiesListener(this));
 		this.server.addEventListener("update_selected_alternative", UpdateAlternativeRequest.class, new UpdateAlternativeListener(this));
 		this.server.addEventListener("airports", Void.class, new AirportListener(this));
+		this.server.addEventListener("copy_route", DuplicateRouteRequest.class, new DuplicateRouteListener(this));
 		System.out.println("Started server");
 		this.server.start();
 	}
