@@ -1,5 +1,6 @@
 package tech.ananas.models;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class FlightAlternatives {
@@ -17,6 +18,14 @@ public class FlightAlternatives {
 	}
 	
 	
+	public FlightAlternatives(FlightAlternatives a) {
+		this(a.getStartingCity(), a.finalDestination, new LinkedList<>());
+		for (Flight f: a.getAlternatives()) {
+			this.alternatives.add(new Flight(f));
+		}
+	}
+
+
 	public int getSelectedAlternative() {
 		return selectedAlternative;
 	}

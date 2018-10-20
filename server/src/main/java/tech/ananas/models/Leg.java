@@ -19,6 +19,15 @@ public class Leg {
 		this.arrival = arrival;
 	}
 
+	public Leg(Leg l) {
+		this.carrierImg = l.carrierImg;
+		this.carrier = l.carrier;
+		this.duration = l.duration;
+		this.flightNumber = l.flightNumber;
+		this.departure = new Departure(l.departure);
+		this.arrival = new Arrival(l.arrival);
+	}
+
 	public String getCarrierImg() {
 		return carrierImg;
 	}

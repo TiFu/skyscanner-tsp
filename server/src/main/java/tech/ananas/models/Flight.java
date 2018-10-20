@@ -1,5 +1,6 @@
 package tech.ananas.models;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Flight {
@@ -25,6 +26,21 @@ public class Flight {
 		this.arrivalTime = arrivalTime;
 		this.duration = duration;
 		this.legs = legs;	
+	}
+
+	public Flight(Flight f) {
+		this.deepLink = f.deepLink;
+		this.startingCity = f.startingCity;
+		this.finalDestination = f.finalDestination;
+		this.price = f.price;
+		this.numberOfStops = f.numberOfStops;
+		this.departureTime = f.departureTime;
+		this.arrivalTime = f.arrivalTime;
+		this.duration = f.duration;
+		this.legs = new LinkedList<Leg>();
+		for (Leg l: f.legs) {
+			this.legs.add(new Leg(l));
+		}
 	}
 
 	public String getDeepLink() {
