@@ -8,6 +8,7 @@ import FlightLand from '@material-ui/icons/FlightLand'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import ChevronRight from '@material-ui/icons/ChevronRight'
+import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import {formatTime, printLeadingZero} from '../utils'
 
 
@@ -68,7 +69,7 @@ class FlightView extends Component {
 
   render() {
     const { flight: { finalDestination, selectedAlternative, alternatives }, backgroundImage } = this.props
-    const { price, departureTime, legs, duration, onDirectionChange } = alternatives[selectedAlternative];
+    const { price, departureTime, legs, duration, onDirectionChange, deepLink } = alternatives[selectedAlternative];
     console.log("HI", price, backgroundImage);
 
     return (
@@ -81,6 +82,9 @@ class FlightView extends Component {
 
           <div className={styles.heading}>
             <h1>{finalDestination}</h1>
+            {deepLink && <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
+              <ShoppingCart />
+            </IconButton> }
             <div onClick={() => {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
