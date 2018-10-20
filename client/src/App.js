@@ -121,10 +121,8 @@ class App extends Component {
 
     return (
       <div className="App">
-        { selectedRoute
-          ? <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} />
-          : (data && <GeneralView routes={data.routes} />)
-        }
+        { selectedRoute && <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
+        { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
         <div className="map">
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}

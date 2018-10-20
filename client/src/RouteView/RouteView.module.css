@@ -1,15 +1,14 @@
 .route {
   position: absolute;
-  top: 5px;
-  left: 5px;
+  right: 10px;
   width: 50vw;
   max-width: 500px;
-  z-index: 999;
+  bottom: 0px;
 
   display: flex;
   flex-direction: column;
 
-  bottom: 5px;
+  z-index: 99999;
   max-height: calc(100vh - 10px);
   overflow-y: auto;
   overflow-x: hidden;

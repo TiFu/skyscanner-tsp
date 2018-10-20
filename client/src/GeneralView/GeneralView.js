@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import t from 'prop-types'
-import { Card, CardContent, Avatar, ListItem, ListItemText, CardActionArea } from '@material-ui/core';
-import { colorFromStr, getInitials, formatTime } from '../utils'
+import { Card, List, Avatar, ListItem, ListItemText, CardActionArea, Divider } from '@material-ui/core';
+import { colorFromStr, getInitials, formatTime, printLeadingZero } from '../utils'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
 import styles from './GeneralView.module.css';
@@ -47,7 +47,8 @@ class GeneralView extends Component {
           })),
         })),
       },
-    }))
+    })),
+    onSelectRoute: t.func,
   }
 
   groupByAuthor = (routes) => routes.reduce((memo, route) => {
@@ -67,7 +68,7 @@ class GeneralView extends Component {
   getPrice = (selectedFlights) => selectedFlights.reduce((acc, flight) => acc + flight.price, 0)
   
   render() {
-    const { routes } = this.props
+    const { routes, onSelectRoute } = this.props
     const byAuthor = this.groupByAuthor(routes)
     return (
       <div className={styles.list}>
@@ -77,14 +78,15 @@ class GeneralView extends Component {
               <Avatar color={colorFromStr(owner)}>{getInitials(owner)}</Avatar>
               {owner}
             </header>
+            <div className={styles.contentlist}>
+              {routes.map((route, index) => {
+                if (!route.trip || !route.trip.flights) return null
+                const selectedFlights = this.getSelectedFlights(route.trip.flights)
+                const duration = this.getDuration(selectedFlights)
+                return (
+                  <Card key={route.routeName + index} className={styles.card} onClick={() => onSelectRoute(route.routeName)}>
 
-            {routes.map((route, index) => {
-              console.log('route', route)
-              if (!route.trip || !route.trip.flights) return null
-              const selectedFlights = this.getSelectedFlights(route.trip.flights)
-              return (
-                <Card key={route.routeName + index}>
-                  <CardContent>
+                    <CardActionArea className={styles.content}>
                     <ListItemText>
                       <div className={styles.name}>
                         {route.cities.reduce((memo, city, index) => {
@@ -99,20 +101,22 @@ class GeneralView extends Component {
                         {this.getPeriodString(selectedFlights)}
                       </div>
                     </ListItemText>
-                  </CardContent>
-                  <CardActionArea>
+                    <Divider />
                     <ListItemText>
-                      <div className={styles.duration}>
-                        {this.getDuration(selectedFlights)}
-                      </div>
-                      <div className={styles.price}>
-                        {this.getPrice(selectedFlights)}
+                      <div className={styles.detail}>
+                        <div className={styles.duration}>
+                          {`${printLeadingZero(Math.floor(duration/60))}:${printLeadingZero(duration - 60 * Math.floor(duration/60))}h`}
+                        </div>
+                        <div className={styles.price}>
+                          {`${this.getPrice(selectedFlights).toFixed(2)} €`}
+                        </div>
                       </div>
                     </ListItemText>
-                  </CardActionArea>
-                </Card>
-              )
-            })}
+                    </CardActionArea>
+                  </Card>
+                )
+              })}
+            </div>
           </div>
         ))}
       </div>

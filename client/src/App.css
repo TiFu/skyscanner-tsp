@@ -1,6 +1,7 @@
 body {
   color: #37474F;
   background-color: #333;
+  overflow: hidden;
 }
 
 *, *:before, *:after {
