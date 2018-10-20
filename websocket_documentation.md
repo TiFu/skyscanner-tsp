@@ -93,7 +93,6 @@ CLIENT Request:
 	"requestId": string, // use some unique request id e.g. random 6 char string
 	"action": "reorder_cities",
 	"id": string, // session id
-	"startingCity": string,
 	"routeName": string, // unique
 	"order": string<cities>,
 	"ignoreFlight": [ // implies: B and A have to be neighbors 
@@ -113,6 +112,7 @@ CLIENT Request:
 {
 	"requestId": string, // use some unique request id e.g. random 6 char string
 	"action": "city_list",
+	"id": string,
 	"routeName": string, // has to be unique
 	"startingCity": string,
 	"cities": Array<string>,

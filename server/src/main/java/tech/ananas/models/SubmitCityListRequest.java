@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SubmitCityListRequest {
+	private String id;// session id
 	private String requestID;
 	private String routeName;
 	private String startingCity;
@@ -11,6 +12,10 @@ public class SubmitCityListRequest {
 	private List<List<String>> ignoreFlight;
 	private Map<String,Integer> durationOfStay;
 	private String earliestDeparture;
+	
+	public String getId() {
+		return this.id;
+	}
 	
 	public String getRequestID() {
 		return requestID;

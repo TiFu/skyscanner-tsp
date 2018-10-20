@@ -16,6 +16,22 @@ public class SubmitCityListResponse {
 		return routeName;
 	}
 	
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
+	}
+
+	public void setTotalPrice(float totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public void setFlights(List<Flight> flights) {
+		this.flights = flights;
+	}
+
 	public float getTotalPrice() {
 		return totalPrice;
 	}

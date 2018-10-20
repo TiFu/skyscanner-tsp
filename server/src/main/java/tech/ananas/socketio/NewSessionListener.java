@@ -18,8 +18,12 @@ public class NewSessionListener implements DataListener<NewSessionRequest> {
 	
 	@Override
 	public void onData(SocketIOClient client, NewSessionRequest data, AckRequest ackSender) throws Exception {
+		System.out.println("Creating new session!");
+		client.set("name", data.getUser());
 		User u = new User(data.getUser());
 		String sessionId = this.server.getSessionService().createNewSession(u);
+		client.joinRoom(sessionId);
+		System.out.println("Created new session: " + sessionId);
 		NewSessionResponse response = new NewSessionResponse(sessionId);
 		this.server.sendToClient(client.getSessionId(), "new_session", response);
 	}

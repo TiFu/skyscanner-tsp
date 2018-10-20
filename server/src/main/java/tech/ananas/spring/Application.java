@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import tech.ananas.services.FlightsService;
 import tech.ananas.services.SessionService;
 import tech.ananas.socketio.SocketIO;
 
@@ -16,7 +17,8 @@ public class Application {
 
     public static void main(String[] args) {
     	SessionService sessionService = new SessionService();
-    	SocketIO socket = new SocketIO("localhost", 8989, sessionService);
+    	System.out.println("Starting");
+    	SocketIO socket = new SocketIO("localhost", 8989, sessionService, new FlightsService());
         SpringApplication.run(Application.class, args);
     }
 }

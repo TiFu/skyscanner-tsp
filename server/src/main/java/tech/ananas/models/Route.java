@@ -40,12 +40,36 @@ public class Route {
 		return trip;
 	}
 	
-	public void update(Route r) {
-		this.owner = r.getOwner();
-		this.routeName = r.getRouteName();
-		this.cities = r.getCities();
-		this.ignoreFlight = r.getIgnoreFlight();
-		this.durationOfStay = r.getDurationOfStay();
-		this.trip = r.getTrip();
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
+	}
+
+	public void setCities(List<String> cities) {
+		this.cities = cities;
+	}
+
+	public void setIgnoreFlight(List<List<String>> ignoreFlight) {
+		this.ignoreFlight = ignoreFlight;
+	}
+
+	public void setDurationOfStay(Map<String, Integer> durationOfStay) {
+		this.durationOfStay = durationOfStay;
+	}
+
+	public void setEarliestDeparture(String earliestDeparture) {
+		this.earliestDeparture = earliestDeparture;
+	}
+
+	public void setTrip(Trip trip) {
+		this.trip = trip;
+	}
+
+	public void update(ReorderCitiesRequest data) {
+		this.setCities(data.getOrder());
+		this.setIgnoreFlight(data.getIgnoreFlight());
 	}
 }
