@@ -3,6 +3,8 @@ package tech.ananas.services;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import tech.ananas.models.Route;
@@ -22,7 +24,7 @@ public class TSPService {
 	
 	public TreeMap<Double,LinkedList<String>> TSPpath(SubmitCityListRequest cityListRequest) {
 		results = new TreeMap<Double,LinkedList<String>>();
-		results.put(9999999999.9, null);
+		//results.put(9999999999.9, null);
 		this.cityListRequest = cityListRequest;
 		
 		PartialRouteState initial = new PartialRouteState(this, null, cityListRequest.getStartingCity(), 0);
@@ -31,8 +33,9 @@ public class TSPService {
 	}
 	
 	public Route TSProute (SubmitCityListRequest cityListRequest) { //input Submit, convert to Route
-		TSPpath(cityListRequest);
-		return null;
+		List<String> orderedCities = TSPpath(cityListRequest).firstEntry().getValue();
+		Route outputRoute = new Route("tsp", null, orderedCities, cityListRequest.getDurationOfStay());
+		return outputRoute;
 		
 	}
 	
