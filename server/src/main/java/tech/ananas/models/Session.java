@@ -61,4 +61,9 @@ public class Session {
 		Route r = this.findRoute(data.getRouteName());
 		r.getTrip().getFlights().get(data.getFlightId()).setSelectedAlternative(data.getSelectedAlternative());
 	}
+
+	public void deleteRoute(String routeName) {
+		Route r = this.findRoute(routeName);
+		this.routes.remove(r);
+	}
 }

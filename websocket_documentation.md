@@ -179,3 +179,12 @@ CLIENT request:
 SERVER response:
 None, just a new state from `restore_session`/`state`.
 
+
+## Delete Route
+```json
+{
+	"action": "delete_route",
+	"id": string, // session_id
+	"routeName": string
+}
+```
