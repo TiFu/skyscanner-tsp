@@ -78,7 +78,11 @@ class RouteView extends Component {
 
   render() {
     const { route: { owner, durationOfStay, trip }, onClose } = this.props
-    const { totalPrice, flights } = trip
+    let { totalPrice, flights } = trip
+    totalPrice = trip.flights.reduce((prev, flight) => {
+      const alternative = flight.alternatives[flight.selectedAlternative];
+      return prev + alternative.price;
+    }, 0);
 
     return <div className={styles.route}>
       <Card>
@@ -88,11 +92,11 @@ class RouteView extends Component {
             <Close />
           </IconButton>
 
-          <SortableFlights flights={flights} lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
+          <SortableFlights flights={flights} distance="12" lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
 
           <div className={styles.footer}>
             <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>
-            <div className={styles.total}>{`${totalPrice} EUR`}</div>
+            <div className={styles.total}>{`${totalPrice.toFixed(2)} EUR`}</div>
           </div>
           <div className={styles.owner} style={{ backgroundColor: colorFromStr(owner) }}>{owner}</div>
         </CardMedia>

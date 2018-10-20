@@ -5,14 +5,12 @@ export const hashCode = (str) => {
     hash = ((hash<<5)-hash)+character;
     hash = hash & hash; // Convert to 32bit integer
   }
-  return hash;
+  return hash > 0 ? hash : -hash;
 }
+export const colorFromIndex = (index) => colors[index];
 
 const colors = [
-  "#83be54",
-  "#f0d551",
-  "#e5943c",
-  "#a96ddb",
+  "#ae04dd",
 ];
 
 export const colorFromStr = (str) => colors[hashCode(str) % colors.length]

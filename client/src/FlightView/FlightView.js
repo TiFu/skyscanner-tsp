@@ -59,24 +59,28 @@ class FlightView extends Component {
 
           <div className={styles.heading}>
             <h1>{finalDestination}</h1>
-            <IconButton className={styles.close} onClick={() => {
+            <div onClick={() => {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
                 if (this.props.flight.selectedAlternative !== prevValue) {
                   // TODO
                 }
-              }} component="span">
-              <ChevronLeft />
-            </IconButton>
-            <IconButton className={styles.close} onClick={() => {
+              }}>
+              <IconButton className={styles.close} component="span">
+                <ChevronLeft />
+              </IconButton>
+            </div>
+            <div onClick={() => {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
                 if (this.props.flight.selectedAlternative !== prevValue) {
                   // TODO
                 }
-              }} component="span">
-              <ChevronRight />
-            </IconButton>
+              }}>
+              <IconButton className={styles.close} component="span">
+                <ChevronRight />
+              </IconButton>
+            </div>
           </div>
 
           <div className={styles.meta}>
@@ -84,7 +88,7 @@ class FlightView extends Component {
               {`${departureTime} (${duration})`}
             </div>
             <div className={styles.price}>
-              {`${price} EUR`}
+              {`${price.toFixed(2)} EUR`}
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ export class Polyline extends PureComponent {
     maps: t.object.isRequired,
     map: t.object.isRequired,
     id: t.string.isRequired,
+    color: t.string,
     onSelect: t.func,
   }
 
@@ -34,11 +35,11 @@ export class Polyline extends PureComponent {
   }
 
   render() {
-    const { maps, path, map, user } = this.props
+    const { maps, path, map, user, color } = this.props
 
     this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: colorFromStr(user),
+      strokeColor: this.props.color,
       strokeOpacity: 1,
       strokeWeight: 4,
       path,
