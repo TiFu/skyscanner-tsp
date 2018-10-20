@@ -90,21 +90,6 @@ class FlightView extends Component {
   componentDidMount() {
     const { flight: { finalDestination } } = this.props;
     this.updateImageBackgrounds(finalDestination)
-    /*
-    fetch("https://api.unsplash.com/search/photos?query=" + encodeURIComponent( finalDestination ) + "+city&orientation=landscape", {
-      method: "GET",
-      headers: {
-        Authorization: "Client-ID 3f09b566bf59be5f5e0ee22b1941cf5b6d87b117bb9ff9e65a020e01f50ff88d",
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      console.error(data.results[0].urls.regular);
-      this.setState({ backgroundImage: data.results[0].urls.regular })
-      // this.forceUpdate();
-    });
-    //*/
   }
 
   render() {
