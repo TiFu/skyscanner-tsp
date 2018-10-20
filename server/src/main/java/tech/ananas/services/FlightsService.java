@@ -36,11 +36,7 @@ public class FlightsService {
 		this.api = api;
 	}
 
-	public boolean updateTrip(Route route) throws ParseException, IOException {
-		if (route.getCities().size() == 0) {
-			return true;
-		}
-
+	public void updateTrip(Route route) throws FlightServiceException {
 		Iterator<String> city = route.getCities().iterator();
 		String previousCity = city.next();
 		LocalDate startingDate = LocalDate.parse(route.getEarliestDeparture());
@@ -51,37 +47,38 @@ public class FlightsService {
 			String currentCity = city.next();
 
 			if (!ignoreFlight(previousCity, currentCity, route.getIgnoreFlight())) {
-				if (!fetchFlights(previousCity, startingDate, alternatives, currentCity)) {
-					return false;
+				try {
+					if (!fetchFlights(previousCity, startingDate, alternatives, currentCity)) {
+						throw new FlightServiceException("Failed to fetch flights for route: " + previousCity + " => " + currentCity + ". Please try again later!");
+					}
+				} catch (IOException e) {
+					throw new FlightServiceException("Failed to fetch flights for route: " + previousCity + " => " + currentCity + ". Please try again later!");
 				}
 			}
 			startingDate = startingDate.plusDays(route.getDurationOfStay().get(currentCity));
 			previousCity = currentCity;
 		}
 		// fly back to start!
-		fetchFlights(previousCity, startingDate, alternatives, route.getCities().get(0));
+		try {
+			fetchFlights(previousCity, startingDate, alternatives, route.getCities().get(0));
+		} catch (IOException e) {
+			throw new FlightServiceException("Failed to fetch flights for route: " + previousCity + " => " + route.getCities().get(0) + ". Please try again later!");	
+		}
 
 		Trip t = new Trip(alternatives);
 		route.setTrip(t);
-		return true;
 	}
 
 	private boolean fetchFlights(String previousCity, LocalDate startingDate, List<FlightAlternatives> alternatives,
-			String currentCity) throws IOException {
-		try {
+			String currentCity) throws IOException, FlightServiceException {
 		String formattedDate = startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String url = this.api.createSession(previousCity, currentCity, formattedDate);
 		if (url == null) {
-			return false;
+			throw new FlightServiceException("Unable to retrieve flights from Skyscanner! Please try again later.");
 		}
-		System.out.println(url);
 		List<Flight> flights = this.api.getFlight(url);
 		FlightAlternatives alternative = new FlightAlternatives(previousCity, currentCity, flights);
 		alternatives.add(alternative);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 		return true;
 	}
 

@@ -4,17 +4,23 @@ public class Leg {
 	private int duration;
 	private String carrier;
 	private String flightNumber;
+	private String carrierImg;
 	private Departure departure;
 	private Arrival arrival;
 	
 
-	public Leg(int duration, String carrier, String flightNumber, Departure departure, Arrival arrival) {
+	public Leg(int duration, String carrier, String carrierImg, String flightNumber, Departure departure, Arrival arrival) {
 		super();
+		this.carrierImg = carrierImg;
 		this.duration = duration;
 		this.carrier = carrier;
 		this.flightNumber = flightNumber;
 		this.departure = departure;
 		this.arrival = arrival;
+	}
+
+	public String getCarrierImg() {
+		return carrierImg;
 	}
 
 	public int getDuration() {

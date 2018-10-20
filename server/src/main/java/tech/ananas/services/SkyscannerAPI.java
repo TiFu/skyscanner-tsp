@@ -96,6 +96,8 @@ public class SkyscannerAPI {
 			JsonObject itinerary = itineraries.get(i).getAsJsonObject();
 			String legID = itinerary.get("OutboundLegId").getAsString();
 			double price = itinerary.get("PricingOptions").getAsJsonArray().get(0).getAsJsonObject().get("Price").getAsDouble();
+			String deepLink = itinerary.get("PricingOptions").getAsJsonArray().get(0).getAsJsonObject().get("DeeplinkUrl").getAsString();
+
 			JsonObject leg = findById(legID, foundFlights.get("Legs").getAsJsonArray());
 			int numberOfStops = leg.get("Stops").getAsJsonArray().size();
 			
@@ -119,6 +121,8 @@ public class SkyscannerAPI {
 
 				JsonObject carrierObj = findById(segment.get("Carrier").getAsString(), foundFlights.get("Carriers").getAsJsonArray());
 				String carrier = carrierObj.get("Name").getAsString();
+				String carrierImg = carrierObj.get("ImageUrl").getAsString();
+				
 				flightNumber = carrierObj.get("Code").getAsString() + flightNumber;
 				int legDuration = segment.get("Duration").getAsInt();
 				
@@ -136,11 +140,11 @@ public class SkyscannerAPI {
 				String arrivalCoordinates = this.findAirport(arrivalAirportCode).get("Location").getAsString();
 				Departure departure = new Departure(departureAirportCode, departureCoordinates, legDepartureTime, departureAirport);
 				Arrival arrival = new Arrival(arrivalAirportCode, arrivalCoordinates, legArrivalTime, arrivalAirport);
-				Leg l = new Leg(legDuration, carrier, flightNumber, departure, arrival);
+				Leg l = new Leg(legDuration, carrier, carrierImg, flightNumber, departure, arrival);
 				legSegments.add(l);
 			}
 			
-			Flight f = new Flight(originStation, destinationStation, price, numberOfStops, departureTime,
+			Flight f = new Flight(originStation, destinationStation, deepLink, price, numberOfStops, departureTime,
 			arrivalTime, duration, legSegments);
 			flights.add(f);
 		}		

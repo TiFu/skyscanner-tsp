@@ -97,7 +97,7 @@ class App extends Component {
         bounds.extend(new maps.LatLng(coordArrival[1], coordArrival[0]))
       })
     }))
-    
+
     map.fitBounds(bounds)
   }
 

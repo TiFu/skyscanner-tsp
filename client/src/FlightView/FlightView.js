@@ -89,7 +89,7 @@ class FlightView extends Component {
               {`${formatTime(departureTime)} (Flight Duration: ${printLeadingZero(Math.floor(duration/60))}:${printLeadingZero(duration - 60 * Math.floor(duration/60))}h)`}
             </div>
             <div className={styles.price}>
-              {`${price.toFixed(2)} EUR`}
+              {`${price.toFixed(2)} €`}
             </div>
           </div>
         </div>
