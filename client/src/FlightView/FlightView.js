@@ -5,6 +5,9 @@ import styles from './FlightView.module.css'
 import MoreVert from '@material-ui/icons/MoreVert'
 import FlightTakeoff from '@material-ui/icons/FlightTakeoff'
 import FlightLand from '@material-ui/icons/FlightLand'
+import IconButton from '@material-ui/core/IconButton'
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 
 
 class FlightView extends Component {
@@ -48,7 +51,17 @@ class FlightView extends Component {
             <div className={styles.top} onClick={() => onDirectionChange(-1)}></div>
             <div className={styles.bottom} onClick={() => onDirectionChange(1)}></div>
           </div>
-          <h1>{finalDestination}</h1>
+
+          <div className={styles.heading}>
+            <h1>{finalDestination}</h1>
+            <IconButton className={styles.close} component="span">
+              <ChevronLeft />
+            </IconButton>
+            <IconButton className={styles.close} component="span">
+              <ChevronRight />
+            </IconButton>
+          </div>
+
           <div className={styles.meta}>
             <div className={styles.date}>
               {`${departureTime} (${duration})`}
