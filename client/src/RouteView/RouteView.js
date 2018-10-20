@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import CardMedia from '@material-ui/core/CardMedia'
 import Close from '@material-ui/icons/Close'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
-
+import { printLeadingZero } from '../utils'
 import styles from './RouteView.module.css'
 
 
@@ -94,12 +94,18 @@ class RouteView extends Component {
   }
 
   render() {
-    const { route: { owner, durationOfStay, trip }, onClose } = this.props
+    const { route: { owner, trip }, onClose } = this.props
     let { totalPrice, flights } = trip
+
     totalPrice = trip.flights.reduce((prev, flight) => {
       const alternative = flight.alternatives[flight.selectedAlternative];
       return prev + alternative.price;
     }, 0);
+
+    let totalDuration = trip.flights.reduce((prev, flight) =>{
+      const alternative = flight.alternatives[flight.selectedAlternative]
+      return prev + alternative.duration
+    }, 0)
 
     return <div className={styles.route}>
       <Card>
@@ -121,7 +127,7 @@ class RouteView extends Component {
           />
 
           <div className={styles.footer}>
-            <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>
+            <div className={styles.length}>{`Total Duration: ${printLeadingZero(Math.floor(totalDuration/60))}:${printLeadingZero(totalDuration - 60 * Math.floor(totalDuration/60))}h`}</div>
             <div className={styles.total}>{`${totalPrice.toFixed(2)} EUR`}</div>
           </div>
           <div className={styles.owner} style={{ backgroundColor: colorFromStr(owner) }}>{owner}</div>
