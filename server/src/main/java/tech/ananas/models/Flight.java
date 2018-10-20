@@ -12,6 +12,19 @@ public class Flight {
 	private int duration;
 	private List<Leg> legs;
 	
+
+	public Flight(String startingCity, String finalDestination, float price, int numberOfStops, String departureTime,
+			String arrivalTime, int duration, List<Leg> legs) {
+		this.startingCity = startingCity;
+		this.finalDestination = finalDestination;
+		this.price = price;
+		this.numberOfStops = numberOfStops;
+		this.departureTime = departureTime;
+		this.arrivalTime = arrivalTime;
+		this.duration = duration;
+		this.legs = legs;
+	}
+
 	public String getStartingCity() {
 		return startingCity;
 	}

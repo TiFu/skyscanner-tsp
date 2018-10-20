@@ -56,28 +56,31 @@ Server Response:
 					{
 						"startingCity": string, // city name
 						"finalDestination": string, // final city
-						"price": number,
-						"numberOfStops": number // === legs.length - 1
-						"departureTime: "yyyy-mm-dd hh:mm",
-						"arrivalTime: "yyyy-mm-dd hh:mm",
-						"duration": number,
-						"legs": [// legs is sorted by arrival time & departure time
+						"alternatives": [
 							{
+								"price": number,
+								"numberOfStops": number // === legs.length - 1
+								"departureTime: "yyyy-mm-dd hh:mm",
+								"arrivalTime: "yyyy-mm-dd hh:mm",
 								"duration": number,
-								"carrier": string,
-								"flightNumber": string,
-								"departure": {
-									"coordinates": "",
-									"time": "yyyy-mm-dd hh:mm",
-									"airport": string,
-								},
-								"arrival": {
-									"coordinates": "",
-									"time": "yyyy-mm-dd hh:mm",
-									"airport": string
-								}
+								"legs": [// legs is sorted by arrival time & departure time
+									{
+										"duration": number,
+										"carrier": string,
+										"flightNumber": string,
+										"departure": {
+											"coordinates": "",
+											"time": "yyyy-mm-dd hh:mm",
+											"airport": string,
+										},
+										"arrival": {
+											"coordinates": "",
+											"time": "yyyy-mm-dd hh:mm",
+											"airport": string
+										}
+									}
+								]
 							}
-						]
 					}
 				]	
 			}
