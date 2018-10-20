@@ -87,6 +87,14 @@ class App extends Component {
     map.fitBounds(bounds)
   }
 
+  onAlternative = (data) => {
+    const payload = Object.assign({}, data, {
+      id: roomHash,
+      action: 'update_selected_alternative'
+    })
+    console.log(payload)
+    this.socket.emit('update_selected_alternative', payload)
+  }
   
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data } = this.state
@@ -94,7 +102,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        { selectedRoute && <RouteView route={selectedRoute} onReorder={this.onReorder} onClose={this.onClose} /> }
+        { selectedRoute && <RouteView route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
         <div className="map">
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}

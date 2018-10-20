@@ -42,6 +42,7 @@ class FlightView extends Component {
       })),
     }),
     onDirectionChange: t.func,
+    onAlternativeChange: t.func,
   }
 
   render() {
@@ -63,7 +64,7 @@ class FlightView extends Component {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
                 if (this.props.flight.selectedAlternative !== prevValue) {
-                  // TODO
+                  this.props.onAlternativeChange(this.props.flight.selectedAlternative)
                 }
               }}>
               <IconButton className={styles.close} component="span">
@@ -74,7 +75,7 @@ class FlightView extends Component {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
                 if (this.props.flight.selectedAlternative !== prevValue) {
-                  // TODO
+                  this.props.onAlternativeChange(this.props.flight.selectedAlternative)
                 }
               }}>
               <IconButton className={styles.close} component="span">

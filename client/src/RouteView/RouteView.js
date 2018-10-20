@@ -12,9 +12,17 @@ import styles from './RouteView.module.css'
 
 
 const SortableFlightItem = SortableElement(FlightView)
-const SortableFlights = SortableContainer(({ onDirectionChange, flights }) => (
+const SortableFlights = SortableContainer(({ onDirectionChange, onAlternativeChange, flights }) => (
   <div className={styles.flights}>
-    {flights.map((flight, index) => <SortableFlightItem onDirectionChange={onDirectionChange} index={index} flight={flight} key={`key-${index}`} />)}
+    {flights.map((flight, index) => (
+      <SortableFlightItem
+        onAlternativeChange={(selectedAlternative) => onAlternativeChange({ selectedAlternative, flightId: index })}
+        onDirectionChange={onDirectionChange}
+        index={index}
+        flight={flight}
+        key={`key-${index}`}
+      />
+    ))}
   </div>
 ))
 
@@ -60,6 +68,7 @@ class RouteView extends Component {
     }),
     onClose: t.func,
     onReorder: t.func,
+    onAlternative: t.func,
   }
 
   onDirectionChange = ({ oldIndex, newIndex }) => {
@@ -73,6 +82,14 @@ class RouteView extends Component {
       routeName: this.props.route.routeName,
       ignoreCities: this.props.route.ignoreCities,
       order: newCities,
+    })
+  }
+
+  onAlternativeChange = ({ selectedAlternative, flightId }) => {
+    this.props.onAlternative({
+      selectedAlternative,
+      flightId,
+      routeName: this.props.route.routeName,
     })
   }
 
@@ -92,7 +109,16 @@ class RouteView extends Component {
             <Close />
           </IconButton>
 
-          <SortableFlights flights={flights} distance="12" lockToContainerEdges onSortEnd={this.onDirectionChange} helperClass={styles.helper} lockAxis="y" onDirectionChange={this.onDirectionChange} />
+          <SortableFlights
+            flights={flights}
+            distance="12"
+            lockToContainerEdges
+            onSortEnd={this.onDirectionChange}
+            helperClass={styles.helper}
+            lockAxis="y"
+            onDirectionChange={this.onDirectionChange}
+            onAlternativeChange={this.onAlternativeChange}
+          />
 
           <div className={styles.footer}>
             <div className={styles.length}>{Object.values(durationOfStay).reduce((memo, item) => memo + item, 0)}</div>
