@@ -105,9 +105,11 @@ class FlightView extends Component {
                 {leg.departure.airport}
               </div>
               <div className={styles.time}>
-                { index >= 1 ? "A: " + formatTime(legs[index - 1].arrival.time) + " / D: " + formatTime(leg.departure.time) + " " + leg.departure.code :   formatTime(leg.departure.time) + " " + leg.departure.code
-                }
-                </div>
+                { index >= 1 ? formatTime(legs[index - 1].arrival.time) + " " : ""} 
+                { index >= 1 ? legs[index - 1].arrival.code : "" }<br />
+                {  formatTime(leg.departure.time) +" "}
+                { leg.departure.code }
+              </div>
             </div>
           ))}
            <div className={styles.leg} key={legs.length}>
