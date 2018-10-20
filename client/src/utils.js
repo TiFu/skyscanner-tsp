@@ -14,3 +14,18 @@ const colors = [
 ];
 
 export const colorFromStr = (str) => colors[hashCode(str) % colors.length]
+
+export const formatTime = (dateString) => {
+  const d = new Date(Date.parse(dateString))
+  const timeStr = d.toLocaleTimeString("de-DE");
+  return d.toLocaleDateString("de-DE") + " " + timeStr.substring(0, timeStr.length - 3);
+} 
+
+export const printLeadingZero = (num) => {
+  let str = num + "";
+  if (num < 10) {
+    str = "0" + str;
+  }
+  console.log("My str", str);
+  return str;
+}

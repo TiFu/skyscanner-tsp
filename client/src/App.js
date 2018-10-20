@@ -18,7 +18,7 @@ class App extends Component {
     map: undefined, maps: undefined, mapLoaded: false, data: null, selectedRouteId: null,
   }
 
-  initialLoad = false
+  initialLoad = true
 
   componentDidMount() {
     this.socket = io(':8989')
@@ -35,22 +35,25 @@ class App extends Component {
 
     this.socket.on('state', (data) => {
       console.log(data);
+
+      if (this.initialLoad && this.state.mapLoaded) {
+        this.initialLoad = false
+        this.fitMarkers(data, this.state.map, this.state.maps)
+      }
       this.setState({ data })
     })
 
     this.socket.on('restore_session', (data) => {
       console.log(data);
+      if (this.initialLoad && this.state.mapLoaded) {
+        this.initialLoad = false
+        this.fitMarkers(data, this.state.map, this.state.maps)
+      }
       this.setState({ data })
     })
 
   }
 
-  componentWillUpdate({ data }) {
-    if (data && !this.initialLoad && this.state.mapLoaded) {
-      this.initialLoad = true
-      this.fitMarkers(data, this.state.map, this.state.maps)
-    }
-  }
 
   onClose = () => this.setState({ selectedRouteId: null })
   onReorder = (data) => {
@@ -62,11 +65,20 @@ class App extends Component {
     this.socket.emit('reorder_cities', payload)
   }
 
+  onNewSubmit = (data) => {
+    const payload = Object.assign({}, data, {
+      id: roomHash,
+      action: 'city_list'
+    })
+    console.log(payload)
+    this.socket.emit('city_list', payload)
+  }
+
   onMapLoaded = ({ map, maps }) => {
     this.setState({ map, maps, mapLoaded: true })
 
-    if (this.state.data && !this.initialLoad) {
-      this.initialLoad = true
+    if (this.state.data && this.initialLoad) {
+      this.initialLoad = false
       this.fitMarkers(this.state.data, map, maps)
     }
   }
@@ -74,13 +86,14 @@ class App extends Component {
   fitMarkers = (data, map, maps) => {
     const bounds = new maps.LatLngBounds()
 
-    data.routes.forEach(route => route.trip.flights.forEach(flight => {
+
+    data.routes.forEach(route => route.trip && route.trip.flights.forEach(flight => {
       flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
         const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
         const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
-
-        bounds.extend(new maps.LatLng([coordDeparture[1], coordDeparture[0]]))
-        bounds.extend(new maps.LatLng([coordArrival[1], coordArrival[0]]))
+        
+        bounds.extend(new maps.LatLng(coordDeparture[1], coordDeparture[0]))
+        bounds.extend(new maps.LatLng(coordArrival[1], coordArrival[0]))
       })
     }))
 
@@ -138,7 +151,7 @@ class App extends Component {
           </GoogleMap>
 
         </div>
-        <RouteForm />
+        <RouteForm onSubmit={this.onNewSubmit}/>
       </div>
     )
   }

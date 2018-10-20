@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import uuid from 'uuid/v4'
+import moment from 'moment'
+
 import Card from '@material-ui/core/Card'
 import AddIcon from '@material-ui/icons/Add'
 import List from '@material-ui/core/List'
@@ -30,6 +33,7 @@ class RouteForm extends Component {
   state = {
     open: false,
     startPlace: null,
+    startDate: null,
     cities: [],
     cityCounts: [],
     cityIgnored: [],
@@ -37,16 +41,17 @@ class RouteForm extends Component {
 
   toggle = () => this.setState(state => ({ open: !state.open }))
 
+  parseCity = (value) => value && value.split(',')[0]
+
   handleStartChange = ({ suggestion }) => {
     if (suggestion) {
-      this.setState({ startPlace: suggestion.value })
+      this.setState({ startPlace: this.parseCity(suggestion.value) })
     }
   }
 
   handleNewChange = ({ suggestion }) => {
     if (suggestion) {
-      console.log(suggestion.value, this.state.cities)
-      this.setState(({ cities, cityCounts }) => ({ cities: [...cities, suggestion.value], cityCounts: [...cityCounts, 1] }))
+      this.setState(({ cities, cityCounts }) => ({ cities: [...cities, this.parseCity(suggestion.value)], cityCounts: [...cityCounts, 1] }))
     }
   }
 
@@ -71,9 +76,25 @@ class RouteForm extends Component {
     }
   }
 
+  submit = () => {
+    const { startPlace, cities, cityCounts, startDate, cityIgnored } = this.state
+    this.props.onSubmit({
+      routeName: uuid(),
+      startingCity: startPlace,
+      cities: [startPlace, ...cities],
+      ignoreFlight: [startPlace, ...cities].filter((_, index) => cityIgnored.includes(index)),
+      durationOfStay: cityCounts.reduce((memo, count, index) => ({ ...memo, [cities[index]]: count }), {[startPlace]: 0}),
+      earliestDeparture: startDate,
+    })
+  }
+
+  handleDayChange = (newDate) => {
+    this.setState({ startDate: moment(newDate).format('YYYY-MM-DD') })
+  }
+
   render() {
 
-    const { startPlace, open, cities, cityCounts, cityIgnored } = this.state
+    const { startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.state
     return (
       <div className={styles.container}>
         { open && 
@@ -89,7 +110,7 @@ class RouteForm extends Component {
                 </ListItemSecondaryAction>
               </ListItem>
               <ListItem>
-                <DayPickerInput format="YYYY/MM/DD" placeholder="Earliest departure"  inputProps={{ className: styles.calendarInput }} />
+                <DayPickerInput format="YYYY-MM-DD" onDayChange={this.handleDayChange}  placeholder="Earliest departure"  inputProps={{ className: styles.calendarInput }} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <CalendarToday />
@@ -127,7 +148,7 @@ class RouteForm extends Component {
               </div>
             </List>
             <CardActions>
-              <Button size="small" color="primary" disabled={!(cities && cities.length > 0 && startPlace)}>
+              <Button size="small" color="primary" disabled={!(cities && cities.length > 0 && startPlace && startDate)} onClick={this.submit}>
                 Search for route
               </Button>
             </CardActions>
