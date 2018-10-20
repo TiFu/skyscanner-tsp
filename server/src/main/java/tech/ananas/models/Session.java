@@ -57,8 +57,11 @@ public class Session {
 		return r;
 	}
 
-	public void updateSelectedAlternative(UpdateAlternativeRequest data) {
+	public void updateSelectedAlternative(UpdateAlternativeRequest data) throws UpdateException {
 		Route r = this.findRoute(data.getRouteName());
+		if (r == null) {
+			throw new UpdateException("Unknown route!");
+		}
 		r.getTrip().getFlights().get(data.getFlightId()).setSelectedAlternative(data.getSelectedAlternative());
 	}
 

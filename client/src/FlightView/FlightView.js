@@ -65,8 +65,8 @@ class FlightView extends Component {
   }
 
   render() {
-    const { flight: { finalDestination, alternatives }, backgroundImage } = this.props
-    const { price, departureTime, legs, duration, onDirectionChange } = alternatives[0];
+    const { flight: { finalDestination, selectedAlternative, alternatives }, backgroundImage } = this.props
+    const { price, departureTime, legs, duration, onDirectionChange } = alternatives[selectedAlternative];
     console.log("HI", price, backgroundImage);
 
     return (

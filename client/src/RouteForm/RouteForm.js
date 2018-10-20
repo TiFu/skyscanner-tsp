@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import uuid from 'uuid/v4'
+import t from 'prop-types'
 import moment from 'moment'
 
 import Card from '@material-ui/core/Card'
@@ -7,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Divider from '@material-ui/core/Divider'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Input from '@material-ui/core/Input'
@@ -29,6 +31,9 @@ import styles from './RouteForm.module.css'
 import { CardActions } from '@material-ui/core';
 
 class RouteForm extends Component {
+  static propTypes = {
+    loading: t.bool,
+  }
 
   state = {
     open: false,
@@ -93,7 +98,7 @@ class RouteForm extends Component {
   }
 
   render() {
-
+    const { loading } = this.props
     const { startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.state
     return (
       <div className={styles.container}>
@@ -102,7 +107,7 @@ class RouteForm extends Component {
           <Card className={styles.overlay}>
             <List>
               <ListItem>
-                <AlgoliaPlaces locale="en" type="city" placeholder="Start city" onChange={this.handleStartChange} />
+                <AlgoliaPlaces disabled={loading} locale="en" type="city" placeholder="Start city" onChange={this.handleStartChange} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <FlightTakeoff />
@@ -110,7 +115,7 @@ class RouteForm extends Component {
                 </ListItemSecondaryAction>
               </ListItem>
               <ListItem>
-                <DayPickerInput format="YYYY-MM-DD" onDayChange={this.handleDayChange}  placeholder="Earliest departure"  inputProps={{ className: styles.calendarInput }} />
+                <DayPickerInput disabled={loading} format="YYYY-MM-DD" onDayChange={this.handleDayChange}  placeholder="Earliest departure"  inputProps={{ className: styles.calendarInput }} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <CalendarToday />
@@ -121,7 +126,7 @@ class RouteForm extends Component {
               
               <Divider />
               <ListItem>
-                <AlgoliaPlaces locale="en" type="city" placeholder="Next place"  onChange={this.handleNewChange} destroyOnValid />
+                <AlgoliaPlaces disabled={loading} locale="en" type="city" placeholder="Next place"  onChange={this.handleNewChange} destroyOnValid />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <Add />
@@ -134,12 +139,12 @@ class RouteForm extends Component {
                 {cities.map((city, index) => (
                   <ListItem key={index + city} className={styles.city}>
                     <ListItemText className={styles.name}>{city}</ListItemText>
-                    <Input type="number" style={{ width: '30px', marginRight: '1rem' }} value={cityCounts[index]} data-index={`${index}`} onChange={(e) => this.handleCountChange(index, e.target.value)} />
+                    <Input disabled={loading} type="number" style={{ width: '30px', marginRight: '1rem' }} value={cityCounts[index]} data-index={`${index}`} onChange={(e) => this.handleCountChange(index, e.target.value)} />
                     <ListItemSecondaryAction>
-                      <IconButton aria-label="How do I get there" onClick={() => this.handleIgnoreToggle(index)}>
+                      <IconButton aria-label="How do I get there" disabled={loading} onClick={() => this.handleIgnoreToggle(index)}>
                         { cityIgnored.includes(index) ? <Commute /> : <FlightLand /> }
                       </IconButton>
-                      <IconButton aria-label="Remove" onClick={() => this.handleRemove(index)}>
+                      <IconButton aria-label="Remove" disabled={loading} onClick={() => this.handleRemove(index)}>
                         <Close />
                       </IconButton>
                     </ListItemSecondaryAction>
@@ -148,7 +153,7 @@ class RouteForm extends Component {
               </div>
             </List>
             <CardActions>
-              <Button size="small" color="primary" disabled={!(cities && cities.length > 0 && startPlace && startDate)} onClick={this.submit}>
+              <Button size="small" color="primary" disabled={loading || !(cities && cities.length > 0 && startPlace && startDate)} onClick={this.submit}>
                 Search for route
               </Button>
             </CardActions>
@@ -156,9 +161,10 @@ class RouteForm extends Component {
         }
 
         <div className={styles.fab}>
-          <Button variant="fab" color="primary" aria-label="Add" onClick={this.toggle}>
+          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.toggle}>
             { open ? <Close /> : <AddIcon /> }
           </Button>
+          {loading && <CircularProgress size={68} className={styles.fabProgress} />}
         </div>
       </div>
 

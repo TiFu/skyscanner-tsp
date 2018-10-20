@@ -55,12 +55,6 @@ public class SkyscannerAPI {
 		this.places = gson.fromJson(lines.toString(), JsonObject.class);
 	}
 	
-	public static void main(String[] args) throws IOException {
-		SkyscannerAPI api = new SkyscannerAPI("ha973240724713587943361464989493");
-		String session = api.createSession("BCN", "FRA", "2018-10-30");
-		List<Flight> f = api.getFlight(session);
-		System.out.println(f);
-	}
 	
 	public List<Flight> getFlight(String sessionUrl) throws IOException {
 		return this.getFlight(sessionUrl, 5);
@@ -191,12 +185,15 @@ public class SkyscannerAPI {
 		return null;
 	}
 	
-	public String createSession(String originPlace, String destinationPlace, String outboundDate) throws IOException {
+	public String createSession(String originPlace, String destinationPlace, String outboundDate) throws IOException, SkyscannerAPIException {
 		JsonObject origin = this.getPlace(originPlace);
 		System.out.println(origin);
 		JsonObject destination = this.getPlace(destinationPlace);
 		System.out.println(destination);
 		
+		if (origin.get("IataCode") == null || destination.get("IataCode") == null) {
+			throw new SkyscannerAPIException("Could not find " + originPlace + " or " + destinationPlace);
+		}
 		URL url = new URL("http://partners.api.skyscanner.net/apiservices/pricing/v1.0?apikey=" + this.apikey);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		

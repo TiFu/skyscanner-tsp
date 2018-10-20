@@ -18,6 +18,7 @@ public class DeleteRouteListener implements DataListener<DeleteRouteRequest>{
 		Session session = this.server.getSessionService().getSession(data.getId());
 		session.deleteRoute(data.getRouteName());
 
+
 		this.server.broadcastToSession(data.getId(), "state", this.server.getSessionService().getSession(data.getId()));
 	}
 

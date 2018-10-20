@@ -15,7 +15,12 @@ window.localStorage.setItem('username', username)
 
 class App extends Component {
   state = {
-    map: undefined, maps: undefined, mapLoaded: false, data: null, selectedRouteId: null,
+    map: undefined,
+    maps: undefined,
+    mapLoaded: false,
+    data: null,
+    selectedRouteId: null,
+    requestLoading: false,
   }
 
   initialLoad = true
@@ -33,45 +38,42 @@ class App extends Component {
       window.location = `/room/${data.id}`
     })
 
-    this.socket.on('state', (data) => {
-      console.log(data);
-
+    const handleStateReceive = (data) => {
       if (this.initialLoad && this.state.mapLoaded) {
         this.initialLoad = false
         this.fitMarkers(data, this.state.map, this.state.maps)
       }
-      this.setState({ data })
-    })
+      this.setState({ data, requestLoading: false })
+    }
 
-    this.socket.on('restore_session', (data) => {
-      console.log(data);
-      if (this.initialLoad && this.state.mapLoaded) {
-        this.initialLoad = false
-        this.fitMarkers(data, this.state.map, this.state.maps)
-      }
-      this.setState({ data })
-    })
-
+    this.socket.on('state', handleStateReceive)
+    this.socket.on('restore_session', handleStateReceive)
   }
 
-
   onClose = () => this.setState({ selectedRouteId: null })
+
   onReorder = (data) => {
-    const payload = Object.assign({}, data, {
+    this.setState({ requestLoading: true })
+    this.socket.emit('reorder_cities', Object.assign({}, data, {
       id: roomHash,
       action: 'reorder_cities'
-    })
-    console.log(payload)
-    this.socket.emit('reorder_cities', payload)
+    }))
   }
 
   onNewSubmit = (data) => {
-    const payload = Object.assign({}, data, {
+    this.setState({ requestLoading: true })
+    this.socket.emit('city_list', Object.assign({}, data, {
       id: roomHash,
       action: 'city_list'
-    })
-    console.log(payload)
-    this.socket.emit('city_list', payload)
+    }))
+  }
+
+  onAlternative = (data) => {
+    this.setState({ requestLoading: true })
+    this.socket.emit('update_selected_alternative', Object.assign({}, data, {
+      id: roomHash,
+      action: 'update_selected_alternative',
+    }))
   }
 
   onMapLoaded = ({ map, maps }) => {
@@ -86,7 +88,6 @@ class App extends Component {
   fitMarkers = (data, map, maps) => {
     const bounds = new maps.LatLngBounds()
 
-
     data.routes.forEach(route => route.trip && route.trip.flights.forEach(flight => {
       flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
         const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
@@ -100,27 +101,21 @@ class App extends Component {
     map.fitBounds(bounds)
   }
 
-  onAlternative = (data) => {
-    const payload = Object.assign({}, data, {
-      id: roomHash,
-      action: 'update_selected_alternative'
-    })
-    console.log(payload)
-    this.socket.emit('update_selected_alternative', payload)
-  }
-
   render() {
-    const { map, maps, mapLoaded, selectedRouteId, data } = this.state
+    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
     return (
       <div className="App">
-        { selectedRoute && <RouteView route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
+        { selectedRoute && <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
         <div className="map">
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
             defaultCenter={{ lat: 41.389195, lng: 2.113388 }}
             defaultZoom={10}
+            options={{
+              styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}],
+            }}
             onGoogleApiLoaded={this.onMapLoaded}
             yesIWantToUseGoogleMapApiInternals
           >
@@ -129,6 +124,8 @@ class App extends Component {
                   memo.push.call(memo, route.trip.flights.map(flight => (
                   <Polyline
                     id={route.routeName}
+                    showSelected={!!selectedRoute}
+                    selected={route.routeName === selectedRouteId}
                     onSelect={(id) => this.setState({ selectedRouteId: id })}
                     color={colorFromIndex(index)}
                     user={route.owner}
@@ -151,7 +148,7 @@ class App extends Component {
           </GoogleMap>
 
         </div>
-        <RouteForm onSubmit={this.onNewSubmit}/>
+        <RouteForm loading={requestLoading} onSubmit={this.onNewSubmit}/>
       </div>
     )
   }

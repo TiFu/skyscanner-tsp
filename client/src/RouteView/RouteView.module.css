@@ -8,7 +8,17 @@
 
   display: flex;
   flex-direction: column;
+
+  bottom: 5px;
+  max-height: calc(100vh - 10px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
+.route > * {
+  overflow: visible !important;
+}
+
 
 .owner {
   width: 100%;
@@ -30,8 +40,22 @@
 
 .flights {
   flex-grow: 1;
+  opacity: 1;
+  transition: opacity 0.2s;
 }
 
+.progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.flights.loading {
+  position: relative;
+  opacity: 0.3;
+}
 .footer {
   display: flex;
   padding: 1rem;

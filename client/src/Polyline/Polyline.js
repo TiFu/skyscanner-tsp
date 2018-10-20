@@ -14,12 +14,29 @@ export class Polyline extends PureComponent {
     id: t.string.isRequired,
     color: t.string,
     onSelect: t.func,
+    showSelected: t.bool,
+    selected: t.bool,
   }
 
-  componentWillUpdate() {
+  static defaultProps = {
+    showSelected: false,
+    selected: true,
+  }
+
+  componentWillUpdate({ showSelected, selected }) {
+    const { map, maps } = this.props
+    if (showSelected && selected && map && maps && this.line) {
+      const bounds = new maps.LatLngBounds()
+      this.line.getPath().forEach((e) => {
+          bounds.extend(e);
+      })
+      map.fitBounds(bounds);
+    }
+
     this.line.setMap(null)
     this.startMarker.setMap(null)
     this.endMarker.setMap(null)
+
   }
 
   componentWillUnmount() {
@@ -35,13 +52,13 @@ export class Polyline extends PureComponent {
   }
 
   render() {
-    const { maps, path, map, user, color } = this.props
+    const { maps, path, map, user, showSelected, selected } = this.props
 
     this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: this.props.color,
-      strokeOpacity: 1,
-      strokeWeight: 4,
+      strokeColor: colorFromStr(user),
+      strokeOpacity: showSelected ? (selected ? 1 : 0.3) : 1,
+      strokeWeight: showSelected ? (selected ? 4 : 2) : 4,
       path,
       map,
     })

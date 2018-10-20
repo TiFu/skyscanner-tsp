@@ -24,8 +24,6 @@
   left: 2rem;
   width: 50vw;
   max-width: 450px;
-
-  background: white;
 }
 
 .calendarInput {
@@ -43,4 +41,11 @@
 
 :global(.ap-icon-pin), :global(.ap-icon-clear) {
   display: none;
+}
+
+.fabProgress {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  z-index: 1;
 }
