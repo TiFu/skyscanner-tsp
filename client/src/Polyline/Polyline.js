@@ -55,12 +55,11 @@ export class Polyline extends PureComponent {
     this.markers = path.map((coords) => new maps.Marker({
       position: coords,
       map: map,
-      title: 'title',
+      title: coords.title,
     }))
 
     this.line.setMap(map)
-
-    return path.map(({ lat, lng }) => <div lat={lat} lng={lng}>Test</div>)
+    return null
   }
 }
 

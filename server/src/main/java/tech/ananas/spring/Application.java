@@ -8,13 +8,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import tech.ananas.services.SessionService;
 import tech.ananas.socketio.SocketIO;
 
 @SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
-    	SocketIO socket = new SocketIO("localhost", 8989);
+    	SessionService sessionService = new SessionService();
+    	SocketIO socket = new SocketIO("localhost", 8989, sessionService);
         SpringApplication.run(Application.class, args);
     }
 }
