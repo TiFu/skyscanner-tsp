@@ -4,6 +4,8 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.DataListener;
 
+import tech.ananas.models.ReorderCitiesRequest;
+
 public class ReorderCitiesListener implements DataListener<ReorderCitiesRequest> {
 	private SocketIO server;
 	
