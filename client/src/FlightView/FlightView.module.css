@@ -8,15 +8,9 @@
   border-bottom: 1px solid #ECEFF1;
   color: #e0e0e0;
 
-/*  background-image: url("https://i.imgur.com/iXT7Y6D.jpg");
-  background-position: 10%;
   background-size: cover;
-*/
-
+  background-color: rgb(23,24,23);
   background-image: url('https://hackupc.com/assets/img/background.png');
-  /*background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, .7)), url('https://hackupc.com/assets/img/background.png');*/
-  background-position: 10%;
-  /*background-size: cover;*/
 }
 
 .flight .header .buttons {

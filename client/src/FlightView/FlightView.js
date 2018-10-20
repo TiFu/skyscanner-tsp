@@ -56,38 +56,24 @@ class FlightView extends Component {
       method: "GET"
     })
     .then(response => response.json())
-    .then(data => {
+    .then(async (data) => {
       // Find the most populous city
       const cities = [];
       for (let city of data._embedded["city:search-results"]) {
         cities.push(city._links["city:item"].href);
       }
 
-      const promises = [];
-      for (let city of cities) {
-        promises.push(
-          fetch(city)
-          .then(response => response.json())
-        );
-      }
+      const cityDetails = await Promise.all(cities.map(city => fetch(city).then(a => a.json())))
 
-      Promise.all(promises).then(cityDetails => {
-        if (cityDetails.length > 0) {
-          const detail = cityDetails.sort((a, b) => a.population < b.population)[0];
-          const links = detail._links;
-
-          if (links.hasOwnProperty("city:urban_area")) {
-            fetch(links["city:urban_area"].href + "images/")
-            .then(response => response.json())
-            .then(data => {
-              this.setState({
-                backgroundImage: data.photos[0].image.web,
-                cachedDestination: destination,
-              });
-            });
-          }
+      if (cityDetails.length > 0) {
+        const details = cityDetails.filter((item) => !!item._links["city:urban_area"]).sort((a, b) => a.population < b.population);
+        if (details.length > 0) {
+          const data = await fetch(`${details[0]._links["city:urban_area"].href}images/`).then(a => a.json())
+          this.setState({
+            backgroundImage: data.photos[0].image.web,
+          })
         }
-      });
+      }
     });
   }
 
@@ -95,19 +81,14 @@ class FlightView extends Component {
     this.setState({ cachedDestination: null });
   }
 
-  componentWillUpdate() {
-    const { cachedDestination } = this.state;
-    const { flight: { finalDestination } } = this.props;
-    console.log("UPDATE;", finalDestination, cachedDestination);
-    if (finalDestination !== cachedDestination) {
-      this.updateImageBackgrounds(finalDestination)
+  componentWillUpdate(newProps) {
+    if (this.props.flight.finalDestination !== newProps.flight.finalDestination) {
+      this.updateImageBackgrounds(newProps.flight.finalDestination)
     }
   }
 
   componentDidMount() {
-    const { cachedDestination } = this.state;
     const { flight: { finalDestination } } = this.props;
-    console.log("MOUNT;", finalDestination, cachedDestination);
     this.updateImageBackgrounds(finalDestination)
     /*
     fetch("https://api.unsplash.com/search/photos?query=" + encodeURIComponent( finalDestination ) + "+city&orientation=landscape", {
