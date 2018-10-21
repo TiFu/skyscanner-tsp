@@ -23,6 +23,11 @@ export class Polyline extends PureComponent {
     selected: true,
   }
 
+  shouldComponentUpdate(newProps) {
+    if (JSON.stringify(newProps.path) === JSON.stringify(this.props.path) && newProps.showSelected === this.props.showSelected && newProps.selected === this.props.selected) return false
+    return true
+  }
+
   componentWillUpdate({ showSelected, selected }) {
     const { map, maps } = this.props
     if (showSelected && selected && map && maps && this.line && selected !== this.props.selected) {
