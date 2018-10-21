@@ -199,6 +199,15 @@ class App extends Component {
     this.setState({ startDate: moment(newDate).format('YYYY-MM-DD') })
   }
 
+  handlePointClick = (id) => {
+    if (!this.state.startPlace) {
+      this.handleStartChange({ suggestion: { value: id } })
+    } else {
+      this.handleNewChange({ suggestion: { value: id } })
+    }
+    this.setState({ open: true })
+  }
+
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
@@ -275,7 +284,7 @@ class App extends Component {
                 }
                 return memo
             }, []) }
-            {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => console.log(id)} lng={longitude} />))}
+            {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => this.handlePointClick(id)} lng={longitude} />))}
           </GoogleMap>
         </div>
         <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />

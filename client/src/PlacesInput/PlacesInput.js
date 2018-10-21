@@ -22,6 +22,9 @@ class Places extends Component {
     }
         
     this.autocomplete = place(options)
+    if (this.props.value) {
+      this.autocomplete.setVal(this.props.value)
+    }
 
     this.autocomplete.on('change', (e) => {
       this.props.onChange(e)
@@ -29,6 +32,13 @@ class Places extends Component {
         this.autocomplete.setVal(null)
       }
     })
+  }
+
+  componentDidUpdate({ value }) {
+    if (this.props.value !== value) {
+      this.autoCompletePlace.value = this.props.value
+      this.autocomplete.setVal(this.props.value)
+    }
   }
 
   componentWillUnmount() {
