@@ -89,12 +89,20 @@ class App extends Component {
     }))
   }
 
-  onNewSubmit = (data) => {
+  onNewSubmit = () => {
+    const { startPlace, cities, cityCounts, startDate, cityIgnored } = this.state
     this.setState({ requestLoading: true })
-    this.socket.emit('city_list', Object.assign({}, data, {
+
+    this.socket.emit('city_list', {
       id: roomHash,
-      action: 'city_list'
-    }))
+      action: 'city_list',
+      routeName: uuid(),
+      startingCity: startPlace,
+      cities: [startPlace, ...cities],
+      ignoreFlight: [startPlace, ...cities].filter((_, index) => cityIgnored.includes(index)),
+      durationOfStay: cityCounts.reduce((memo, count, index) => ({ ...memo, [cities[index]]: count }), {[startPlace]: 0}),
+      earliestDeparture: startDate,
+    })
   }
 
   onAlternative = (data) => {
@@ -187,18 +195,6 @@ class App extends Component {
     }
   }
 
-  submit = () => {
-    const { startPlace, cities, cityCounts, startDate, cityIgnored } = this.state
-    this.onNewSubmit({
-      routeName: uuid(),
-      startingCity: startPlace,
-      cities: [startPlace, ...cities],
-      ignoreFlight: [startPlace, ...cities].filter((_, index) => cityIgnored.includes(index)),
-      durationOfStay: cityCounts.reduce((memo, count, index) => ({ ...memo, [cities[index]]: count }), {[startPlace]: 0}),
-      earliestDeparture: startDate,
-    })
-  }
-
   handleDayChange = (newDate) => {
     this.setState({ startDate: moment(newDate).format('YYYY-MM-DD') })
   }
@@ -224,7 +220,7 @@ class App extends Component {
             handleRemove={this.handleRemove}
             handleCountChange={this.handleCountChange}
             handleIgnoreToggle={this.handleIgnoreToggle}
-            submit={this.submit}
+            submit={this.onNewSubmit}
             handleDayChange={this.handleDayChange}
           />
           { selectedRoute &&
