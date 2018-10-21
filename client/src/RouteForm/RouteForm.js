@@ -35,7 +35,6 @@ class RouteForm extends Component {
 
   render() {
     const { loading, startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.props
-    console.log(this.props)
     return (
       <div className={styles.container}>
         <div className={styles.fab}>

@@ -13,7 +13,7 @@ class GeneralView extends Component {
       routeName: t.string,
       cities: t.arrayOf(t.string),
       durationOfStay: t.object,
-      trip: {
+      trip: t.shape({
         totalPrice: t.number,
         flights: t.arrayOf(t.shape({
           startingCity: t.string,
@@ -46,7 +46,7 @@ class GeneralView extends Component {
             })),
           })),
         })),
-      },
+      }),
     })),
     onSelectRoute: t.func,
   }
@@ -73,7 +73,7 @@ class GeneralView extends Component {
     return (
       <div className={styles.list}>
         {Object.entries(byAuthor).map(([owner, routes]) => (
-          <div>
+          <div key={owner}>
             <header>
               <Avatar color={colorFromStr(owner)}>{getInitials(owner)}</Avatar>
               {owner}
