@@ -57,7 +57,15 @@ class RouteForm extends Component {
           <Card className={styles.overlay}>
             <List>
               <ListItem>
-                <AlgoliaPlaces disabled={loading} value={startPlace} language="en" type="city" placeholder="Start city" onChange={this.props.handleStartChange} autocompleteOptions={(suggestion) => console.log(suggestion)} />
+                <AlgoliaPlaces
+                  disabled={loading}
+                  value={startPlace}
+                  language="en"
+                  type="city"
+                  placeholder="Start city"
+                  onChange={this.props.handleStartChange}
+                  value={this.props.startPlace}
+                />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <FlightTakeoff />

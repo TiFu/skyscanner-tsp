@@ -202,6 +202,15 @@ class App extends Component {
     this.setState({ startDate: moment(newDate).format('YYYY-MM-DD') })
   }
 
+  handlePointClick = (id) => {
+    if (!this.state.startPlace) {
+      this.handleStartChange({ suggestion: { value: id } })
+    } else {
+      this.handleNewChange({ suggestion: { value: id } })
+    }
+    this.setState({ open: true })
+  }
+
   render() {
     const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
@@ -223,6 +232,7 @@ class App extends Component {
     } else {
       return (
         <div className="App">
+          <div className="overlay">
           <span className="overlayWrapper">
             <RouteForm
               owner={username}
@@ -253,6 +263,7 @@ class App extends Component {
               />
             }
           </span>
+          </div>
           { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
           <div className="map">
             <GoogleMap
