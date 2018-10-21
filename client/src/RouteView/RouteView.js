@@ -119,7 +119,7 @@ class RouteView extends Component {
       return prev + alternative.price;
     }, 0);
 
-    let totalDuration = trip.flights.reduce((prev, flight) =>{
+    let totalDuration = trip.flights.reduce((prev, flight) => {
       const alternative = flight.alternatives[flight.selectedAlternative]
       return prev + alternative.duration
     }, 0)

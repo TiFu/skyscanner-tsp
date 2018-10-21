@@ -9,11 +9,15 @@ body {
 }
 
 .overlayWrapper {
-	position: absolute;
-	z-index: 400;
+  position: absolute;
+  z-index: 400;
 }
 
 .map {
   width: 100vw;
   height: 100vh;
+}
+
+.hackatech {
+  color: #1FFF84
 }
