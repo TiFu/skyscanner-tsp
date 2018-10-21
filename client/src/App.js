@@ -73,11 +73,17 @@ class App extends Component {
       }
     }
 
+    const reserve = () => {
+      this.coopSocket.emit('poll')
+      clearTimeout(this.coopTimer)
+      this.coopTimer = setTimeout(reserve, 250)
+    }
+    this.coopTimer = setTimeout(reserve, 250)
+
     this.coopSocket.on('room_state', ({ id, data }) => {
       if (id === roomHash) {
         this.setState({ coopData: data })
       }
-      this.coopTimer = setTimeout(() => this.coopSocket.emit('poll'), 200)
     })
 
     this.socket.on('new_session', (data) => {
@@ -113,6 +119,7 @@ class App extends Component {
     if (this.state.map) {
       this.state.map.removeListener('mousemove', this.onMapMouseMove)
     }
+    clearTimeout(this.coopTimer)
   }
 
   componentDidUpdate(_, oldState) {

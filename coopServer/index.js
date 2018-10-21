@@ -34,13 +34,11 @@ try {
     socket.on('mouse_location', ({ lat, lng }) => {
       createIfNotExists(roomId)
       roomIds[roomId].mouseBroadcasts[username] = { lat, lng }
-      socket.emit('room_state', { id: roomId, data: roomIds[roomId] })
     })
 
     socket.on('temp_coords', (temp) => {
       createIfNotExists(roomId)
       roomIds[roomId].tempPaths[username] = temp
-      socket.emit('room_state', { id: roomId, data: roomIds[roomId] })
     })
   
     socket.on('disconnect', () => {
