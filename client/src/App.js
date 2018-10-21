@@ -17,6 +17,7 @@ import { Snackbar } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
 
 import './App.css'
+import Shadowline from './Shadowline/Shadowline';
 
 const airports = airportData.map(({ Location: loc, Id }) => {
   const [longitude, latitude] = loc.split(',').map(item => Number.parseFloat(item.trim(), 10))
@@ -45,6 +46,8 @@ class App extends Component {
     cities: [],
     cityCounts: [],
     cityIgnored: [],
+
+    tempPath: [],
   }
 
   initialLoad = true
@@ -98,11 +101,18 @@ class App extends Component {
     })
 
     const handleStateReceive = (data) => {
+
+      const filteredData = Object.assign({}, data, {
+        routes: data.routes.filter(route => {
+          if (!route || !route.trip || !route.trip.flights) return false
+          return !route.trip.flights.some(flight => !flight || !flight.alternatives || !flight.alternatives[flight.selectedAlternative])
+        })
+      })
       if (this.initialLoad && this.state.mapLoaded) {
         this.initialLoad = false
-        this.fitMarkers(data, this.state.map, this.state.maps)
+        this.fitMarkers(filteredData, this.state.map, this.state.maps)
       }
-      this.setState({ data, requestLoading: false })
+      this.setState({ data: filteredData, requestLoading: false })
     }
 
     this.socket.on('state', handleStateReceive)
@@ -163,7 +173,7 @@ class App extends Component {
     const bounds = new maps.LatLngBounds()
     let hasBounds = false
     data.routes.forEach(route => route.trip && route.trip.flights.forEach(flight => {
-      flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
+      flight.alternatives && flight.alternatives[flight.selectedAlternative] && flight.alternatives[flight.selectedAlternative].legs.forEach(leg => {
         const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
         const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
 
@@ -188,27 +198,44 @@ class App extends Component {
     return coords.slice(0, limit)
   }
 
-  toggle = () => this.setState(state => ({ open: !state.open }))
+  toggle = () => {
+    this.setState(state => ({ open: !state.open, tempPath: [], cityCounts: [], cities: [], startPlace: null, startDate: null, cityIgnored: [] }))
+  }
 
   parseCity = (value) => value && value.split(',')[0]
 
   handleStartChange = ({ suggestion }) => {
     if (suggestion) {
-      this.setState({ startPlace: this.parseCity(suggestion.value) })
+      const newState = { startPlace: this.parseCity(suggestion.value) }
+      if (suggestion.latlng) {
+        newState.tempPath = [...this.state.tempPath, suggestion.latlng]
+      }
+
+      this.setState(newState)
     }
   }
 
   handleNewChange = ({ suggestion }) => {
     if (suggestion) {
-      this.setState(({ cities, cityCounts }) => ({ cities: [...cities, this.parseCity(suggestion.value)], cityCounts: [...cityCounts, 1] }))
+      const newState = {
+        cities: [...this.state.cities, this.parseCity(suggestion.value)],
+        cityCounts: [...this.state.cityCounts, 1],
+      }
+
+      if (suggestion.latlng) {
+        newState.tempPath = [...this.state.tempPath, suggestion.latlng]
+      }
+
+      this.setState(newState)
     }
   }
 
   handleRemove = (index) => {
     const newCities = this.state.cities.filter((_, i) => index !== i)
     const newCityCounts = this.state.cityCounts.filter((_, i) => index !== i)
+    const tempPath = this.state.tempPath.filter((_, i) => index !== i - 1)
 
-    this.setState({ cities: newCities, cityCounts: newCityCounts })
+    this.setState({ cities: newCities, cityCounts: newCityCounts, tempPath })
   }
 
   handleCountChange = (index, value) => {
@@ -229,17 +256,19 @@ class App extends Component {
     this.setState({ startDate: moment(newDate).format('YYYY-MM-DD') })
   }
 
-  handlePointClick = (id) => {
+  handlePointClick = (id, coords) => {
     if (!this.state.startPlace) {
-      this.handleStartChange({ suggestion: { value: id } })
+      console.log(coords)
+      this.handleStartChange({ suggestion: { value: id, latlng: { lat: coords.latitude, lng: coords.longitude } } })
     } else {
-      this.handleNewChange({ suggestion: { value: id } })
+      this.handleNewChange({ suggestion: { value: id, latlng: { lat: coords.latitude, lng: coords.longitude } } })
     }
+    
     this.setState({ open: true })
   }
 
   render() {
-    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports } = this.state
+    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports, tempPath } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
     if (showHackButton) {
@@ -328,10 +357,10 @@ class App extends Component {
                       id={route.routeName}
                       showSelected={!!selectedRoute}
                       selected={route.routeName === selectedRouteId}
-                      onSelect={(id) => this.setState({ selectedRouteId: id })}
+                      onSelect={(id) => this.setState({ selectedRouteId: id, tempPath: [] })}
                       color={colorFromIndex(index)}
                       user={route.owner}
-                      path={flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
+                      path={flight.alternatives && flight.alternatives[flight.selectedAlternative] && flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
                         const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
                         const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
 
@@ -346,7 +375,8 @@ class App extends Component {
                   }
                   return memo
               }, []) }
-              {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => console.log(id)} lng={longitude} />))}
+              {airports.map(({ coords, id }) => (<Point key={id} lat={coords.latitude} onClick={() => this.handlePointClick(id, coords)} lng={coords.longitude} />))}
+              {mapLoaded && <Shadowline path={tempPath} map={map} maps={maps} />}
             </GoogleMap>
 
           </div>

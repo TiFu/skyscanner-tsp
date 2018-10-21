@@ -64,7 +64,6 @@ class RouteForm extends Component {
                   type="city"
                   placeholder="Start city"
                   onChange={this.props.handleStartChange}
-                  value={this.props.startPlace}
                 />
                 <ListItemSecondaryAction>
                   <IconButton>
