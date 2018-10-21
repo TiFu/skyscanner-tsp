@@ -4,6 +4,7 @@ import uuid from 'uuid/v4'
 import moment from 'moment'
 import { GOOGLE_MAP_KEY } from './config'
 import airportData from './airports.json'
+import hackathonData from './hackathons.json'
 import GoogleMap from 'google-map-react'
 import RouteForm from './RouteForm'
 import Polyline from './Polyline'
@@ -60,6 +61,32 @@ class App extends Component {
     }
 
     this.socket.on('new_session', (data) => {
+      const { hackathonStartPlace } = this.state;
+
+      if (this.state.fetchHackathon) {
+        console.log("I am alive!");
+        this.setState({ fetchHackathon: false, requestLoading: true });
+
+        const { hackathonPlace, hackathonDuration, hackathonStart } = hackathonData[Math.floor(Math.random() * hackathonData.length)];
+
+        // 14 days before the contest starts
+        // const today = new Date(new Date(hackathonStart) - new Date(0, 0, 14));
+        // const dd = today.getDate();
+        // const mm = today.getMonth() + 1; // January is 0!
+        // const yyyy = today.getFullYear();
+
+        this.socket.emit('city_list', {
+          id: data.id,
+          action: 'city_list',
+          routeName: uuid(),
+          startingCity: hackathonStartPlace,
+          cities: [hackathonStartPlace, hackathonPlace],
+          ignoreFlight: [],
+          durationOfStay: {[hackathonPlace]: hackathonDuration},
+          earliestDeparture: moment(hackathonStart, "YYYY-MM-DD").subtract(14, "days").format("YYYY-MM-DD"),
+        });
+      }
+
       window.location = `/room/${data.id}`
     })
 
@@ -156,7 +183,7 @@ class App extends Component {
   }
 
   findNearestAirports = (center, limit = 50) => {
-    const coords = airports.map(({ coords, id }) => ({ id, coords, distance: getDistance(coords, center) }))
+    const coords = airports.map(({ coords, id }) => ({ id, coords, distance: getDistance(coords, center) }));
     coords.sort((a, b) => a.distance - b.distance)
     return coords.slice(0, limit)
   }
@@ -219,11 +246,28 @@ class App extends Component {
       return (
         <center className="hackatech">
           <h1>Hackathons are Awesome</h1>
-          <Button variant="contained" className="hackatechButton" onClick={() => {
+          <Button variant="contained" color="primary" className="hackatechButton" onClick={() => {
             showHackButton = false;
             roomHash = null;
 
-            this.socket.emit('new_session', { user: username });
+            if (!navigator.geolocation) {
+              window.alert("Your browser does not support geolocation :(" );
+            } else {
+              navigator.geolocation.getCurrentPosition(position => {
+                // position.coords.latitude/longitude
+                const closestAirports = this.findNearestAirports({
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude
+                }, 1);
+
+                if (closestAirports.length === 0) {
+                  window.alert("Sorry, there was a problem while looking for your flight options");
+                } else {
+                  this.setState({ hackathonStartPlace: closestAirports[0].id, fetchHackathon: true })
+                  this.socket.emit('new_session', { user: username });
+                }
+              });
+            }
           }}>
             Fly to a Hackathon Now
           </Button>
