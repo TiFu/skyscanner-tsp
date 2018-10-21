@@ -19,7 +19,6 @@ import CalendarToday from '@material-ui/icons/CalendarToday'
 import FlightTakeoff from '@material-ui/icons/FlightTakeoff'
 import Button from '@material-ui/core/Button'
 
-
 import AlgoliaPlaces from '../PlacesInput'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
@@ -27,6 +26,7 @@ import 'react-day-picker/lib/style.css';
 import './Calendar.style.css'
 import styles from './RouteForm.module.css'
 import { CardActions } from '@material-ui/core';
+import { colorFromStr } from '../utils';
 
 class RouteForm extends Component {
   static propTypes = {
@@ -35,6 +35,7 @@ class RouteForm extends Component {
 
   render() {
     const {
+      owner,
       loading,
       startPlace,
       startDate,
@@ -46,7 +47,7 @@ class RouteForm extends Component {
     return (
       <div className={styles.container}>
         <div className={styles.fab}>
-          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.props.toggle}>
+          <Button variant="fab" disabled={loading} color="primary" style={{ background: colorFromStr(owner) }} aria-label="Add" onClick={this.props.toggle}>
             { open ? <Close /> : <LocalAirport /> }
           </Button>
           {loading && <CircularProgress size={68} className={styles.fabProgress} />}

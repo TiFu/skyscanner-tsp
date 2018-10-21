@@ -10,7 +10,7 @@ import FilterNone from '@material-ui/icons/FilterNone'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { printLeadingZero } from '../utils'
 import styles from './RouteView.module.css'
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Tooltip } from '@material-ui/core';
 
 
 const SortableFlightItem = SortableElement(FlightView)
@@ -133,14 +133,18 @@ class RouteView extends Component {
             <div className={styles.owner}>
               {owner}'s route
             </div>
+            <Tooltip title="Duplicate route" placement="top">
+              <IconButton className={styles.close} onClick={() => {onDuplicate({routeName: this.props.route.routeName})}} component="span" size="small">
+                <FilterNone />
+              </IconButton>
+            </Tooltip>
 
-            <IconButton className={styles.close} onClick={() => {onDuplicate({routeName: this.props.route.routeName})}} component="span" size="small">
-              <FilterNone />
-            </IconButton>
+            <Tooltip title="Close" placement="top">
+              <IconButton className={styles.close} onClick={onClose} component="span" size="small">
+                <Close />
+              </IconButton>
+            </Tooltip>
 
-            <IconButton className={styles.close} onClick={onClose} component="span" size="small">
-              <Close />
-            </IconButton>
           </div>
 
           <SortableFlights

@@ -75,7 +75,7 @@ class GeneralView extends Component {
         {Object.entries(byAuthor).map(([owner, routes]) => (
           <div key={owner}>
             <header>
-              <Avatar color={colorFromStr(owner)}>{getInitials(owner)}</Avatar>
+              <Avatar style={{ background: colorFromStr(owner) }}>{getInitials(owner)}</Avatar>
               {owner}
             </header>
             <div className={styles.contentlist}>

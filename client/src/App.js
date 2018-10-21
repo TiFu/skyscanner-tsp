@@ -208,6 +208,7 @@ class App extends Component {
         <div className="overlay">
           <span className="overlayWrapper">
             <RouteForm
+              owner={username}
               open={this.state.open}
               startPlace={this.state.startPlace}
               startDate={this.state.startDate}
