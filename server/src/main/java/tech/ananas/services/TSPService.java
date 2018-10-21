@@ -1,10 +1,13 @@
 package tech.ananas.services;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import tech.ananas.models.Route;
@@ -37,6 +40,7 @@ public class TSPService {
 		// flight back!
 		orderedCities.remove(orderedCities.size() - 1);
 		Route outputRoute = new Route("tsp", null, orderedCities, cityListRequest.getDurationOfStay());
+		Set<String> citySet = new HashSet<>(orderedCities);
 		return outputRoute;
 		
 	}

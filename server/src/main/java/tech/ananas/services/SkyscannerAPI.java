@@ -13,8 +13,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -38,8 +40,14 @@ public class SkyscannerAPI {
 	private String cabinclass = "economy";
 	private int adults = 1;
 	private JsonObject places;
+	Map<String, List<Flight>> flightsCache;
+	Map<String, String> sessionUrlToFlightInfo;
+	Map<String, BrowseQuotes> browseQuotesCache;
 	
 	public SkyscannerAPI(String apikey) {
+		this.flightsCache = new HashMap<>();
+		this.sessionUrlToFlightInfo = new HashMap<>();
+		this.browseQuotesCache = new HashMap<>();
 		this.apikey = apikey;
 		File places = new File(this.getClass().getClassLoader().getResource("places.json").getFile());
 		StringBuffer lines = new StringBuffer();
@@ -61,6 +69,11 @@ public class SkyscannerAPI {
 	}
 	
 	public List<Flight> getFlight(String sessionUrl, int numberOfFlights) throws IOException {
+		if (sessionUrl.startsWith("cache:")) {
+			String key = this.sessionUrlToFlightInfo.get(sessionUrl.replace("cache:", ""));
+			return this.flightsCache.get(key);
+		}
+		
 		boolean searchDone = false;
 		Gson gson = new Gson();
 		JsonObject foundFlights = null;
@@ -142,6 +155,7 @@ public class SkyscannerAPI {
 			arrivalTime, duration, legSegments);
 			flights.add(f);
 		}		
+		this.flightsCache.put(this.sessionUrlToFlightInfo.get(sessionUrl), new LinkedList<>(flights));
 		return flights;
 	}
 		
@@ -205,6 +219,10 @@ public class SkyscannerAPI {
 	}
 	
 	public String createSession(String originPlace, String destinationPlace, String outboundDate) throws IOException, SkyscannerAPIException {
+		if (this.flightsCache.containsKey(originPlace + "/" + destinationPlace + "/" + outboundDate)) {
+			return "cache:" + originPlace + "/" + destinationPlace + "/" + outboundDate;
+		}
+		
 		JsonObject origin = this.getPlaceOrAirport(originPlace);
 		System.out.println(origin);
 		JsonObject destination = this.getPlaceOrAirport(destinationPlace);
@@ -242,6 +260,7 @@ public class SkyscannerAPI {
 		
 	    if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 299) {
 	    	String location = conn.getHeaderField("Location");
+	    	this.sessionUrlToFlightInfo.put(location, originPlace + "/" + destinationPlace + "/" + outboundDate);
 		    return location;
 	    } else {
 	    	System.out.println("Response Code: " + conn.getResponseCode());
@@ -251,6 +270,10 @@ public class SkyscannerAPI {
 	}
 	
 	public BrowseQuotes getQuotes(String originPlace, String destinationPlace, String outboundPartialDate) throws Exception {
+		if (this.browseQuotesCache.containsKey(originPlace + "/" + destinationPlace + "/" + outboundPartialDate)) {
+			return this.browseQuotesCache.get(originPlace + "/" + destinationPlace + "/" + outboundPartialDate);
+		}
+		
 		URL url = new URL ("http://partners.api.skyscanner.net/apiservices/browsequotes/v1.0"
 				+ "/" + URLEncoder.encode(country, "UTF-8")
 				+ "/" + URLEncoder.encode(currency, "UTF-8")
@@ -277,6 +300,7 @@ public class SkyscannerAPI {
 	    //System.out.println(elem);
 	    BrowseQuotes quotes = gson.fromJson(line, BrowseQuotes.class);
 	    //System.out.println(quotes);
+	    this.browseQuotesCache.put(originPlace + "/" + destinationPlace + "/" + outboundPartialDate, quotes);
 		return quotes;
 	}
 }
