@@ -324,6 +324,7 @@ class App extends Component {
               handleIgnoreToggle={this.handleIgnoreToggle}
               submit={this.onNewSubmit}
               handleDayChange={this.handleDayChange}
+              loading={requestLoading}
             />
             { selectedRoute &&
               <RouteView
