@@ -4,7 +4,6 @@ import FlightView from '../FlightView'
 import { colorFromStr } from '../utils'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
-import CardMedia from '@material-ui/core/CardMedia'
 import Close from '@material-ui/icons/Close'
 import FilterNone from '@material-ui/icons/FilterNone'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
@@ -36,7 +35,7 @@ class RouteView extends Component {
       routeName: t.string,
       cities: t.arrayOf(t.string),
       durationOfStay: t.object,
-      trip: {
+      trip: t.shape({
         totalPrice: t.number,
         flights: t.arrayOf(t.shape({
           startingCity: t.string,
@@ -69,7 +68,7 @@ class RouteView extends Component {
             })),
           })),
         })),
-      },
+      }),
     }),
     loading: t.bool,
     onClose: t.func,
@@ -126,7 +125,7 @@ class RouteView extends Component {
 
     return <div className={styles.route}>
       <Card>
-        <CardMedia className={[...(loading ? [styles.cardLoading] : []), ...(sorting ? [styles.cardSorting] : [])].join(' ')}>
+        <div className={[...(loading ? [styles.cardLoading] : []), ...(sorting ? [styles.cardSorting] : [])].join(' ')}>
           {loading && <div className={styles.progress}><CircularProgress size={60} /></div>}
 
           <div className={styles.ownerHeader} style={{ backgroundColor: colorFromStr(owner) }}>
@@ -150,7 +149,6 @@ class RouteView extends Component {
           <SortableFlights
             scrollDisabled={loading}
             flights={flights}
-            distance="12"
             lockToContainerEdges
             onSortEnd={this.onDirectionChange}
             helperClass={styles.helper}
@@ -164,7 +162,7 @@ class RouteView extends Component {
             <div className={styles.length}>{`Total Duration: ${printLeadingZero(Math.floor(totalDuration/60))}:${printLeadingZero(totalDuration - 60 * Math.floor(totalDuration/60))}h`}</div>
             <div className={styles.total}>{`${totalPrice.toFixed(2)} €`}</div>
           </div>
-        </CardMedia>
+        </div>
       </Card>
     </div>
   }
