@@ -1,8 +1,9 @@
 package tech.ananas.sky;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Quote {
+public class Quote implements Serializable {
     public long QuoteId;
     public long MinPrice;
     public boolean Direct;

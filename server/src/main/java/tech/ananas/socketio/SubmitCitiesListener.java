@@ -73,8 +73,8 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 			Route r = this.tspService.TSProute(this.r);
 			System.out.println("Calculated TSP routes!");
 			r.setEarliestDeparture(this.r.getEarliestDeparture());
-			r.setOwner("TSP");
-			r.setRouteName(r.getRouteName() + " - TSP");
+			if (r.getOwner() == null) 
+				r.setOwner("Mr. Cheapest");
 			System.out.println("Updating route with trip!");
 			try {
 				this.server.getFlightsService().updateTrip(r);
@@ -92,6 +92,8 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 				return;
 			}
 			this.server.broadcastToSession(this.r.getId(), "state", this.session);
+			
+			//this.server.getSkyscannerAPI().serializeCaches();
 		}
 		
 	}

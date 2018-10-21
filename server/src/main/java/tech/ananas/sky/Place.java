@@ -1,6 +1,8 @@
 package tech.ananas.sky;
 
-public class Place {
+import java.io.Serializable;
+
+public class Place implements Serializable {
     @Override
 	public String toString() {
 		return "Place [PlaceId=" + PlaceId + ", Name=" + Name + ", Type=" + Type + ", SkyScannerCode=" + SkyScannerCode

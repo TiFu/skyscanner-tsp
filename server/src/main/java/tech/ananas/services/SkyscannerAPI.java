@@ -5,8 +5,12 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -45,9 +49,13 @@ public class SkyscannerAPI {
 	Map<String, BrowseQuotes> browseQuotesCache;
 	
 	public SkyscannerAPI(String apikey) {
-		this.flightsCache = new HashMap<>();
-		this.sessionUrlToFlightInfo = new HashMap<>();
-		this.browseQuotesCache = new HashMap<>();
+		this.deserializeCaches();
+		if (this.flightsCache == null)
+			this.flightsCache = new HashMap<>();
+		if (this.sessionUrlToFlightInfo == null)
+			this.sessionUrlToFlightInfo = new HashMap<>();
+		if (this.browseQuotesCache == null)
+			this.browseQuotesCache = new HashMap<>();
 		this.apikey = apikey;
 		File places = new File(this.getClass().getClassLoader().getResource("places.json").getFile());
 		StringBuffer lines = new StringBuffer();
@@ -63,7 +71,89 @@ public class SkyscannerAPI {
 		this.places = gson.fromJson(lines.toString(), JsonObject.class);
 	}
 	
+	public void serializeCaches() { 
+        try {
+        	FileOutputStream fos = new FileOutputStream("flightsCache.ser");
+             ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(this.flightsCache);
+			 oos.close();
+             fos.close();
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        try {
+        	FileOutputStream fos = new FileOutputStream("sessionUrlToFlightCache.ser");
+             ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(this.flightsCache);
+			 oos.close();
+             fos.close();
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        try {
+        	FileOutputStream fos = new FileOutputStream("browseQuotesCache.ser");
+             ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(this.browseQuotesCache);
+			 oos.close();
+             fos.close();
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
+	private void deserializeCaches() {
+		try {
+			FileInputStream fis = new FileInputStream("flightsCache.ser");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        try {
+				this.flightsCache = (HashMap<String, List<Flight>>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        ois.close();
+	        fis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			FileInputStream fis = new FileInputStream("sessionUrlToFlightCache.ser");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        try {
+				this.sessionUrlToFlightInfo = (HashMap<String, String>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        ois.close();
+	        fis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			FileInputStream fis = new FileInputStream("browseQuotesCache.ser");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        try {
+				this.browseQuotesCache = (HashMap<String, BrowseQuotes>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        ois.close();
+	        fis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+
+	}
+		
 	public List<Flight> getFlight(String sessionUrl) throws IOException {
 		return this.getFlight(sessionUrl, 5);
 	}

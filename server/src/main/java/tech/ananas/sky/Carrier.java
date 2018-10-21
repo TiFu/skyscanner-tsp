@@ -1,6 +1,8 @@
 package tech.ananas.sky;
 
-public class Carrier {
+import java.io.Serializable;
+
+public class Carrier implements Serializable {
     public long CarrierId;
     public String Name;
 	@Override
