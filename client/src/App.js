@@ -248,7 +248,12 @@ class App extends Component {
       return (
         <center className="hackatech">
           <h1>Hackathons are Awesome</h1>
-          <Button variant="contained" className="hackatechButton">
+          <Button variant="contained" className="hackatechButton" onClick={() => {
+            showHackButton = false;
+            roomHash = null;
+
+            this.socket.emit('new_session', { user: username });
+          }}>
             Fly to a Hackathon Now
           </Button>
         </center>

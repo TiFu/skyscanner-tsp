@@ -41,5 +41,10 @@ body {
 }
 
 .hackatech {
-  color: #1FFF84
+  color: #1FFF84;
+}
+
+.hackatechButton {
+  background-color: #B120DC;
+  color: #eee;
 }
