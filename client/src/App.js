@@ -70,13 +70,8 @@ class App extends Component {
         console.log("I am alive!");
         this.setState({ fetchHackathon: false, requestLoading: true });
 
-        const { hackathonPlace, hackathonDuration, hackathonStart } = hackathonData[Math.floor(Math.random() * hackathonData.length)];
-
-        // 14 days before the contest starts
-        // const today = new Date(new Date(hackathonStart) - new Date(0, 0, 14));
-        // const dd = today.getDate();
-        // const mm = today.getMonth() + 1; // January is 0!
-        // const yyyy = today.getFullYear();
+        const id = Math.floor(Math.random() * hackathonData.length);
+        const { hackathonPlace, hackathonDuration, hackathonStart } = hackathonData[id];
 
         this.socket.emit('city_list', {
           id: data.id,
@@ -84,8 +79,10 @@ class App extends Component {
           routeName: uuid(),
           startingCity: hackathonStartPlace,
           cities: [hackathonStartPlace, hackathonPlace],
+          hackathonId: id,
           ignoreFlight: [],
           durationOfStay: {[hackathonPlace]: hackathonDuration},
+          // 14 days before the contest starts
           earliestDeparture: moment(hackathonStart, "YYYY-MM-DD").subtract(14, "days").format("YYYY-MM-DD"),
         });
       }
