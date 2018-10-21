@@ -70,8 +70,13 @@ public class SkyscannerAPI {
 	
 	public List<Flight> getFlight(String sessionUrl, int numberOfFlights) throws IOException {
 		if (sessionUrl.startsWith("cache:")) {
-			String key = this.sessionUrlToFlightInfo.get(sessionUrl.replace("cache:", ""));
-			return this.flightsCache.get(key);
+			System.out.println("Using cached flights!");
+			String key = sessionUrl.replace("cache:", "");
+			if (key != null && this.flightsCache.containsKey(key)) {
+				List<Flight> flights = this.flightsCache.get(key);
+				System.out.print("Cached Flights: " + flights);
+				return flights;
+			}
 		}
 		
 		boolean searchDone = false;

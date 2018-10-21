@@ -12,6 +12,7 @@ public class SubmitCityListRequest {
 	private List<List<String>> ignoreFlight;
 	private Map<String,Integer> durationOfStay;
 	private String earliestDeparture;
+	private String hackathonId;
 	
 	public SubmitCityListRequest() {
 		
@@ -22,6 +23,10 @@ public class SubmitCityListRequest {
 		this.cities = cities;
 		this.ignoreFlight = ignoreFlight;
 		this.durationOfStay = durationOfStay;
+	}
+	
+	public String getHackathonId() {
+		return hackathonId;
 	}
 	
 	public String getId() {
