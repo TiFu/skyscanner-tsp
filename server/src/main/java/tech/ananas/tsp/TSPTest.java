@@ -24,8 +24,10 @@ public class TSPTest {
 
 		SkyscannerAPI skyAPI = new SkyscannerAPI("ha973240724713587943361464989493");
 		TSPService test = new TSPService(skyAPI);	
-		test.TSPpath(createSampleRoute());
-		System.out.println(test.TSProute(createSampleRoute()).getCities());
+		//test.TSPpath(createSampleRoute());
+		//System.out.println(test.comparisonPrice("FRA", "PRG"));
+		test.greedyTSPbenchmark(createSampleRoute());
+		//System.out.println(test.TSProute(createSampleRoute()).getCities());
 	}
 	
 	public static SubmitCityListRequest createSampleRoute() {
