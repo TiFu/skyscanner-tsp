@@ -21,7 +21,7 @@ body {
 }
 
 .overlayWrapper {
-	position: absolute;
+  position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
@@ -38,4 +38,8 @@ body {
 .map {
   width: 100vw;
   height: 100vh;
+}
+
+.hackatech {
+  color: #1FFF84
 }

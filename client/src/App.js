@@ -13,6 +13,7 @@ import RouteView from './RouteView'
 import GeneralView from './GeneralView'
 import { colorFromIndex } from './utils'
 import { Snackbar } from '@material-ui/core'
+import Button from '@material-ui/core/Button';
 
 import './App.css'
 
@@ -22,6 +23,7 @@ const airports = airportData.map(({ Location: loc, Id }) => {
 })
 
 let roomHash = window.location.pathname.includes('/room/') ? window.location.pathname.replace('/room/', '') : null
+let showHackButton = window.location.pathname === '/hack';
 const username = window.localStorage.getItem('username') || window.prompt('Username:')
 window.localStorage.setItem('username', username)
 
@@ -47,13 +49,14 @@ class App extends Component {
   initialLoad = true
 
   componentDidMount() {
-
     this.socket = io(':8989')
     window.socket = this.socket;
-    if (!roomHash) {
-      this.socket.emit('new_session', { user: username })
-    } else {
-      this.socket.emit('restore_session', { user: username, id: roomHash })
+    if (!showHackButton) {
+      if (!roomHash) {
+        this.socket.emit('new_session', { user: username })
+      } else {
+        this.socket.emit('restore_session', { user: username, id: roomHash })
+      }
     }
 
     this.socket.on('new_session', (data) => {
@@ -212,9 +215,19 @@ class App extends Component {
     const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
 
-    return (
-      <div className="App">
-        <div className="overlay">
+    if (showHackButton) {
+      return (
+        <center className="hackatech">
+          <h1>Hackathons are Awesome</h1>
+          <Button variant="contained" className="hackatechButton">
+            Fly to a Hackathon Now
+          </Button>
+        </center>
+      )
+    } else {
+      return (
+        <div className="App">
+          <div className="overlay">
           <span className="overlayWrapper">
             <RouteForm
               owner={username}
@@ -245,51 +258,53 @@ class App extends Component {
               />
             }
           </span>
-        </div>
-        { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
-        <div className="map">
-          <GoogleMap
-            bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
-            defaultCenter={{ lat: 41.389195, lng: 2.113388 }}
-            defaultZoom={10}
-            onChange={this.onMapChange}
-            options={{
-              styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}],
-            }}
-            onGoogleApiLoaded={this.onMapLoaded}
-            yesIWantToUseGoogleMapApiInternals
-          >
-            { mapLoaded && data && data.routes && data.routes.reduce((memo, route, index) => {
-                if (route && route.trip && route.trip.flights && route.trip.flights) {
-                  memo.push.call(memo, route.trip.flights.map(flight => (
-                  <Polyline
-                    id={route.routeName}
-                    showSelected={!!selectedRoute}
-                    selected={route.routeName === selectedRouteId}
-                    onSelect={(id) => this.setState({ selectedRouteId: id })}
-                    color={colorFromIndex(index)}
-                    user={route.owner}
-                    path={flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
-                      const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
-                      const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
+          </div>
+          { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
+          <div className="map">
+            <GoogleMap
+              bootstrapURLKeys={{ key: GOOGLE_MAP_KEY }}
+              defaultCenter={{ lat: 41.389195, lng: 2.113388 }}
+              defaultZoom={10}
+              onChange={this.onMapChange}
+              options={{
+                styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}],
+              }}
+              onGoogleApiLoaded={this.onMapLoaded}
+              yesIWantToUseGoogleMapApiInternals
+            >
+              { mapLoaded && data && data.routes && data.routes.reduce((memo, route, index) => {
+                  if (route && route.trip && route.trip.flights && route.trip.flights) {
+                    memo.push.call(memo, route.trip.flights.map(flight => (
+                    <Polyline
+                      id={route.routeName}
+                      showSelected={!!selectedRoute}
+                      selected={route.routeName === selectedRouteId}
+                      onSelect={(id) => this.setState({ selectedRouteId: id })}
+                      color={colorFromIndex(index)}
+                      user={route.owner}
+                      path={flight.alternatives[flight.selectedAlternative].legs && flight.alternatives[flight.selectedAlternative].legs.reduce((acc, leg) => {
+                        const coordDeparture = (leg.departure.coordinates && leg.departure.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
+                        const coordArrival = (leg.arrival.coordinates && leg.arrival.coordinates.split(',').map(item => Number.parseFloat(item.trim(), 10))) || []
 
-                      return [...acc,
-                        { lat: coordDeparture[1], lng: coordDeparture[0], title: leg.airport },
-                        { lat: coordArrival[1], lng: coordArrival[0], title: leg.airport },
-                      ]
-                    }, [])}
-                    map={map}
-                    maps={maps}
-                  />)))
-                }
-                return memo
-            }, []) }
-            {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => this.handlePointClick(id)} lng={longitude} />))}
-          </GoogleMap>
+                        return [...acc,
+                          { lat: coordDeparture[1], lng: coordDeparture[0], title: leg.airport },
+                          { lat: coordArrival[1], lng: coordArrival[0], title: leg.airport },
+                        ]
+                      }, [])}
+                      map={map}
+                      maps={maps}
+                    />)))
+                  }
+                  return memo
+              }, []) }
+              {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => console.log(id)} lng={longitude} />))}
+            </GoogleMap>
+
+          </div>
+          <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />
         </div>
-        <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />
-      </div>
-    )
+      )
+    }
   }
 }
 
