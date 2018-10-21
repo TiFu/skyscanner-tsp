@@ -1,4 +1,6 @@
 const io = require('socket.io')(8990)
+io.set('origins', '*:*')
+
 const roomIds = {}
 
 const createIfNotExists = (roomId) => {
@@ -53,3 +55,5 @@ try {
   })
 
 } catch (err) {}  
+
+console.log('Starting coop server')
