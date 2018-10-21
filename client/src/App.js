@@ -205,35 +205,37 @@ class App extends Component {
 
     return (
       <div className="App">
-        <span className="overlayWrapper">
-          <RouteForm
-            open={this.state.open}
-            startPlace={this.state.startPlace}
-            startDate={this.state.startDate}
-            cities={this.state.cities}
-            cityCounts={this.state.cityCounts}
-            cityIgnored={this.state.cityIgnored}
+        <div className="overlay">
+          <span className="overlayWrapper">
+            <RouteForm
+              open={this.state.open}
+              startPlace={this.state.startPlace}
+              startDate={this.state.startDate}
+              cities={this.state.cities}
+              cityCounts={this.state.cityCounts}
+              cityIgnored={this.state.cityIgnored}
 
-            toggle={this.toggle}
-            handleStartChange={this.handleStartChange}
-            handleNewChange={this.handleNewChange}
-            handleRemove={this.handleRemove}
-            handleCountChange={this.handleCountChange}
-            handleIgnoreToggle={this.handleIgnoreToggle}
-            submit={this.onNewSubmit}
-            handleDayChange={this.handleDayChange}
-          />
-          { selectedRoute &&
-            <RouteView
-              loading={requestLoading}
-              route={selectedRoute}
-              onReorder={this.onReorder}
-              onAlternative={this.onAlternative}
-              onClose={this.onClose}
-              onDuplicate={this.onDuplicate}
+              toggle={this.toggle}
+              handleStartChange={this.handleStartChange}
+              handleNewChange={this.handleNewChange}
+              handleRemove={this.handleRemove}
+              handleCountChange={this.handleCountChange}
+              handleIgnoreToggle={this.handleIgnoreToggle}
+              submit={this.onNewSubmit}
+              handleDayChange={this.handleDayChange}
             />
-          }
-        </span>
+            { selectedRoute &&
+              <RouteView
+                loading={requestLoading}
+                route={selectedRoute}
+                onReorder={this.onReorder}
+                onAlternative={this.onAlternative}
+                onClose={this.onClose}
+                onDuplicate={this.onDuplicate}
+              />
+            }
+          </span>
+        </div>
         { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
         <div className="map">
           <GoogleMap
@@ -274,7 +276,6 @@ class App extends Component {
             }, []) }
             {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => console.log(id)} lng={longitude} />))}
           </GoogleMap>
-
         </div>
         <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />
       </div>

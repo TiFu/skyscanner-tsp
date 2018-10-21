@@ -12,6 +12,7 @@ class Places extends Component {
       container: this.autoCompletePlace,
       language: this.props.language,
       useDeviceLocation: this.props.useDeviceLocation,
+      autocompleteOptions: this.props.autocompleteOptions,
     }
         
     const optionnalPropsKeys = ['type', 'countries', 'aroundLatLng', 'aroundRadius', 'templates', 'appId', 'apiKey', 'apiKey']
@@ -35,9 +36,7 @@ class Places extends Component {
       if (this.autocomplete) {
         this.autocomplete.close()
       }
-    } catch (err) {
-
-    }
+    } catch (err) {}
   }
     
   render() {

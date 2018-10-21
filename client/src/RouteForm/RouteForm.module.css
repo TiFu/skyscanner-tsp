@@ -1,7 +1,9 @@
 .fab {
-  margin-left: 1rem;
-  margin-top: 1rem;
   z-index: 9999;
+
+  max-width: calc(500px - 1rem);
+  width: calc(50vw - 1rem);
+  margin: 1rem 1rem;
 }
 
 .cityList {
@@ -23,10 +25,11 @@
   top: calc(56px + 3.5rem);
   left: 2rem;*/
   margin-top: 1rem;
-  margin-left: 1rem;
-  width: 50vw;
+  /* margin-left: 1rem; */
+  max-width: calc(500px - 1rem);
+  width: calc(50vw - 1rem);
+  margin: 0 1rem;
   z-index: 9999;
-  max-width: 500px;
 }
 
 .calendarInput {

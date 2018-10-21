@@ -34,7 +34,15 @@ class RouteForm extends Component {
   }
 
   render() {
-    const { loading, startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.props
+    const {
+      loading,
+      startPlace,
+      startDate,
+      open,
+      cities,
+      cityCounts,
+      cityIgnored,
+    } = this.props
     return (
       <div className={styles.container}>
         <div className={styles.fab}>
@@ -48,22 +56,22 @@ class RouteForm extends Component {
           <Card className={styles.overlay}>
             <List>
               <ListItem>
-                <AlgoliaPlaces disabled={loading} language="en" type="city" placeholder="Start city" onChange={this.props.handleStartChange} />
+                <AlgoliaPlaces disabled={loading} value={startPlace} language="en" type="city" placeholder="Start city" onChange={this.props.handleStartChange} autocompleteOptions={(suggestion) => console.log(suggestion)} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <FlightTakeoff />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
+
               <ListItem>
-                <DayPickerInput disabled={loading} format="YYYY-MM-DD" onDayChange={this.props.handleDayChange}  placeholder="Earliest departure"  inputProps={{ className: styles.calendarInput }} />
+                <DayPickerInput disabled={loading} format="YYYY-MM-DD" onDayChange={this.props.handleDayChange} placeholder="Earliest departure" inputProps={{ className: styles.calendarInput }} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <CalendarToday />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
-
 
               <Divider />
               <ListItem>
@@ -76,6 +84,7 @@ class RouteForm extends Component {
               </ListItem>
 
               <Divider />
+
               <div className={styles.cityList}>
                 {cities.map((city, index) => (
                   <ListItem key={index + city} className={styles.city}>

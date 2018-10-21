@@ -1,11 +1,7 @@
 .route {
-/*  position: absolute;
-  left: 10px;
-  top: 6rem;*/
-  margin-left: 1rem;
-  margin-top: 1rem;
-  width: 50vw;
-  max-width: 500px;
+  max-width: calc(500px - 1rem);
+  width: calc(50vw - 1rem);
+  margin: 1rem;
 
   display: flex;
   flex-direction: column;

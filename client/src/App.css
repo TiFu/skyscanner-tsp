@@ -8,9 +8,31 @@ body {
   box-sizing: border-box;
 }
 
+.overlay {
+  position: absolute;
+  z-index: 400;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50vw;
+  max-width: 500px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .overlayWrapper {
 	position: absolute;
-	z-index: 400;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: scroll;
+
+  pointer-events: none;
+  padding-bottom: 1rem;
+}
+
+.overlayWrapper > * {
+  pointer-events: all;
 }
 
 .map {
