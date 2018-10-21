@@ -17,6 +17,7 @@ import Button from '@material-ui/core/Button';
 
 import './App.css'
 import Shadowline from './Shadowline/Shadowline';
+import PointerUser from './PointerUser/PointerUser';
 
 const airports = airportData.map(({ Location: loc, Id }) => {
   const [longitude, latitude] = loc.split(',').map(item => Number.parseFloat(item.trim(), 10))
@@ -39,6 +40,8 @@ class App extends Component {
     errorMsg: null,
     airports: [],
 
+    coopData: null,
+
     open: false,
     startPlace: null,
     startDate: null,
@@ -51,16 +54,31 @@ class App extends Component {
 
   initialLoad = true
 
+  coopTimer = null
+
   componentDidMount() {
     this.socket = io(':8989')
     window.socket = this.socket;
+
+    // coop feature
+    this.coopSocket = io(':8990')
+    window.coopSocket = this.socket
+
     if (!showHackButton) {
       if (!roomHash) {
         this.socket.emit('new_session', { user: username })
       } else {
+        this.coopSocket.emit('register', { user: username, id: roomHash })
         this.socket.emit('restore_session', { user: username, id: roomHash })
       }
     }
+
+    this.coopSocket.on('room_state', ({ id, data }) => {
+      if (id === roomHash) {
+        this.setState({ coopData: data })
+      }
+      this.coopTimer = setTimeout(() => this.coopSocket.emit('poll'), 200)
+    })
 
     this.socket.on('new_session', (data) => {
       window.location = `/room/${data.id}`
@@ -74,7 +92,6 @@ class App extends Component {
     })
 
     const handleStateReceive = (data) => {
-
       const filteredData = Object.assign({}, data, {
         routes: data.routes.filter(route => {
           if (!route || !route.trip || !route.trip.flights) return false
@@ -90,6 +107,18 @@ class App extends Component {
 
     this.socket.on('state', handleStateReceive)
     this.socket.on('restore_session', handleStateReceive)
+  }
+
+  componentWillUnmount() {
+    if (this.state.map) {
+      this.state.map.removeListener('mousemove', this.onMapMouseMove)
+    }
+  }
+
+  componentDidUpdate(_, oldState) {
+    if (this.state.tempPath.join(',') !== oldState.tempPath.join(',')) {
+      this.coopSocket.emit('temp_coords', this.state.tempPath)
+    }
   }
 
   onClose = () => this.setState({ selectedRouteId: null })
@@ -133,6 +162,18 @@ class App extends Component {
     }));
   }
 
+  lastMouseMove = 0
+
+  onMapMouseMove = ({ latLng }) => {
+    if (this.lastMouseMove + 25 < Date.now()) {
+      const lat = latLng.lat()
+      const lng = latLng.lng()
+
+      this.coopSocket.emit('mouse_location', { lat, lng })
+      this.lastMouseMove = Date.now()
+    }
+  }
+
   onMapLoaded = ({ map, maps }) => {
     this.setState({ map, maps, mapLoaded: true })
 
@@ -140,6 +181,8 @@ class App extends Component {
       this.initialLoad = false
       this.fitMarkers(this.state.data, map, maps)
     }
+
+    map.addListener('mousemove', this.onMapMouseMove)
   }
 
   fitMarkers = (data, map, maps) => {
@@ -241,9 +284,8 @@ class App extends Component {
   }
 
   render() {
-    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports, tempPath } = this.state
+    const { map, maps, mapLoaded, selectedRouteId, data, requestLoading, errorMsg, airports, coopData, tempPath } = this.state
     const selectedRoute = selectedRouteId && data && data.routes && data.routes.find(route => route.routeName === selectedRouteId)
-
     if (showHackButton) {
       return (
         <center className="hackatech">
@@ -333,6 +375,14 @@ class App extends Component {
               }, []) }
               {airports.map(({ coords, id }) => (<Point key={id} lat={coords.latitude} onClick={() => this.handlePointClick(id, coords)} lng={coords.longitude} />))}
               {mapLoaded && <Shadowline path={tempPath} map={map} maps={maps} />}
+              {coopData && coopData.mouseBroadcasts && Object.entries(coopData.mouseBroadcasts).map(([user, coords]) => {
+                if (user === username) return null
+                return <PointerUser key={`pointer-${user}`} user={user} {...coords} />
+              })}
+              {mapLoaded && coopData && coopData.tempPaths && Object.entries(coopData.tempPaths).map(([user, tempPath]) => {
+                if (user === username) return null
+                return <Shadowline key={`shadowpath-${user}`} user={user} path={tempPath} map={map} maps={maps} />
+              })}
             </GoogleMap>
 
           </div>

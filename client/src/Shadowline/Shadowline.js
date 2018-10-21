@@ -1,4 +1,5 @@
 import { PureComponent } from 'react'
+import { colorFromStr } from '../utils'
 import t from 'prop-types'
 
 export class Shadowline extends PureComponent {
@@ -9,6 +10,11 @@ export class Shadowline extends PureComponent {
     })).isRequired,
     maps: t.object.isRequired,
     map: t.object.isRequired,
+    user: t.string,
+  }
+
+  static defaultProps = {
+    user: null,
   }
 
   componentWillUpdate() {
@@ -20,11 +26,11 @@ export class Shadowline extends PureComponent {
   }
 
   render() {
-    const { maps, path, map } = this.props
+    const { maps, path, user,  map } = this.props
 
     this.line = new maps.Polyline({
       geodesic: true,
-      strokeColor: "#90A4AE",
+      strokeColor: (user && colorFromStr(user)) || "#90A4AE",
       strokeOpacity: 1,
       strokeWeight: 3,
       path,
