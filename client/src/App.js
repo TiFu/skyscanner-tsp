@@ -263,7 +263,7 @@ class App extends Component {
     } else {
       this.handleNewChange({ suggestion: { value: id, latlng: { lat: coords.latitude, lng: coords.longitude } } })
     }
-    
+
     this.setState({ open: true })
   }
 
@@ -298,7 +298,7 @@ class App extends Component {
               });
             }
           }}>
-            Fly to a Hackathon Now
+            Attend One ASAP
           </Button>
         </center>
       )
