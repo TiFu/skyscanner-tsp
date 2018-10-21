@@ -82,7 +82,7 @@ public class Session {
 		// validate that r is consistent
 		if (r.getTrip() != null) {
 			for (FlightAlternatives fa: r.getTrip().getFlights()) {
-				if (fa.getAlternatives().size() == 0) {
+				if (fa == null || fa.getAlternatives() == null || fa.getAlternatives().size() == 0) {
 					throw new FlightServiceException("Couldn't calculate the complete route! Did not save route!");
 				}
 			}

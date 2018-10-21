@@ -39,6 +39,7 @@ public class FlightsService {
 	public void updateTrip(Route route) throws FlightServiceException {
 		Iterator<String> city = route.getCities().iterator();
 		String previousCity = city.next();
+		System.out.println(route.getEarliestDeparture());
 		LocalDate startingDate = LocalDate.parse(route.getEarliestDeparture());
 
 		List<FlightAlternatives> alternatives = new LinkedList<>();
@@ -72,7 +73,7 @@ public class FlightsService {
 	private boolean fetchFlights(String previousCity, LocalDate startingDate, List<FlightAlternatives> alternatives,
 			String currentCity) throws IOException, FlightServiceException {
 		String formattedDate = startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String url;
+		String url = null;
 		try {
 			url = this.api.createSession(previousCity, currentCity, formattedDate);
 		} catch (SkyscannerAPIException e) {

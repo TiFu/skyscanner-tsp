@@ -89,7 +89,6 @@ public class SubmitCitiesListener implements DataListener<SubmitCityListRequest>
 			} catch (FlightServiceException e) {
 				// TODO Auto-generated catch block
 				this.server.broadcastToSession(this.r.getId(), "error", e.getMessage());
-				e.printStackTrace();
 				return;
 			}
 			this.server.broadcastToSession(this.r.getId(), "state", this.session);
