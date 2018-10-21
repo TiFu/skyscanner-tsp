@@ -20,6 +20,11 @@
   text-overflow: ellipsis;
 }
 
+.badge {
+  top: -4px !important;
+  right: -9px !important;
+}
+
 .overlay {
   /*position: fixed;
   top: calc(56px + 3.5rem);

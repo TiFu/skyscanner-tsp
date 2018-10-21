@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card'
 import LocalAirport from '@material-ui/icons/LocalAirport'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import Badge from '@material-ui/core/Badge'
 import Divider from '@material-ui/core/Divider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -12,6 +13,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Input from '@material-ui/core/Input'
 import IconButton from '@material-ui/core/IconButton'
 import Close from '@material-ui/icons/Close'
+import Group from '@material-ui/icons/Group'
 import Commute from '@material-ui/icons/Commute'
 import FlightLand from '@material-ui/icons/FlightLand'
 import Add from '@material-ui/icons/Add'
@@ -43,6 +45,7 @@ class RouteForm extends Component {
       cities,
       cityCounts,
       cityIgnored,
+      userCount,
     } = this.props
     return (
       <div className={styles.container}>
@@ -50,6 +53,11 @@ class RouteForm extends Component {
           <Button variant="fab" disabled={loading} color="primary" style={{ background: colorFromStr(owner) }} aria-label="Add" onClick={this.props.toggle}>
             { open ? <Close /> : <LocalAirport /> }
           </Button>
+          <Badge color="primary" badgeContent={userCount || 1} classes={{ badge: styles.badge }}>
+            <Button variant="fab" color="primary" style={{ background: "#4CAF50", marginLeft: "1rem" }} aria-label="Active users">
+              <Group />
+            </Button>
+          </Badge>
           {loading && <CircularProgress size={68} className={styles.fabProgress} />}
         </div>
 

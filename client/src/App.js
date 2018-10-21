@@ -320,6 +320,7 @@ class App extends Component {
               cities={this.state.cities}
               cityCounts={this.state.cityCounts}
               cityIgnored={this.state.cityIgnored}
+              userCount={coopData && coopData.userCount}
 
               toggle={this.toggle}
               handleStartChange={this.handleStartChange}
