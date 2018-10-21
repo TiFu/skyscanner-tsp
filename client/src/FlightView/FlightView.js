@@ -113,28 +113,29 @@ class FlightView extends Component {
                 <ShoppingCart />
               </IconButton> }
 
-              <IconButton className={styles.close} onClick={() => {
-                const prevValue = this.props.flight.selectedAlternative;
-                this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
-                if (this.props.flight.selectedAlternative !== prevValue) {
-                  this.props.onAlternativeChange(this.props.flight.selectedAlternative)
-                }
-              }} component="span" color="secondary" size="small">
-                <ChevronLeft />
-              </IconButton>
+              {alternatives.length !== 1 && <IconButton className={styles.close} onClick={() => {
+                  const prevValue = this.props.flight.selectedAlternative;
+                  this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
+                  if (this.props.flight.selectedAlternative !== prevValue) {
+                    this.props.onAlternativeChange(this.props.flight.selectedAlternative)
+                  }
+                }} component="span" color="secondary" size="small">
+                  <ChevronLeft />
+              </IconButton> }
 
-              {alternatives.length != 1 && (selectedAlternative + 1)} /
-              {alternatives.length != 1 && alternatives.length}
+              {alternatives.length !== 1 && (
+                `${(selectedAlternative + 1)} / ${alternatives.length}`
+              )}
 
-              <IconButton className={styles.close} onClick={() => {
-                const prevValue = this.props.flight.selectedAlternative;
-                this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
-                if (this.props.flight.selectedAlternative !== prevValue) {
-                  this.props.onAlternativeChange(this.props.flight.selectedAlternative)
-                }
-              }} component="span" color="secondary" size="small">
-                <ChevronRight />
-              </IconButton>
+                {alternatives.length !== 1 && <IconButton className={styles.close} onClick={() => {
+                  const prevValue = this.props.flight.selectedAlternative;
+                  this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
+                  if (this.props.flight.selectedAlternative !== prevValue) {
+                    this.props.onAlternativeChange(this.props.flight.selectedAlternative)
+                  }
+                }} component="span" color="secondary" size="small">
+                  <ChevronRight />
+              </IconButton> }
             </span>
           </div>
 
