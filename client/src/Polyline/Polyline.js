@@ -25,10 +25,10 @@ export class Polyline extends PureComponent {
 
   componentWillUpdate({ showSelected, selected }) {
     const { map, maps } = this.props
-    if (showSelected && selected && map && maps && this.line) {
+    if (showSelected && selected && map && maps && this.line && selected !== this.props.selected) {
       const bounds = new maps.LatLngBounds()
       this.line.getPath().forEach((e) => {
-          bounds.extend(e);
+        bounds.extend(e);
       })
       map.fitBounds(bounds);
     }

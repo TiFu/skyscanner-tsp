@@ -89,12 +89,20 @@ class App extends Component {
     }))
   }
 
-  onNewSubmit = (data) => {
+  onNewSubmit = () => {
+    const { startPlace, cities, cityCounts, startDate, cityIgnored } = this.state
     this.setState({ requestLoading: true })
-    this.socket.emit('city_list', Object.assign({}, data, {
+
+    this.socket.emit('city_list', {
       id: roomHash,
-      action: 'city_list'
-    }))
+      action: 'city_list',
+      routeName: uuid(),
+      startingCity: startPlace,
+      cities: [startPlace, ...cities],
+      ignoreFlight: [startPlace, ...cities].filter((_, index) => cityIgnored.includes(index)),
+      durationOfStay: cityCounts.reduce((memo, count, index) => ({ ...memo, [cities[index]]: count }), {[startPlace]: 0}),
+      earliestDeparture: startDate,
+    })
   }
 
   onAlternative = (data) => {
@@ -103,6 +111,13 @@ class App extends Component {
       id: roomHash,
       action: 'update_selected_alternative',
     }))
+  }
+
+  onDuplicate = (data) => {
+    this.socket.emit('copy_route', Object.assign({}, data, {
+      id: roomHash,
+      action: 'copy_route',
+    }));
   }
 
   onMapLoaded = ({ map, maps }) => {
@@ -136,7 +151,7 @@ class App extends Component {
   onMapChange = ({ center }) => {
     this.setState({ airports: this.findNearestAirports(center) })
   }
-  
+
   findNearestAirports = (center, limit = 50) => {
     const coords = airports.map(({ coords, id }) => ({ id, coords, distance: getDistance(coords, center) }))
     coords.sort((a, b) => a.distance - b.distance)
@@ -180,18 +195,6 @@ class App extends Component {
     }
   }
 
-  submit = () => {
-    const { startPlace, cities, cityCounts, startDate, cityIgnored } = this.state
-    this.onNewSubmit({
-      routeName: uuid(),
-      startingCity: startPlace,
-      cities: [startPlace, ...cities],
-      ignoreFlight: [startPlace, ...cities].filter((_, index) => cityIgnored.includes(index)),
-      durationOfStay: cityCounts.reduce((memo, count, index) => ({ ...memo, [cities[index]]: count }), {[startPlace]: 0}),
-      earliestDeparture: startDate,
-    })
-  }
-
   handleDayChange = (newDate) => {
     this.setState({ startDate: moment(newDate).format('YYYY-MM-DD') })
   }
@@ -202,7 +205,35 @@ class App extends Component {
 
     return (
       <div className="App">
-        { selectedRoute && <RouteView loading={requestLoading} route={selectedRoute} onReorder={this.onReorder} onAlternative={this.onAlternative} onClose={this.onClose} /> }
+        <span className="overlayWrapper">
+          <RouteForm
+            open={this.state.open}
+            startPlace={this.state.startPlace}
+            startDate={this.state.startDate}
+            cities={this.state.cities}
+            cityCounts={this.state.cityCounts}
+            cityIgnored={this.state.cityIgnored}
+
+            toggle={this.toggle}
+            handleStartChange={this.handleStartChange}
+            handleNewChange={this.handleNewChange}
+            handleRemove={this.handleRemove}
+            handleCountChange={this.handleCountChange}
+            handleIgnoreToggle={this.handleIgnoreToggle}
+            submit={this.onNewSubmit}
+            handleDayChange={this.handleDayChange}
+          />
+          { selectedRoute &&
+            <RouteView
+              loading={requestLoading}
+              route={selectedRoute}
+              onReorder={this.onReorder}
+              onAlternative={this.onAlternative}
+              onClose={this.onClose}
+              onDuplicate={this.onDuplicate}
+            />
+          }
+        </span>
         { data && <GeneralView routes={data.routes} onSelectRoute={id => this.setState({ selectedRouteId: id })} /> }
         <div className="map">
           <GoogleMap
@@ -241,28 +272,10 @@ class App extends Component {
                 }
                 return memo
             }, []) }
-
             {airports.map(({ coords: { latitude, longitude }, id }) => (<Point key={id} lat={latitude} onClick={() => console.log(id)} lng={longitude} />))}
           </GoogleMap>
 
         </div>
-        <RouteForm
-          open={this.state.open}
-          startPlace={this.state.startPlace}
-          startDate={this.state.startDate}
-          cities={this.state.cities}
-          cityCounts={this.state.cityCounts}
-          cityIgnored={this.state.cityIgnored}
-
-          toggle={this.toggle}
-          handleStartChange={this.handleStartChange}
-          handleNewChange={this.handleNewChange}
-          handleRemove={this.handleRemove}
-          handleCountChange={this.handleCountChange}
-          handleIgnoreToggle={this.handleIgnoreToggle}
-          submit={this.submit}
-          handleDayChange={this.handleDayChange}
-        />
         <Snackbar open={!!errorMsg} onClose={() => this.setState({ errorMsg: null })} autoHideDuration={3000} message={errorMsg} />
       </div>
     )

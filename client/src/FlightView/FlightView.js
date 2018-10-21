@@ -107,31 +107,35 @@ class FlightView extends Component {
 
           <div className={styles.heading}>
             <h1>{finalDestination}</h1>
-            {deepLink && <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
-              <ShoppingCart />
-            </IconButton> }
-            <div onClick={() => {
+
+            <span className={styles.headerButtonsWrapper}>
+              {deepLink && <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
+                <ShoppingCart />
+              </IconButton> }
+
+              <IconButton className={styles.close} onClick={() => {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
                 if (this.props.flight.selectedAlternative !== prevValue) {
                   this.props.onAlternativeChange(this.props.flight.selectedAlternative)
                 }
-              }}>
-              <IconButton className={styles.close} component="span" color="secondary">
+              }} component="span" color="secondary" size="small">
                 <ChevronLeft />
               </IconButton>
-            </div>
-            <div onClick={() => {
+
+              {alternatives.length != 1 && (selectedAlternative + 1)} /
+              {alternatives.length != 1 && alternatives.length}
+
+              <IconButton className={styles.close} onClick={() => {
                 const prevValue = this.props.flight.selectedAlternative;
                 this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
                 if (this.props.flight.selectedAlternative !== prevValue) {
                   this.props.onAlternativeChange(this.props.flight.selectedAlternative)
                 }
-              }}>
-              <IconButton className={styles.close} component="span" color="secondary">
+              }} component="span" color="secondary" size="small">
                 <ChevronRight />
               </IconButton>
-            </div>
+            </span>
           </div>
 
           <div className={styles.meta}>
@@ -152,6 +156,8 @@ class FlightView extends Component {
               </div>
               <div className={styles.destination}>
                 {leg.departure.airport}
+              </div>
+              <div className={styles.carrier}>
                 <img className={styles.logo} src={leg.carrierImg} alt={leg.carrier} />
               </div>
               <div className={styles.time}>

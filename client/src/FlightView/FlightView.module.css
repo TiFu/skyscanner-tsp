@@ -31,6 +31,11 @@
   flex-grow: 1;
 }
 
+.flight .header .headerButtonsWrapper {
+  display: flex;
+  align-items: center;
+}
+
 .flight .meta {
   display: flex;
 }
@@ -75,14 +80,19 @@
   display: flex;
 }
 
+.flight .leg .carrier {
+  flex-shrink: 0;
+  display: flex;
+}
+
 .flight .leg .time {
   flex-shrink: 0;
   display: flex;
 }
 
-
 .logo {
   margin-left: 0.5rem;
+  margin-right: 0.5rem;
   height: 1.5em;
   filter: grayscale(100%);
 }
