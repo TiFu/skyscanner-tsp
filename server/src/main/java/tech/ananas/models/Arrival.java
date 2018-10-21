@@ -1,6 +1,8 @@
 package tech.ananas.models;
 
-public class Arrival {
+import java.io.Serializable;
+
+public class Arrival implements Serializable {
 	private String code;
 	private String coordinates;
 	private String time;

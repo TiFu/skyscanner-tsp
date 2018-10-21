@@ -1,9 +1,10 @@
 package tech.ananas.sky;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Leg {
+public class Leg implements Serializable {
     @Override
 	public String toString() {
 		return "Leg [CarrierIds=" + CarrierIds + ", OriginId=" + OriginId + ", DestinationId=" + DestinationId

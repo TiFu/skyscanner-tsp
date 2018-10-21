@@ -39,7 +39,7 @@ public class TSPService {
 		List<String> orderedCities = TSPpath(cityListRequest).firstEntry().getValue();
 		// flight back!
 		orderedCities.remove(orderedCities.size() - 1);
-		Route outputRoute = new Route("tsp", null, orderedCities, cityListRequest.getDurationOfStay());
+		Route outputRoute = new Route("Cheapest Route", "Mr. Cheapest", orderedCities, cityListRequest.getDurationOfStay());
 		Set<String> citySet = new HashSet<>(orderedCities);
 		return outputRoute;
 		

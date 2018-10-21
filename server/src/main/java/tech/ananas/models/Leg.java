@@ -1,6 +1,8 @@
 package tech.ananas.models;
 
-public class Leg {
+import java.io.Serializable;
+
+public class Leg implements Serializable {
 	private int duration;
 	private String carrier;
 	private String flightNumber;
