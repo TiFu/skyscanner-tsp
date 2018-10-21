@@ -55,6 +55,7 @@ public class Session {
 		Route r = new Route(data.getRouteName(), owner.getName(), data.getCities(), data.getDurationOfStay());
 		r.setEarliestDeparture(data.getEarliestDeparture());
 		r.setIgnoreFlight(data.getIgnoreFlight());
+		r.setHackathonId(data.getHackathonId());
 		this.addRoute(r);
 		return r;
 	}

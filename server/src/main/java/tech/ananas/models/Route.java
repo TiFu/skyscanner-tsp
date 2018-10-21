@@ -13,6 +13,7 @@ public class Route {
 	private Map<String,Integer> durationOfStay;
 	private String earliestDeparture;
 	private Trip trip;
+	private String hackathonId;
 	
 	public Route(String routeName, String owner, List<String> cities, Map<String, Integer> durationOfStay) {
 		this.routeName = routeName;
@@ -22,13 +23,26 @@ public class Route {
 		this.durationOfStay = durationOfStay;
 		this.earliestDeparture = "";
 		this.trip = null;
+		this.hackathonId = null;
 	}
 	
+	
+	public String getHackathonId() {
+		return hackathonId;
+	}
+
+
+	public void setHackathonId(String hackathonId) {
+		this.hackathonId = hackathonId;
+	}
+
+
 	public Route(Route r) {
 		this(r.getRouteName(), r.getOwner(), new LinkedList<>(r.getCities()), new HashMap<>(r.getDurationOfStay()));
 		this.ignoreFlight = new LinkedList<>(r.getIgnoreFlight());
 		this.earliestDeparture = r.getEarliestDeparture();
 		this.trip = new Trip(r.getTrip());
+		this.hackathonId = r.hackathonId;
 	}
 
 	public String getOwner() {
