@@ -18,6 +18,7 @@ class FlightView extends Component {
   static propTypes = {
     backgroundImage: t.string,
     flight: t.shape({
+      title: t.string,
       startingCity: t.string,
       finalDestination: t.string,
       selectedAlternative: t.number,
@@ -95,99 +96,112 @@ class FlightView extends Component {
 
   render() {
     const { backgroundImage } = this.state;
-    const { flight: { finalDestination, selectedAlternative, alternatives } } = this.props
-    const { price, departureTime, legs, duration, onDirectionChange, deepLink } = alternatives[selectedAlternative];
+    const { flight: { finalDestination, selectedAlternative, alternatives }, title } = this.props
 
-    return (
-      <div className={styles.flight}>
-        <div className={styles.header} style={{backgroundImage: "-webkit-linear-gradient(top, transparent, rgba(0, 0, 0, .7)), url('" + backgroundImage + "')"}}>
-          <div className={styles.buttons}>
-            <div className={styles.top} onClick={() => onDirectionChange(-1)}></div>
-            <div className={styles.bottom} onClick={() => onDirectionChange(1)}></div>
+    if (!alternatives) {
+      return (
+        <div className={styles.flight}>
+          <div className={styles.header} style={{backgroundImage: "-webkit-linear-gradient(top, transparent, rgba(0, 0, 0, .7)), url('" + backgroundImage + "')"}}>
+            <div className={styles.heading}>
+              <h1>{title}</h1>
+            </div>
           </div>
+        </div>
+      )
+    } else {
+      const { price, departureTime, legs, duration, onDirectionChange, deepLink } = alternatives[selectedAlternative];
 
-          <div className={styles.heading}>
-            <h1>{finalDestination}</h1>
+      return (
+        <div className={styles.flight}>
+          <div className={styles.header} style={{backgroundImage: "-webkit-linear-gradient(top, transparent, rgba(0, 0, 0, .7)), url('" + backgroundImage + "')"}}>
+            <div className={styles.buttons}>
+              <div className={styles.top} onClick={() => onDirectionChange(-1)}></div>
+              <div className={styles.bottom} onClick={() => onDirectionChange(1)}></div>
+            </div>
 
-            <span className={styles.headerButtonsWrapper}>
+            <div className={styles.heading}>
+              <h1>{finalDestination}</h1>
+
+              <span className={styles.headerButtonsWrapper}>
 
 
-              {deepLink && (
-                <Tooltip title="Buy ticket" placement="top">
-                  <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
-                    <ShoppingCart />
-                  </IconButton>
-                </Tooltip>
-              )}
-
-              {alternatives.length !== 1 && <IconButton className={styles.close} onClick={() => {
-                  const prevValue = this.props.flight.selectedAlternative;
-                  this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
-                  if (this.props.flight.selectedAlternative !== prevValue) {
-                    this.props.onAlternativeChange(this.props.flight.selectedAlternative)
-                  }
-                }} component="span" color="secondary" size="small">
-                  <ChevronLeft />
-              </IconButton> }
-
-              {alternatives.length !== 1 && (
-                `${(selectedAlternative + 1)} / ${alternatives.length}`
-              )}
+                {deepLink && (
+                  <Tooltip title="Buy ticket" placement="top">
+                    <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
+                      <ShoppingCart />
+                    </IconButton>
+                  </Tooltip>
+                )}
 
                 {alternatives.length !== 1 && <IconButton className={styles.close} onClick={() => {
-                  const prevValue = this.props.flight.selectedAlternative;
-                  this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
-                  if (this.props.flight.selectedAlternative !== prevValue) {
-                    this.props.onAlternativeChange(this.props.flight.selectedAlternative)
-                  }
-                }} component="span" color="secondary" size="small">
-                  <ChevronRight />
-              </IconButton> }
-            </span>
-          </div>
+                    const prevValue = this.props.flight.selectedAlternative;
+                    this.props.flight.selectedAlternative = Math.max(0, prevValue - 1);
+                    if (this.props.flight.selectedAlternative !== prevValue) {
+                      this.props.onAlternativeChange(this.props.flight.selectedAlternative)
+                    }
+                  }} component="span" color="secondary" size="small">
+                    <ChevronLeft />
+                </IconButton> }
 
-          <div className={styles.meta}>
-            <div className={styles.date}>
-              {`${formatTime(departureTime)} (Flight Duration: ${printLeadingZero(Math.floor(duration/60))}:${printLeadingZero(duration - 60 * Math.floor(duration/60))}h)`}
+                {alternatives.length > 1 && (
+                  `${(selectedAlternative + 1)} / ${alternatives.length}`
+                )}
+
+                  {alternatives.length !== 1 && <IconButton className={styles.close} onClick={() => {
+                    const prevValue = this.props.flight.selectedAlternative;
+                    this.props.flight.selectedAlternative = Math.min(alternatives.length - 1, prevValue + 1)
+                    if (this.props.flight.selectedAlternative !== prevValue) {
+                      this.props.onAlternativeChange(this.props.flight.selectedAlternative)
+                    }
+                  }} component="span" color="secondary" size="small">
+                    <ChevronRight />
+                </IconButton> }
+              </span>
             </div>
-            <div className={styles.price}>
-              {`${price.toFixed(2)} €`}
+
+            <div className={styles.meta}>
+              <div className={styles.date}>
+                {`${formatTime(departureTime)} (Flight Duration: ${printLeadingZero(Math.floor(duration/60))}:${printLeadingZero(duration - 60 * Math.floor(duration/60))}h)`}
+              </div>
+              <div className={styles.price}>
+                {`${price.toFixed(2)} €`}
+              </div>
             </div>
           </div>
+          <div className={styles.legs}>
+            {legs.map((leg, index) => (
+              <div className={styles.leg} key={index}>
+                <div className={styles.icon}>
+                  {index === 0 && <FlightTakeoff />}
+                  {index !== 0 && index < legs.length && <MoreVert />}
+                </div>
+                <div className={styles.destination}>
+                  {leg.departure.airport}
+                </div>
+                <div className={styles.carrier}>
+                  <img className={styles.logo} src={leg.carrierImg} alt={leg.carrier} />
+                </div>
+                <div className={styles.time}>
+                  { index >= 1 ? formatTime(legs[index - 1].arrival.time) + " " : ""}
+                  { index >= 1 ? <>{legs[index - 1].arrival.code}<br /></> : "" }
+                  { formatTime(leg.departure.time) +" "}
+                  { leg.departure.code }
+                </div>
+              </div>
+            ))}
+             <div className={styles.leg} key={legs.length}>
+                <div className={styles.icon}><FlightLand /></div>
+                <div className={styles.destination}>
+                  {legs[legs.length - 1].arrival.airport}
+                </div>
+                <div className={styles.time}>
+                  {`${formatTime(legs[legs.length - 1].arrival.time)} ${legs[legs.length - 1].arrival.code}`}
+                </div>
+              </div>
+          </div>
         </div>
-        <div className={styles.legs}>
-          {legs.map((leg, index) => (
-            <div className={styles.leg} key={index}>
-              <div className={styles.icon}>
-                {index === 0 && <FlightTakeoff />}
-                {index !== 0 && index < legs.length && <MoreVert />}
-              </div>
-              <div className={styles.destination}>
-                {leg.departure.airport}
-              </div>
-              <div className={styles.carrier}>
-                <img className={styles.logo} src={leg.carrierImg} alt={leg.carrier} />
-              </div>
-              <div className={styles.time}>
-                { index >= 1 ? formatTime(legs[index - 1].arrival.time) + " " : ""}
-                { index >= 1 ? <>{legs[index - 1].arrival.code}<br /></> : "" }
-                { formatTime(leg.departure.time) +" "}
-                { leg.departure.code }
-              </div>
-            </div>
-          ))}
-           <div className={styles.leg} key={legs.length}>
-              <div className={styles.icon}><FlightLand /></div>
-              <div className={styles.destination}>
-                {legs[legs.length - 1].arrival.airport}
-              </div>
-              <div className={styles.time}>
-                {`${formatTime(legs[legs.length - 1].arrival.time)} ${legs[legs.length - 1].arrival.code}`}
-              </div>
-            </div>
-        </div>
-      </div>
-    )
+      )
+    }
   }
 }
 

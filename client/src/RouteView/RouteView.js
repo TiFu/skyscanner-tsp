@@ -10,7 +10,7 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { printLeadingZero } from '../utils'
 import styles from './RouteView.module.css'
 import { CircularProgress, Tooltip } from '@material-ui/core';
-
+import hackathonData from '../hackathons.json'
 
 const SortableFlightItem = SortableElement(FlightView)
 const SortableFlights = SortableContainer(({ onDirectionChange, onAlternativeChange, flights, scrollDisabled }) => (
@@ -108,7 +108,7 @@ class RouteView extends Component {
   }
 
   render() {
-    const { loading, route: { owner, trip }, onClose, onDuplicate } = this.props
+    const { loading, route: { hackathonId, owner, trip }, onClose, onDuplicate } = this.props
     const { sorting } = this.state
 
     let { totalPrice, flights } = trip
@@ -122,6 +122,17 @@ class RouteView extends Component {
       const alternative = flight.alternatives[flight.selectedAlternative]
       return prev + alternative.duration
     }, 0)
+
+    if (hackathonId) {
+      console.log("yay", hackathonId);
+      const hackathon = hackathonData[hackathonId];
+
+      trip.flights.splice(1, 0, {
+        title: hackathon.title,
+        startingCity: hackathon.city,
+        finalDestination: hackathon.city,
+      });
+    }
 
     return <div className={styles.route}>
       <Card>
