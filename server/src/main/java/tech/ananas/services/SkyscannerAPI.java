@@ -274,12 +274,28 @@ public class SkyscannerAPI {
 			return this.browseQuotesCache.get(originPlace + "/" + destinationPlace + "/" + outboundPartialDate);
 		}
 		
+		JsonObject origin = this.getPlaceOrAirport(originPlace);
+		System.out.println(origin);
+		JsonObject destination = this.getPlaceOrAirport(destinationPlace);
+		System.out.println(destination);
+		
+		if (origin == null) {
+			throw new SkyscannerAPIException("Unknown origin " + originPlace);
+		}
+		if (destination == null) {
+			throw new SkyscannerAPIException("Unknown destination " + destinationPlace);
+		}
+		
+		if (origin.get("IataCode") == null || destination.get("IataCode") == null) {
+			throw new SkyscannerAPIException("Could not find " + originPlace + " or " + destinationPlace);
+		}
+		
 		URL url = new URL ("http://partners.api.skyscanner.net/apiservices/browsequotes/v1.0"
 				+ "/" + URLEncoder.encode(country, "UTF-8")
 				+ "/" + URLEncoder.encode(currency, "UTF-8")
 				+ "/" + URLEncoder.encode(locale, "UTF-8")
-				+ "/" + URLEncoder.encode(originPlace, "UTF-8")
-				+ "/" + URLEncoder.encode(destinationPlace, "UTF-8")
+				+ "/" + URLEncoder.encode(origin.get("IataCode").getAsString(), "UTF-8")
+				+ "/" + URLEncoder.encode(destination.get("IataCode").getAsString(), "UTF-8")
 				+ "/" + URLEncoder.encode(outboundPartialDate, "UTF-8")
 				+ "?apiKey=" + URLEncoder.encode(apikey, "UTF-8"));
 		

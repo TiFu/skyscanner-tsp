@@ -3,6 +3,8 @@ package tech.ananas.models;
 import java.util.LinkedList;
 import java.util.List;
 
+import tech.ananas.services.FlightServiceException;
+
 public class Session {
 	private String id;
 	private List<User> users;
@@ -49,11 +51,11 @@ public class Session {
 		return this.findRoute(routeName);
 	}
 
-	public synchronized Route addRoute(User owner, SubmitCityListRequest data) {
+	public synchronized Route addRoute(User owner, SubmitCityListRequest data) throws FlightServiceException {
 		Route r = new Route(data.getRouteName(), owner.getName(), data.getCities(), data.getDurationOfStay());
 		r.setEarliestDeparture(data.getEarliestDeparture());
 		r.setIgnoreFlight(data.getIgnoreFlight());
-		this.routes.add(r);
+		this.addRoute(r);
 		return r;
 	}
 
@@ -70,13 +72,21 @@ public class Session {
 		this.routes.remove(r);
 	}
 
-	public void duplicateRoute(String routeName) {
+	public void duplicateRoute(String routeName) throws FlightServiceException {
 		Route r = this.findRoute(routeName);
 		Route copy = new Route(r);
-		this.routes.add(copy);
+		this.addRoute(copy);
 	}
 	
-	public synchronized void addRoute(Route r) {
+	public synchronized void addRoute(Route r) throws FlightServiceException {
+		// validate that r is consistent
+		if (r.getTrip() != null) {
+			for (FlightAlternatives fa: r.getTrip().getFlights()) {
+				if (fa.getAlternatives().size() == 0) {
+					throw new FlightServiceException("Couldn't calculate the complete route! Did not save route!");
+				}
+			}
+		}
 		this.routes.add(r);
 	}
 }
