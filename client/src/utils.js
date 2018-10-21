@@ -13,6 +13,11 @@ export const getInitials = (name) => name.split(' ').map(item => item.toLocaleUp
 
 const colors = [
   "#ae04dd",
+  "#03A9F4",
+  "#009688",
+  "#8BC34A",
+  "#795548",
+  "#F44336"
 ];
 
 export const colorFromStr = (str) => colors[hashCode(str) % colors.length]

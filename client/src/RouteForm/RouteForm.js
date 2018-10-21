@@ -19,7 +19,6 @@ import CalendarToday from '@material-ui/icons/CalendarToday'
 import FlightTakeoff from '@material-ui/icons/FlightTakeoff'
 import Button from '@material-ui/core/Button'
 
-
 import AlgoliaPlaces from '../PlacesInput'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
@@ -27,6 +26,7 @@ import 'react-day-picker/lib/style.css';
 import './Calendar.style.css'
 import styles from './RouteForm.module.css'
 import { CardActions } from '@material-ui/core';
+import { colorFromStr } from '../utils';
 
 class RouteForm extends Component {
   static propTypes = {
@@ -34,11 +34,20 @@ class RouteForm extends Component {
   }
 
   render() {
-    const { loading, startPlace, startDate, open, cities, cityCounts, cityIgnored } = this.props
+    const {
+      owner,
+      loading,
+      startPlace,
+      startDate,
+      open,
+      cities,
+      cityCounts,
+      cityIgnored,
+    } = this.props
     return (
       <div className={styles.container}>
         <div className={styles.fab}>
-          <Button variant="fab" disabled={loading} color="primary" aria-label="Add" onClick={this.props.toggle}>
+          <Button variant="fab" disabled={loading} color="primary" style={{ background: colorFromStr(owner) }} aria-label="Add" onClick={this.props.toggle}>
             { open ? <Close /> : <LocalAirport /> }
           </Button>
           {loading && <CircularProgress size={68} className={styles.fabProgress} />}
@@ -48,22 +57,22 @@ class RouteForm extends Component {
           <Card className={styles.overlay}>
             <List>
               <ListItem>
-                <AlgoliaPlaces disabled={loading} language="en" type="city" placeholder="Start city" onChange={this.props.handleStartChange} />
+                <AlgoliaPlaces disabled={loading} value={startPlace} language="en" type="city" placeholder="Start city" onChange={this.props.handleStartChange} autocompleteOptions={(suggestion) => console.log(suggestion)} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <FlightTakeoff />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
+
               <ListItem>
-                <DayPickerInput disabled={loading} format="YYYY-MM-DD" onDayChange={this.props.handleDayChange}  placeholder="Earliest departure"  inputProps={{ className: styles.calendarInput }} />
+                <DayPickerInput disabled={loading} format="YYYY-MM-DD" onDayChange={this.props.handleDayChange} placeholder="Earliest departure" inputProps={{ className: styles.calendarInput }} />
                 <ListItemSecondaryAction>
                   <IconButton>
                     <CalendarToday />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
-
 
               <Divider />
               <ListItem>
@@ -76,6 +85,7 @@ class RouteForm extends Component {
               </ListItem>
 
               <Divider />
+
               <div className={styles.cityList}>
                 {cities.map((city, index) => (
                   <ListItem key={index + city} className={styles.city}>

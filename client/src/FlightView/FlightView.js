@@ -10,6 +10,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import ChevronRight from '@material-ui/icons/ChevronRight'
 import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import {formatTime, printLeadingZero} from '../utils'
+import { Tooltip } from '@material-ui/core';
 
 
 class FlightView extends Component {
@@ -109,9 +110,15 @@ class FlightView extends Component {
             <h1>{finalDestination}</h1>
 
             <span className={styles.headerButtonsWrapper}>
-              {deepLink && <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
-                <ShoppingCart />
-              </IconButton> }
+
+
+              {deepLink && (
+                <Tooltip title="Buy ticket" placement="top">
+                  <IconButton className={styles.close} onClick={() => window.open(deepLink, '_blank')} component="span" color="secondary">
+                    <ShoppingCart />
+                  </IconButton>
+                </Tooltip>
+              )}
 
               {alternatives.length !== 1 && <IconButton className={styles.close} onClick={() => {
                   const prevValue = this.props.flight.selectedAlternative;

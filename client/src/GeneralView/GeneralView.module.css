@@ -1,7 +1,7 @@
 .list {
   max-width: 510px;
   position: absolute;
-  top: 50px;
+  top: 0;
   right: 0;
   padding-right: 10px;
   z-index: 999999;
@@ -9,6 +9,26 @@
 
   transform: translateX(calc(100% - 1.2rem + 13px));
   transition: 0.3s all;
+}
+
+.list:before {
+  content: "menu";
+  text-transform: lowercase;
+  font-variant: small-caps;
+  transform: rotate(-90deg) translateX(-180%);
+  position: absolute;
+  right: calc(100% - 5px);
+  top: 0;
+  color: white;
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: 3px;
+  transition: 0.3s opacity;
+  opacity: 1;
+}
+
+.list:hover:before {
+  opacity: 0;
 }
 
 .list:hover {
@@ -44,6 +64,15 @@
   color: white;
   align-items: center;
   padding: 1rem;
+
+  border-radius: 4px;
+  transition: 0.3s background;
+  background: rgba(0,0,0,0);
+}
+
+.list:hover header {
+  background: rgba(0, 0, 0, 0.4);
+
 }
 
 .list header > *:first-child {
