@@ -115,7 +115,7 @@ class App extends Component {
     })
 
     this.socket.on('error', (msg) => {
-      this.setState({ errorMsg: msg, requestLoading: false })
+      this.setState({ errorMsg: "" + msg, requestLoading: false })
       // if (msg === 'Unknown session! Session was not restored!') {
       //   window.location = '/'
       // }
